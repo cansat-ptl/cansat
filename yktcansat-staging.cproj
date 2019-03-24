@@ -24,17 +24,17 @@
     <avrtoolinterface />
     <avrtool>com.atmel.avrdbg.tool.simulator</avrtool>
     <com_atmel_avrdbg_tool_simulator>
-      <ToolType xmlns="">com.atmel.avrdbg.tool.simulator</ToolType>
-      <ToolName xmlns="">AVR Simulator</ToolName>
-      <ToolNumber xmlns="">
+      <ToolType>com.atmel.avrdbg.tool.simulator</ToolType>
+      <ToolName>AVR Simulator</ToolName>
+      <ToolNumber>
       </ToolNumber>
-      <KeepTimersRunning xmlns="">true</KeepTimersRunning>
-      <OverrideVtor xmlns="">false</OverrideVtor>
-      <OverrideVtorValue xmlns="">
+      <KeepTimersRunning>true</KeepTimersRunning>
+      <OverrideVtor>false</OverrideVtor>
+      <OverrideVtorValue>
       </OverrideVtorValue>
-      <Channel xmlns="">
+      <Channel>
         <host>127.0.0.1</host>
-        <port>54772</port>
+        <port>50670</port>
         <ssl>False</ssl>
       </Channel>
     </com_atmel_avrdbg_tool_simulator>
@@ -62,36 +62,49 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ToolchainSettings>
       <AvrGcc>
-        <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
-        <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
-        <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
-        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
-        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
-        <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
-        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
-        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
-        <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
-        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
-        <avrgcc.linker.libraries.Libraries>
-          <ListValues>
-            <Value>m</Value>
-          </ListValues>
-        </avrgcc.linker.libraries.Libraries>
-        <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
-      </AvrGcc>
+  <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+  <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+  <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+  <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+  <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+  <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
+  <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+  <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+  <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
+  <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+  <avrgcc.compiler.warnings.Pedantic>True</avrgcc.compiler.warnings.Pedantic>
+  <avrgcc.linker.libraries.Libraries>
+    <ListValues>
+      <Value>m</Value>
+    </ListValues>
+  </avrgcc.linker.libraries.Libraries>
+  <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
+</AvrGcc>
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="config.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="core.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="drivers\devices\adxl345.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\devices\adxl345.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\spi.c">
+    <Compile Include="drivers\devices\spi.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\spi.h">
+    <Compile Include="drivers\devices\spi.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\devices\tc72.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\devices\tc72.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\uart.c">
@@ -101,9 +114,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="init.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

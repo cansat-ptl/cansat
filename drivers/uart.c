@@ -2,7 +2,7 @@
  * uart.c
  *
  * Created: 07.03.2019 20:22:02
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -52,7 +52,7 @@ void tx0_buffer_flush(){
 
 ISR(USART0_RX_vect){
 	char data = UDR0;
-	if(strlen(rx0_buffer) < 32){
+	if(strlen((char*)&rx0_buffer) < 32){
 		rx0_buffer[rx0_pointer] = data;
 		rx0_pointer++;
 	}
@@ -97,7 +97,7 @@ void tx1_buffer_flush(){
 
 ISR(USART1_RX_vect){
 	char data = UDR1;
-	if(strlen(rx1_buffer) < 32){
+	if(strlen((char*)&rx1_buffer) < 32){
 		rx1_buffer[rx1_pointer] = data;
 		rx1_pointer++;
 	}

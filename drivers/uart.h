@@ -2,7 +2,7 @@
  * uart.h
  *
  * Created: 08.03.2019 19:54:36
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
 
 #ifndef UART_H_
@@ -15,6 +15,7 @@
 #define TX0BUSY 0
 #define TX1BUSY 0
 
+#ifndef UARTconfig
 #define BAUD 9600							//UART baud rate
 #define F_CPU 8000000L						//CPU frequency
 #define UBRRVAL ((F_CPU/(16*BAUD)) - 1)		//UBBR value
@@ -26,7 +27,7 @@
 #define TX1EN 1								//TX0 enable
 #define RX1IE 1								//RX0 byte received interrupt enable
 #define TX1IE 0								//TX0 byte transmit interrupt enable
-
+#endif
 
 extern volatile char rx0_buffer[32];
 extern volatile int rx0_pointer;

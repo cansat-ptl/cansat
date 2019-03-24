@@ -2,7 +2,7 @@
  * adxl345.h
  *
  * Created: 23.03.2019 17:28:15
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
 
 
