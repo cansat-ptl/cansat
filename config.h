@@ -18,6 +18,7 @@
 #include "drivers/uart.h"
 #include "drivers/spi.h"
 #include "drivers/devices/tc72.h"
+#include "kernel/kernel.h"
 //----------------------------------------------------------------
 
 //-------------------------UART settings--------------------------

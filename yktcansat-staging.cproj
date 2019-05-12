@@ -86,6 +86,9 @@
     <Compile Include="config.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="kernel\globals.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="kernel\kernel.c">
       <SubType>compile</SubType>
     </Compile>
@@ -99,6 +102,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="kernel\timerservice.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="kernel\timerservice.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="kernel\types.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">

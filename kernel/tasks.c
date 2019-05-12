@@ -5,8 +5,24 @@
  *  Author: ThePetrovich
  */ 
 
-void idle();
-void readData();
-void formPacket();
-void process();
-void sendData();
+#include "tasks.h"
+
+void idle(){
+	
+}
+
+void readData(){
+	
+}
+
+void formPacket(){
+	
+}
+
+void process(){
+	
+}
+
+void sendData(){
+	
+}

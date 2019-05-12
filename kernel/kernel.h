@@ -9,8 +9,14 @@
 #ifndef KERNEL_H_
 #define KERNEL_H_
 
-typedef void (*task)(void);
+#include "tasks.h"
+#include "types.h"
+#include "timerservice.h"
+#include <avr/common.h>
 
-#define MAX_QUEUE_SIZE 16
+uint8_t kernelInit();
+uint8_t addTask(task t_ptr, uint8_t t_timeout, uint8_t t_delay);
+uint8_t removeTask();
+uint8_t taskManager();
 
 #endif /* KERNEL_H_ */
