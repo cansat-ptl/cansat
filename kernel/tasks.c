@@ -9,8 +9,8 @@
 extern volatile char tx0_buffer[128]; 
 
 void idle(){
-	sprintf((char*)&tx0_buffer, "Idle\r\n");
-	uart0_transmit();
+//	sprintf((char*)&tx0_buffer, "Idle\r\n");
+//	uart0_transmit();
 }
 
 void readData(){

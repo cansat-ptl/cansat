@@ -9,6 +9,7 @@
 #include "globals.h"
 
 void idle();
+extern volatile uint8_t taskIndex;
 
 inline void timerService(){
 	if(SREG & (1 << 7))
@@ -20,7 +21,8 @@ inline void timerService(){
 				taskQueue[i].period--;
 			else {
 				addTask(taskQueue[i].pointer);
-				removeTimedTask(taskQueue[i].pointer, taskQueue[i].period);
+				taskQueue[i].pointer = idle;
+				taskIndex--;
 			}
 		}
 	}

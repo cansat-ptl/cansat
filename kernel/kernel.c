@@ -9,7 +9,7 @@
 #include "globals.h"
 
 uint8_t callIndex = 0; //Index of the last task in queue
-uint8_t taskIndex = 0; //Index of the last task in queue
+volatile uint8_t taskIndex = 0; //Index of the last task in queue
 uint8_t error = 0;		//Latest task return code
 volatile uint8_t flags = 0;		//Common variable for kernel control flags
 volatile task callQueue[MAX_QUEUE_SIZE];
@@ -37,6 +37,7 @@ uint8_t kernelInit(){
 	for(int i = 0; i < MAX_QUEUE_SIZE; i++){
 		taskQueue[i].pointer = idle;
 		taskQueue[i].period = 0;
+		callQueue[i] = idle;
 	}
 	startTimer();
 	return 0;
@@ -56,7 +57,6 @@ uint8_t addTask(task t_ptr){
 		sei();
 		return ERR_QUEUE_OVERFLOW;
 	}
-	sei();
 }
 
 uint8_t addTimedTask(task t_ptr, uint8_t t_period){
@@ -84,14 +84,11 @@ uint8_t removeTask(){
 		callIndex--;
 		for(int i = 0; i < MAX_QUEUE_SIZE-1; i++){
 			callQueue[i] = callQueue[i+1];
-			callQueue[MAX_QUEUE_SIZE-1] = idle;
-			sei();
-			return 0;
 		}
+		callQueue[MAX_QUEUE_SIZE-1] = idle;
 	}	
 	else {
-		sei();
-		return ERR_QUEUE_END;
+		callQueue[0] = idle;
 	}
 	sei();
 	return 0;
@@ -126,7 +123,4 @@ inline uint8_t taskManager(){
 }
 
 uint8_t kernel(){
-	while(1){
-		taskManager();
-	}
 }
