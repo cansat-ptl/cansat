@@ -26,8 +26,8 @@ static int uart0_putchar(char c, FILE *stream){
 
 int main(void){
 	uart0_init(51);
-	spi_init();
-	tc72_init();
+	//spi_init();
+	//tc72_init();
 	stdout = &uart0stdout;
 	//uart1_init(UBRRVAL);
 	/*sei();
@@ -49,8 +49,6 @@ int main(void){
 	sprintf((char*)&tx0_buffer, "HELLO RTOS\r\n");
 	uart0_transmit();
 	kernelInit();
-	addTimedTask(readData, 10, 10);
-	while(1){
-		taskManager();
-	}
+	addTimedTask(readData, 10);
+	kernel();
 }

@@ -17,12 +17,28 @@ volatile struct taskStruct taskQueue[MAX_QUEUE_SIZE];
 
 void idle();
 
+void startTimer(){
+	/*cli();
+	TCCR1A |= 0;
+	TCNT1 = 0;						 //Resetting timer
+	TCCR1B |= (1<<CS12)|(1<<WGM12);  //Timer1 CTC mode, prescaler 256
+	OCR1A = 0x271;					 //625 as compare value
+	TIMSK |= (1<<OCIE1A);			 //Fire interrupt when compare match, approx. every 20 ms
+	sei();*/
+	cli();
+	TCCR1B |= (1 << WGM12)|(1 << CS11)|(1 << CS10);
+	TCNT1 = 0; // initialize counter
+	OCR1A = 5000;  // initialize compare value
+	TIMSK |= (1 << OCIE1A); // enable compare interrupt
+	sei(); // enable global interrupts
+}
+
 uint8_t kernelInit(){
 	for(int i = 0; i < MAX_QUEUE_SIZE; i++){
 		taskQueue[i].pointer = idle;
 		taskQueue[i].period = 0;
-		startTimer();
 	}
+	startTimer();
 	return 0;
 }
 
@@ -62,9 +78,8 @@ uint8_t addTimedTask(task t_ptr, uint8_t t_period){
 }
 
 uint8_t removeTask(){
-	if(SREG & (1 << 7)){
+	if(SREG & (1 << 7))
 		cli();
-	}
 	if(callIndex != 0){
 		callIndex--;
 		for(int i = 0; i < MAX_QUEUE_SIZE-1; i++){
@@ -82,12 +97,11 @@ uint8_t removeTask(){
 	return 0;
 }
 
-inline uint8_t removeTimedTask(task ptr uint8_t t_period){
-	if(SREG & (1 << 7)){
+inline uint8_t removeTimedTask(task ptr, uint8_t t_period){
+	if(SREG & (1 << 7))
 		cli();
-	}
 	for(int i = 0; i < MAX_QUEUE_SIZE; i++){
-		if(taskQueue[i].pointer == ptr && taskQueue[i].period == t_period && taskQueue[i].repeat == t_repeat){
+		if(taskQueue[i].pointer == ptr && taskQueue[i].period == t_period){
 			taskIndex--;
 			for(int j = i; i < MAX_QUEUE_SIZE-1; j++){
 				taskQueue[j].pointer = taskQueue[j+1].pointer;
@@ -109,4 +123,10 @@ inline uint8_t taskManager(){
 	sei();
 	flags = 0;	//temp
 	return code;
+}
+
+uint8_t kernel(){
+	while(1){
+		taskManager();
+	}
 }

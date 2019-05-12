@@ -26,6 +26,6 @@ struct taskStruct {
 	uint8_t period;	 //delay until the next task in ticks
 };
 extern volatile struct taskStruct taskQueue[MAX_QUEUE_SIZE];
-extern volatile callQueue[MAX_QUEUE_SIZE];
+extern volatile task callQueue[MAX_QUEUE_SIZE];
 
 #endif /* GLOBALS_H_ */

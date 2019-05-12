@@ -12,6 +12,7 @@
 #include <avr/interrupt.h>
 #include <avr/iom128.h>
 #include <stdint.h>
+#include "kernel.h"
 
 void startTimer();
 void timerService();
