@@ -49,7 +49,7 @@ int main(void){
 	sprintf((char*)&tx0_buffer, "HELLO RTOS\r\n");
 	uart0_transmit();
 	kernelInit();
-	addTask(readData, 10, 10);
+	addTimedTask(readData, 10, 10);
 	while(1){
 		taskManager();
 	}
