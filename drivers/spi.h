@@ -26,11 +26,18 @@
 #define SPIIEN 0		//SPIE bit of SPCR
 #define SPIDORD 0		//DORD bit of SPCR
 #define SPIMSTR 1		//MSTR bit of SPCR
-#define SPIMODEL 1		//CPOL bit of SPCR
-#define SPIMODEH 1		//CPHA bit of SPCR
+#define SPIMODEL 0		//CPOL bit of SPCR
+#define SPIMODEH 0		//CPHA bit of SPCR
 #define SPISPDL 0		//SPR0 bit of SPCR
 #define SPISPDH 0		//SPR1 bit of SPCR
 #endif
+/*
+ *	Possible SPI modes:
+ *	0 - 0b00 - CPOL=0, CPHA=0 - mode 0
+ *	1 - 0b01 - CPOL=0, CPHA=1 - mode 1
+ *  2 - 0b10 - CPOL=1, CPHA=0 - mode 2
+ *	3 - 0b11 - CPOL=1, CPHA=1 - mode 3
+ */
 
 void spi_init();
 void spi_busSetup(uint8_t dord, uint8_t mode);

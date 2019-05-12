@@ -23,6 +23,7 @@ void spi_init(){
 
 void spi_busSetup(uint8_t dord, uint8_t mode){
 	SPCR = (SPIIEN<<SPIE)|(SPIEN<<SPE)|(dord<<DORD)|(SPIMSTR<<MSTR)|(mode<<CPHA)|(SPISPDH<<SPR1)|(SPISPDL<<SPR0);
+	spi_write(0x00);
 }
 void spi_write(uint8_t data)
 {

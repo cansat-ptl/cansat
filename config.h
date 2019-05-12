@@ -10,14 +10,17 @@
 
 #define F_CPU 8000000L						//CPU frequency
 
+//------------------------Project settings------------------------
 #include <avr/io.h>
 #include <string.h>
 #include <stdio.h>
 #include <util/delay.h>
 #include "drivers/uart.h"
-#include "drivers/devices/spi.h"
+#include "drivers/spi.h"
 #include "drivers/devices/tc72.h"
+//----------------------------------------------------------------
 
+//-------------------------UART settings--------------------------
 #define UARTconfig
 
 #define BAUD 9600							//UART baud rate
@@ -30,7 +33,9 @@
 #define TX1EN 1								//TX0 enable
 #define RX1IE 1								//RX0 byte received interrupt enable
 #define TX1IE 0								//TX0 byte transmit interrupt enable
+//----------------------------------------------------------------
 
+//-------------------------SPI settings---------------------------
 #define SPIconfig
 
 //SPI module port registers
@@ -46,10 +51,9 @@
 #define SPIIEN 0		//SPIE bit of SPCR
 #define SPIDORD 0		//DORD bit of SPCR
 #define SPIMSTR 1		//MSTR bit of SPCR
-#define SPIMODEL 1		//CPOL bit of SPCR
-#define SPIMODEH 1		//CPHA bit of SPCR
+#define SPIMODEL 0		//CPOL bit of SPCR
+#define SPIMODEH 0		//CPHA bit of SPCR
 #define SPISPDL 0		//SPR0 bit of SPCR
 #define SPISPDH 0		//SPR1 bit of SPCR
-
-
+//----------------------------------------------------------------
 #endif /* CONFIG_H_ */

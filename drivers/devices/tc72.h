@@ -13,7 +13,7 @@
 #include <stdint.h>
 #include <math.h>
 #include <util/delay.h>
-#include "spi.h"
+#include "../spi.h"
 
 #define TC72_PORT PORTA
 #define TC72_DDR DDRA

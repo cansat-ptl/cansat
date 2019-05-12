@@ -9,8 +9,10 @@
 #ifndef TASKS_H_
 #define TASKS_H_
 
-
-
-
+void idle();
+void readData();
+void formPacket();
+void process();
+void sendData();
 
 #endif /* TASKS_H_ */
