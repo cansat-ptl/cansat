@@ -9,7 +9,6 @@
 #ifndef KERNEL_H_
 #define KERNEL_H_
 
-#include "tasks.h"
 #include "types.h"
 #include "timerservice.h"
 #include <avr/common.h>

@@ -9,6 +9,11 @@
 #ifndef TASKS_H_
 #define TASKS_H_
 
+#include <string.h>
+#include <stdio.h>
+#include "../drivers/uart.h"
+#include "kernel.h"
+
 void idle();
 void readData();
 void formPacket();

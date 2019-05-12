@@ -9,13 +9,26 @@
 #include "globals.h"
 
 void startTimer(){
-	cli();
+	/*cli();
 	TCCR1A |= 0;
 	TCNT1 = 0;						 //Resetting timer
 	TCCR1B |= (1<<CS12)|(1<<WGM12);  //Timer1 CTC mode, prescaler 256
 	OCR1A = 0x271;					 //625 as compare value
 	TIMSK |= (1<<OCIE1A);			 //Fire interrupt when compare match, approx. every 20 ms
-	sei();
+	sei();*/
+	 TCCR1B |= (1 << WGM12)|(1 << CS11)|(1 << CS10);
+	 
+	 // initialize counter
+	 TCNT1 = 0;
+	 
+	 // initialize compare value
+	 OCR1A = 5000;
+	 
+	 // enable compare interrupt
+	 TIMSK |= (1 << OCIE1A);
+	 
+	 // enable global interrupts
+	 sei();
 }
 
 void timerService(){
@@ -25,7 +38,7 @@ void timerService(){
 	if(taskQueue[0].delay != 0)
 		taskQueue[0].delay--;
 	else
-		flags |= 1;
+		flags = 1;
 	sei();
 }
 

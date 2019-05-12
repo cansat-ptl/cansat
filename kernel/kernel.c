@@ -13,6 +13,8 @@ uint8_t error = 0;		//Latest task return code
 volatile uint8_t flags = 0;		//Common variable for kernel control flags
 volatile struct taskStruct taskQueue[MAX_QUEUE_SIZE];
 
+void idle();
+
 uint8_t kernelInit(){
 	for(int i = 0; i < MAX_QUEUE_SIZE; i++){
 		taskQueue[i].pointer = idle;
@@ -39,6 +41,7 @@ uint8_t addTask(task t_ptr, uint8_t t_timeout, uint8_t t_delay){
 		sei();
 		return ERR_QUEUE_OVERFLOW;
 	}
+	sei();
 }
 
 uint8_t removeTask(){
@@ -62,6 +65,7 @@ uint8_t removeTask(){
 		sei();
 		return ERR_QUEUE_END;
 	}
+	sei();
 	return 0;
 }
 
@@ -71,7 +75,9 @@ uint8_t taskManager(){
 		(taskQueue[0].pointer)();
 		uint8_t code = removeTask();
 		sei();
-		return code;	
+		flags = 0;	//temp
+		return code;
 	}
+	sei();
 	return 0;
 }

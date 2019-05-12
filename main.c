@@ -30,7 +30,7 @@ int main(void){
 	tc72_init();
 	stdout = &uart0stdout;
 	//uart1_init(UBRRVAL);
-	sei();
+	/*sei();
 	sprintf((char*)&tx0_buffer, "TOLYA KOOSOK GOVNA\r\n");
     uart0_transmit();
 	while(creg0 & (1<<TX0BUSY)){
@@ -45,5 +45,12 @@ int main(void){
 			;
 		}
 		_delay_ms(1000);
+	}*/
+	sprintf((char*)&tx0_buffer, "HELLO RTOS\r\n");
+	uart0_transmit();
+	kernelInit();
+	addTask(readData, 10, 10);
+	while(1){
+		taskManager();
 	}
 }
