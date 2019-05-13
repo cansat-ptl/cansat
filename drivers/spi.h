@@ -12,6 +12,9 @@
 #include <avr/io.h>
 #include <stdint.h>
 
+#define SPIDRV_VER "0.9.0-rc1"
+#define SPIDRV_TIMESTAMP __TIMESTAMP__
+
 #ifndef SPIconfig
 //SPI module port registers
 #define SPI_PORT PORTB

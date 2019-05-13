@@ -6,6 +6,7 @@
  */ 
 
 #include "tasks.h"
+#include "globals.h"
 extern volatile char tx0_buffer[128]; 
 
 void idle(){
@@ -14,25 +15,26 @@ void idle(){
 }
 
 void readData(){
-	sprintf((char*)&tx0_buffer, "Reading\r\n");
+	sprintf((char*)&tx0_buffer, "[TASK]TaskMgr: Reading\r\n");
 	uart0_transmit();
-	addTimedTask(process, 10);
+	addTimedTask(process, 50);
 }
 
 void formPacket(){
-	sprintf((char*)&tx0_buffer, "Forming packet\r\n");
+	sprintf((char*)&tx0_buffer, "[TASK]TaskMgr: Forming packet\r\n");
 	uart0_transmit();
-	addTimedTask(sendData, 10);
 }
 
 void process(){
-	sprintf((char*)&tx0_buffer, "Processing\r\n");
+	sprintf((char*)&tx0_buffer, "[TASK]TaskMgr: Processing\r\n");
 	uart0_transmit();
-	addTimedTask(formPacket, 10);
+	addTimedTask(formPacket, 25);
+	addTimedTask(sendData, 45);
 }
 
 void sendData(){
-	sprintf((char*)&tx0_buffer, "Transmitting\r\n");
+	sprintf((char*)&tx0_buffer, "[TASK]TaskMgr: Transmitting\r\n");
 	uart0_transmit();
-	addTimedTask(readData, 10);
+	addTimedTask(readData, 100);
 }
+

@@ -46,11 +46,26 @@ int main(void){
 		}
 		_delay_ms(1000);
 	}*/
-	sprintf((char*)&tx0_buffer, "HELLO RTOS\r\n");
+	sei();
+	sprintf((char*)&tx0_buffer, "[INIT]Main: starting up\r\n");
 	uart0_transmit();
-	kernelInit();
-	addTimedTask(readData, 100);
-	while(1){
-		taskManager();
+	while(creg0 & (1<<TX0BUSY)){
+		;
 	}
+	sprintf((char*)&tx0_buffer, "[INIT]Main: using kernel version %s built %s\r\n", KERNEL_VER, KERNEL_TIMESTAMP);
+	uart0_transmit();
+	while(creg0 & (1<<TX0BUSY)){
+		;
+	}
+	sprintf((char*)&tx0_buffer, "[INIT]Main: using UART driver version %s built %s\r\n", UARTDRV_VER, UARTDRV_TIMESTAMP);
+	uart0_transmit();
+	while(creg0 & (1<<TX0BUSY)){
+		;
+	}
+	sprintf((char*)&tx0_buffer, "[INIT]Main: using SPI driver version %s built %s\r\n", SPIDRV_VER, SPIDRV_TIMESTAMP);
+	uart0_transmit();
+	while(creg0 & (1<<TX0BUSY)){
+		;
+	}
+	kernelInit();
 }

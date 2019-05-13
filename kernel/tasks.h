@@ -2,8 +2,8 @@
  * tasks.h
  *
  * Created: 11.05.2019 23:54:14
- *  Author: Admin
- */ 
+ *  Author: ThePetrovich
+ */
 
 
 #ifndef TASKS_H_
