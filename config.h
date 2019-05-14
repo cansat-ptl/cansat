@@ -2,7 +2,7 @@
  * config.h
  *
  * Created: 24.03.2019 16:41:43
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
 
 #ifndef CONFIG_H_
@@ -15,16 +15,13 @@
 #include <string.h>
 #include <stdio.h>
 #include <util/delay.h>
-#include "drivers/uart.h"
-#include "drivers/spi.h"
-#include "drivers/devices/tc72.h"
+#include "kernel/drivers.h"
 #include "kernel/kernel.h"
 #include "kernel/tasks.h"
 //----------------------------------------------------------------
 
 //-------------------------UART settings--------------------------
 #define UARTconfig
-
 #define BAUD 9600							//UART baud rate
 #define UBRRVAL ((F_CPU/(16*BAUD)) - 1)		//UBBR value
 #define RX0EN 1								//RX0 enable
@@ -39,7 +36,6 @@
 
 //-------------------------SPI settings---------------------------
 #define SPIconfig
-
 //SPI module port registers
 #define SPI_PORT PORTB
 #define SPI_DDR DDRB	
@@ -57,5 +53,11 @@
 #define SPIMODEH 0		//CPHA bit of SPCR
 #define SPISPDL 0		//SPR0 bit of SPCR
 #define SPISPDH 0		//SPR1 bit of SPCR
+//----------------------------------------------------------------
+
+//-----------------------Kernel settings--------------------------
+#define MAX_QUEUE_SIZE 16
+#define ERR_QUEUE_OVERFLOW 1
+#define ERR_QUEUE_END 2
 //----------------------------------------------------------------
 #endif /* CONFIG_H_ */

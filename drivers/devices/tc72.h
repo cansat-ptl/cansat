@@ -2,7 +2,7 @@
  * tc72.h
  *
  * Created: 24.03.2019 14:20:05
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
 
 

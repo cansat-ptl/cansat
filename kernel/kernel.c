@@ -10,16 +10,19 @@
 
 uint8_t callIndex = 0; //Index of the last task in queue
 volatile uint8_t taskIndex = 0; //Index of the last task in queue
-uint8_t error = 0;		//Latest task return code
-volatile uint8_t flags = 0;		//Common variable for kernel control flags
 volatile task callQueue[MAX_QUEUE_SIZE];
 volatile struct taskStruct taskQueue[MAX_QUEUE_SIZE];
 
-void idle();
-void readData();
-void waitForTx();
+void idle(); //System idle task, MUST me declared in tasks.c
+void init(); //System init task, MUST me declared in tasks.c
 
-////////////////////////////////////////////////////////////////////
+void debugMessage(char* msg){
+	sprintf((char*)&tx0_buffer, msg);
+	uart0_transmit();
+	while(creg0 & (1<<TX0BUSY)){
+		;
+	}
+}
 
 inline uint8_t addTask(task t_ptr){
 	if(SREG & (1 << 7)){
@@ -37,7 +40,6 @@ inline uint8_t addTask(task t_ptr){
 	}
 }
 
-////////////////////////////////////////////////////////////////////
 
 uint8_t addTimedTask(task t_ptr, uint8_t t_period){
 	if(SREG & (1 << 7)){
@@ -57,7 +59,6 @@ uint8_t addTimedTask(task t_ptr, uint8_t t_period){
 	sei();
 }
 
-////////////////////////////////////////////////////////////////////
 
 inline uint8_t removeTask(){
 	if(SREG & (1 << 7))
@@ -76,8 +77,6 @@ inline uint8_t removeTask(){
 	return 0;
 }
 
-////////////////////////////////////////////////////////////////////
-
 inline uint8_t removeTimedTask(uint8_t position){
 	if(SREG & (1 << 7))
 		cli();
@@ -94,8 +93,6 @@ inline uint8_t removeTimedTask(uint8_t position){
 	return 0;
 }
 
-////////////////////////////////////////////////////////////////////
-
 void clearCallQueue(){
 	if(SREG & (1 << 7))
 		cli();
@@ -105,8 +102,6 @@ void clearCallQueue(){
 	callIndex = 0;
 	sei();
 }
-
-////////////////////////////////////////////////////////////////////
 
 void clearTaskQueue(){
 	if(SREG & (1 << 7))
@@ -118,8 +113,6 @@ void clearTaskQueue(){
 	taskIndex = 0;
 	sei();
 }
-
-////////////////////////////////////////////////////////////////////
 
 inline void timerService(){
 	if(SREG & (1 << 7))
@@ -138,52 +131,28 @@ inline void timerService(){
 	sei();
 }
 
-////////////////////////////////////////////////////////////////////
-
 void startTimer(){
-	/*cli();
-	TCCR1A |= 0;
-	TCNT1 = 0;						 //Resetting timer
-	TCCR1B |= (1<<CS12)|(1<<WGM12);  //Timer1 CTC mode, prescaler 256
-	OCR1A = 0x271;					 //625 as compare value
-	TIMSK |= (1<<OCIE1A);			 //Fire interrupt when compare match, approx. every 20 ms
-	sei();*/
 	cli();
-	TCCR1B |= (1 << WGM12)|(1 << CS11)|(1 << CS10);
-	TCNT1 = 0; // initialize counter
-	OCR1A = 5000;  // initialize compare value
-	TIMSK |= (1 << OCIE1A); // enable compare interrupt
-	sei(); // enable global interrupts
+	TCCR1B |= (1 << WGM12)|(1 << CS11)|(1 << CS10); //prescaler 64
+	TCNT1 = 0; 
+	OCR1A = 5000;
+	TIMSK |= (1 << OCIE1A);
+	sei();
 }
 
-////////////////////////////////////////////////////////////////////
-
 inline uint8_t taskManager(){
-	cli();
 	(callQueue[0])();
 	uint8_t code = removeTask();
-	sei();
-	flags = 0;	//temp
 	return code;
 }
 
-////////////////////////////////////////////////////////////////////
-
 uint8_t kernel(){
-	addTimedTask(readData, 100);
-	
-	sprintf((char*)&tx0_buffer, "[INIT]Kernel: starting task manager...DONE!\r\n");
-	uart0_transmit();
-	while(creg0 & (1<<TX0BUSY)){
-		;
-	}
-	
+	addTimedTask(init, 1);
+	debugMessage("[INIT]Kernel: starting task manager...DONE!\r\n");
 	while(1){
 		taskManager();
 	}
 }
-
-////////////////////////////////////////////////////////////////////
 
 uint8_t kernelInit(){
 	for(int i = 0; i < MAX_QUEUE_SIZE; i++){
@@ -191,26 +160,13 @@ uint8_t kernelInit(){
 		taskQueue[i].period = 0;
 		callQueue[i] = idle;
 	}
-	
-	sprintf((char*)&tx0_buffer, "[INIT]Kernel: starting kernel...");
-	uart0_transmit();
-	while(creg0 & (1<<TX0BUSY)){
-		;
-	}
-	
+	debugMessage("[INIT]Kernel: starting timer...");
 	startTimer();
-	
-	sprintf((char*)&tx0_buffer, "DONE!\r\n");
-	uart0_transmit();
-	while(creg0 & (1<<TX0BUSY)){
-		;
-	}
+	debugMessage("DONE!\r\n");
 	
 	kernel();
 	return 0;
 }
-
-////////////////////////////////////////////////////////////////////
 
 ISR(TIMER1_COMPA_vect){
 	timerService();

@@ -13,14 +13,6 @@ void spi_init(){
 	SPSR = (0<<SPI2X);	
 }
 
-/*
- *	Possible SPI modes:
- *	0 - 0b00 - CPOL=0, CPHA=0 - mode 0
- *	1 - 0b01 - CPOL=0, CPHA=1 - mode 1
- *  2 - 0b10 - CPOL=1, CPHA=0 - mode 2
- *	3 - 0b11 - CPOL=1, CPHA=1 - mode 3
- */
-
 void spi_busSetup(uint8_t dord, uint8_t mode){
 	SPCR = (SPIIEN<<SPIE)|(SPIEN<<SPE)|(dord<<DORD)|(SPIMSTR<<MSTR)|(mode<<CPHA)|(SPISPDH<<SPR1)|(SPISPDL<<SPR0);
 	spi_write(0x00);

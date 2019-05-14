@@ -11,13 +11,15 @@
 
 #include <string.h>
 #include <stdio.h>
-#include "../drivers/uart.h"
 #include "kernel.h"
 
 void idle();
+void init();
 void readData();
 void formPacket();
 void process();
 void sendData();
+void repeatedTask();
+void repeatedTask1();
 
 #endif /* TASKS_H_ */

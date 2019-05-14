@@ -86,10 +86,7 @@
     <Compile Include="config.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="kernel\exceptions.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="kernel\exceptions.h">
+    <Compile Include="kernel\drivers.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="kernel\globals.h">

@@ -2,7 +2,7 @@
  * tc72.c
  *
  * Created: 24.03.2019 14:20:13
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
 #include "tc72.h"
 
