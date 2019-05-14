@@ -59,8 +59,8 @@ int16_t adxl345_readZ(){
 	spi_busSetup(1, 3);
 	cli();
 	ADXL345_PORT |= (1<<ADXL345_CS);
-	int16_t z0 = spi_communicate(ADXL345_REG_Y0);
-	int16_t z1 = spi_communicate(ADXL345_REG_Y1);
+	int16_t z0 = spi_communicate(ADXL345_REG_Z0);
+	int16_t z1 = spi_communicate(ADXL345_REG_Z1);
 	ADXL345_PORT &= ~(1<<ADXL345_CS);
 	sei();
 	spi_busStop();
