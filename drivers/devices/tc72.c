@@ -10,8 +10,8 @@ void tc72_init(){
 	TC72_DDR |= (1<<TC72_CS);
 	spi_busSetup(0, 0);
 	TC72_PORT |= (1<<TC72_CS);
-	spi_read(0x80);
-	spi_read(0x00);
+	spi_communicate(0x80);
+	spi_communicate(0x00);
 	TC72_PORT &= ~(1<<TC72_CS);
 	_delay_ms(150);
 	spi_busStop();
@@ -22,8 +22,8 @@ uint16_t tc72_requestTemperatureRaw(){
 	uint16_t raw = 0;
 	uint8_t tempMSB = 0, tempLSB = 0;
 	TC72_PORT |= (1<<TC72_CS);
-	tempLSB = spi_read(0x01);
-	tempMSB = spi_read(0x02);
+	tempLSB = spi_communicate(0x01);
+	tempMSB = spi_communicate(0x02);
 	raw |= (tempMSB>>8)|(tempLSB>>8);
 	TC72_PORT &= ~(1<<TC72_CS);
 	spi_busStop();

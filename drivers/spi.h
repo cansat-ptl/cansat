@@ -11,8 +11,11 @@
 
 #include <avr/io.h>
 #include <stdint.h>
+#include <avr/common.h>
+#include <avr/interrupt.h>
+#include <avr/iom128.h>
 
-#define SPIDRV_VER "0.9.0-rc1"
+#define SPIDRV_VER "0.9.1-rc1"
 #define SPIDRV_TIMESTAMP __TIMESTAMP__
 
 #ifndef SPIconfig
@@ -44,8 +47,7 @@
 
 void spi_init();
 void spi_busSetup(uint8_t dord, uint8_t mode);
-void spi_write(uint8_t data);
-uint8_t spi_read(uint8_t data);
+uint8_t spi_communicate(uint8_t data);
 void spi_busStop();
 
 #endif /* SPI_H_ */
