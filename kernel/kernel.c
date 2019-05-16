@@ -29,8 +29,8 @@ inline uint8_t addTask(task t_ptr){
 		cli();
 	}
 	if(taskIndex < MAX_QUEUE_SIZE){
-		callIndex++;
 		callQueue[callIndex] = t_ptr;
+		callIndex++;
 		sei();
 		return 0;
 	}
@@ -40,15 +40,14 @@ inline uint8_t addTask(task t_ptr){
 	}
 }
 
-
 uint8_t addTimedTask(task t_ptr, uint8_t t_period){
 	if(SREG & (1 << 7)){
 		cli();
 	}
 	if(taskIndex < MAX_QUEUE_SIZE){
-		taskIndex++;
 		taskQueue[taskIndex].pointer = t_ptr;
 		taskQueue[taskIndex].period = t_period;
+		taskIndex++;
 		sei();
 		return 0;
 	}
