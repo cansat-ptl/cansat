@@ -44,7 +44,6 @@
  *  2 - 0b10 - CPOL=1, CPHA=0 - mode 2
  *	3 - 0b11 - CPOL=1, CPHA=1 - mode 3
  */
-
 void spi_init();
 void spi_busSetup(uint8_t dord, uint8_t mode);
 uint8_t spi_communicate(uint8_t data);

@@ -13,6 +13,9 @@
 #include <stdint.h>
 #include "../spi.h"
 
+#define ADXLDRV_VER "0.0.2-bleeding"
+#define ADXLDRV_TIMESTAMP __TIMESTAMP__
+
 #define ADXL345_PORT PORTA
 #define ADXL345_CS 0
 #define ADXL345_DEFAULT_DEVID 0x00

@@ -10,7 +10,8 @@ uint8_t adxl345_init(){
 	spi_busSetup(1, 3);
 	cli();
 	ADXL345_PORT |= (1<<ADXL345_CS);
-	uint8_t devid = spi_communicate(ADXL345_REG_DEVID);
+	spi_communicate(ADXL345_REG_DEVID);
+	uint8_t devid = spi_communicate(0xFF);
 	if(devid != ADXL345_DEFAULT_DEVID){
 		ADXL345_PORT &= ~(1<<ADXL345_CS);
 		spi_busStop();
@@ -31,8 +32,10 @@ int16_t adxl345_readX(){
 	spi_busSetup(1, 3);
 	cli();
 	ADXL345_PORT |= (1<<ADXL345_CS);
-	int16_t x0 = spi_communicate(ADXL345_REG_X0);
-	int16_t x1 = spi_communicate(ADXL345_REG_X1);
+	spi_communicate(ADXL345_REG_X0);
+	int16_t x0 = spi_communicate(0xFF);
+	spi_communicate(ADXL345_REG_X1);
+	int16_t x1 = spi_communicate(0xFF);
 	ADXL345_PORT &= ~(1<<ADXL345_CS);
 	sei();
 	spi_busStop();
@@ -45,8 +48,10 @@ int16_t adxl345_readY(){
 	spi_busSetup(1, 3);
 	cli();
 	ADXL345_PORT |= (1<<ADXL345_CS);
-	int16_t y0 = spi_communicate(ADXL345_REG_Y0);
-	int16_t y1 = spi_communicate(ADXL345_REG_Y1);
+	spi_communicate(ADXL345_REG_Y0);
+	int16_t y0 = spi_communicate(0xFF);
+	spi_communicate(ADXL345_REG_Y1);
+	int16_t y1 = spi_communicate(0xFF);
 	ADXL345_PORT &= ~(1<<ADXL345_CS);
 	sei();
 	spi_busStop();
@@ -59,8 +64,10 @@ int16_t adxl345_readZ(){
 	spi_busSetup(1, 3);
 	cli();
 	ADXL345_PORT |= (1<<ADXL345_CS);
-	int16_t z0 = spi_communicate(ADXL345_REG_Z0);
-	int16_t z1 = spi_communicate(ADXL345_REG_Z1);
+	spi_communicate(ADXL345_REG_Z0);
+	int16_t z0 = spi_communicate(0xFF);
+	spi_communicate(ADXL345_REG_Z1);
+	int16_t z1 = spi_communicate(0xFF);
 	ADXL345_PORT &= ~(1<<ADXL345_CS);
 	sei();
 	spi_busStop();
