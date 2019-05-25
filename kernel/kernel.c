@@ -99,43 +99,43 @@ void debugMessage(char* msg){
 }
 
 inline uint8_t addTask(task t_ptr){
-	if(SREG & (1 << 7)){
-		cli();
+	if(statusReg & (1 << 7)){
+		disableInterrupts();
 	}
 	if(taskIndex < MAX_QUEUE_SIZE){
 		callQueue[callIndex] = t_ptr;
 		callIndex++;
-		sei();
+		enableInterrupts();
 		return 0;
 	}
 	else {
-		sei();
+		enableInterrupts();
 		return ERR_QUEUE_OVERFLOW;
 	}
 }
 
 uint8_t addTimedTask(task t_ptr, uint8_t t_period){
-	if(SREG & (1 << 7)){
-		cli();
+	if(statusReg & (1 << 7)){
+		disableInterrupts();
 	}
 	if(taskIndex < MAX_QUEUE_SIZE){
 		taskQueue[taskIndex].pointer = t_ptr;
 		taskQueue[taskIndex].period = t_period;
 		taskIndex++;
-		sei();
+		enableInterrupts();
 		return 0;
 	}
 	else {
-		sei();
+		enableInterrupts();
 		return ERR_QUEUE_OVERFLOW;
 	}
-	sei();
+	enableInterrupts();
 }
 
 
 inline uint8_t removeTask(){
-	if(SREG & (1 << 7))
-		cli();
+	if(statusReg & (1 << 7))
+		disableInterrupts();
 	if(callIndex != 0){
 		callIndex--;
 		for(int i = 0; i < MAX_QUEUE_SIZE-1; i++){
@@ -146,13 +146,13 @@ inline uint8_t removeTask(){
 	else {
 		callQueue[0] = idle;
 	}
-	sei();
+	enableInterrupts();
 	return 0;
 }
 
 inline uint8_t removeTimedTask(uint8_t position){
-	if(SREG & (1 << 7))
-		cli();
+	if(statusReg & (1 << 7))
+		disableInterrupts();
 	taskIndex--;
 	taskQueue[position].pointer = idle;
 	taskQueue[position].period = 0;
@@ -162,34 +162,34 @@ inline uint8_t removeTimedTask(uint8_t position){
 	}
 	taskQueue[MAX_QUEUE_SIZE-1].pointer = idle;
 	taskQueue[MAX_QUEUE_SIZE-1].period = 0;	
-	sei();
+	enableInterrupts();
 	return 0;
 }
 
 void clearCallQueue(){
-	if(SREG & (1 << 7))
-		cli();
+	if(statusReg & (1 << 7))
+		disableInterrupts();
 	for(int i = 0; i < MAX_QUEUE_SIZE; i++){
 		callQueue[i] = 0;
 	}
 	callIndex = 0;
-	sei();
+	enableInterrupts();
 }
 
 void clearTaskQueue(){
-	if(SREG & (1 << 7))
-	cli();
+	if(statusReg & (1 << 7))
+	disableInterrupts();
 	for(int i = 0; i < MAX_QUEUE_SIZE; i++){
 		taskQueue[i].pointer = idle;
 		taskQueue[i].period = 0;
 	}
 	taskIndex = 0;
-	sei();
+	enableInterrupts();
 }
 
 inline void timerService(){
-	if(SREG & (1 << 7))
-		cli();
+	if(statusReg & (1 << 7))
+		disableInterrupts();
 	for(int i = 0; i < MAX_QUEUE_SIZE; i++){
 		if(taskQueue[i].pointer == idle) continue;
 		else {
@@ -201,16 +201,16 @@ inline void timerService(){
 			}
 		}
 	}
-	sei();
+	enableInterrupts();
 }
 
 void startTimer(){
-	cli();
+	disableInterrupts();
 	TCCR1B |= (1 << WGM12)|(1 << CS11)|(1 << CS10); //prescaler 64
 	TCNT1 = 0; 
 	OCR1A = 5000;
 	TIMSK |= (1 << OCIE1A);
-	sei();
+	enableInterrupts();
 }
 
 inline uint8_t taskManager(){
@@ -221,7 +221,9 @@ inline uint8_t taskManager(){
 
 uint8_t kernel(){
 	addTimedTask(init, 1);
-	debugMessage("[INIT]Kernel: starting task manager...DONE!\r\n");
+#ifdef DEBUG
+	debugMessage("[INFO]Kernel: starting task manager...DONE!\r\n");
+#endif
 	while(1){
 		taskManager();
 	}
@@ -233,10 +235,13 @@ uint8_t kernelInit(){
 		taskQueue[i].period = 0;
 		callQueue[i] = idle;
 	}
-	debugMessage("[INIT]Kernel: starting timer...");
+#ifdef DEBUG
+	debugMessage("[INFO]Kernel: starting timer...");
+#endif
 	startTimer();
+#ifdef DEBUG
 	debugMessage("DONE!\r\n");
-	
+#endif
 	kernel();
 	return 0;
 }

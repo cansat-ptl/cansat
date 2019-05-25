@@ -9,7 +9,7 @@
 #include "globals.h"
 
 void idle(){
-	asm volatile ("NOP");
+	nop();
 }
 
 void init(){
@@ -19,31 +19,43 @@ void init(){
 }
 
 void readData(){
-	debugMessage("[TASK]TaskMgr: Reading\r\n");
+#ifdef DEBUG
+	debugMessage("[INFO]TaskMgr: Reading\r\n");
+#endif
 	addTimedTask(process, 50);
 }
 
 void formPacket(){
-	debugMessage("[TASK]TaskMgr: Forming packet\r\n");
+#ifdef DEBUG
+	debugMessage("[INFO]TaskMgr: Forming packet\r\n");
+#endif
 }
 
 void repeatedTask(){
-	debugMessage("[TASK]TaskMgr: Doing something\r\n");
+#ifdef DEBUG
+	debugMessage("[INFO]TaskMgr: Doing something\r\n");
+#endif
 	addTimedTask(repeatedTask, 5);
 }
 
 void repeatedTask1(){
-	debugMessage("[TASK]TaskMgr: Doing something 2\r\n");
+#ifdef DEBUG
+	debugMessage("[INFO]TaskMgr: Doing something 2\r\n");
+#endif
 	addTimedTask(repeatedTask1, 5);
 }
 void process(){
-	debugMessage("[TASK]TaskMgr: Processing\r\n");
+#ifdef DEBUG
+	debugMessage("[INFO]TaskMgr: Processing\r\n");
+#endif
 	addTimedTask(formPacket, 25);
 	addTimedTask(sendData, 45);
 }
 
 void sendData(){
-	debugMessage("[TASK]TaskMgr: Transmitting\r\n");
+#ifdef DEBUG
+	debugMessage("[INFO]TaskMgr: Transmitting\r\n");
+#endif
 	addTimedTask(readData, 100);
 }
 

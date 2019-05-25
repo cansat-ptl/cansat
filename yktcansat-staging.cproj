@@ -144,6 +144,9 @@
     <Compile Include="kernel\globals.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="kernel\hal.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="kernel\kernel.c">
       <SubType>compile</SubType>
     </Compile>

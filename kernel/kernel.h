@@ -20,6 +20,7 @@
 
 #include "types.h"
 #include "drivers.h"
+#include "hal.h"
 #include <avr/common.h>
 #include <avr/interrupt.h>
 #include <avr/iom128.h>
