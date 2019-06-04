@@ -15,12 +15,12 @@ int main(void){
 	//tc72_init();
 	sei();
 	sprintf(msg, "[INIT]Main: starting up\r\n");
-	debugMessage(msg);
+	logMessage(msg, 1);
 	sprintf(msg, "[INIT]Main: using kernel version %s built %s\r\n", KERNEL_VER, KERNEL_TIMESTAMP);
-	debugMessage(msg);
+	logMessage(msg, 1);
 	sprintf(msg, "[INIT]Main: using UART driver version %s built %s\r\n", UARTDRV_VER, UARTDRV_TIMESTAMP);
-	debugMessage(msg);
+	logMessage(msg, 1);
 	sprintf(msg, "[INIT]Main: using SPI driver version %s built %s\r\n", SPIDRV_VER, SPIDRV_TIMESTAMP);
-	debugMessage(msg);
+	logMessage(msg, 1);
 	kernelInit();
 }

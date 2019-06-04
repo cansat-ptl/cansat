@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Atmel Studio Solution File, Format Version 11.00
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "yktcansat-staging", "yktcansat-staging.cproj", "{1AF4ABF7-D6A0-4D1C-B10C-B027A14FD9CF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1AF4ABF7-D6A0-4D1C-B10C-B027A14FD9CF}.Debug|AVR.ActiveCfg = Debug|AVR
+		{1AF4ABF7-D6A0-4D1C-B10C-B027A14FD9CF}.Debug|AVR.Build.0 = Debug|AVR
+		{1AF4ABF7-D6A0-4D1C-B10C-B027A14FD9CF}.Release|AVR.ActiveCfg = Release|AVR
+		{1AF4ABF7-D6A0-4D1C-B10C-B027A14FD9CF}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -10,6 +10,8 @@
 
 #define F_CPU 8000000L						//CPU frequency
 
+//#define DEBUG 1
+
 //------------------------Project settings------------------------
 #include <avr/io.h>
 #include <string.h>
@@ -18,6 +20,7 @@
 #include "kernel/drivers.h"
 #include "kernel/kernel.h"
 #include "kernel/tasks.h"
+#include "kernel/debug.h"
 //----------------------------------------------------------------
 
 //-------------------------UART settings--------------------------

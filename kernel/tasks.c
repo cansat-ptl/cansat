@@ -4,46 +4,56 @@
  * Created: 11.05.2019 21:13:13
  *  Author: ThePetrovich
  */ 
-
 #include "tasks.h"
 #include "globals.h"
 
 void idle(){
-	asm volatile ("NOP");
+	nop();
 }
 
 void init(){
-	addTimedTask(readData, 100);
-	//addTimedTask(repeatedTask, 100);
-	//addTimedTask(repeatedTask1, 100);
+	logMessage("TaskMgr: Init task\r\n", 1);
+	enableInterrupts();
+	addTask(readData, 10);
+	//addTimedTask(repeatedTask1, 10);
 }
 
 void readData(){
-	debugMessage("[TASK]TaskMgr: Reading\r\n");
-	addTimedTask(process, 50);
+//#ifdef DEBUG
+	logMessage("TaskMgr: Reading\r\n", 1);
+	enableInterrupts();
+//#endif
+	addTask(process, 5);
 }
 
 void formPacket(){
-	debugMessage("[TASK]TaskMgr: Forming packet\r\n");
+//#ifdef DEBUG
+	logMessage("TaskMgr: Forming packet\r\n", 1);
+	enableInterrupts();
+//#endif
 }
 
 void repeatedTask(){
-	debugMessage("[TASK]TaskMgr: Doing something\r\n");
-	addTimedTask(repeatedTask, 5);
+	logMessage("TaskMgr: Doing something\r\n", 1);
+	enableInterrupts();
+	//addTimedTask(repeatedTask, 5);
 }
 
 void repeatedTask1(){
-	debugMessage("[TASK]TaskMgr: Doing something 2\r\n");
-	addTimedTask(repeatedTask1, 5);
+	logMessage("TaskMgr: Doing something 2\r\n", 1);
+	enableInterrupts();
+	addTask(repeatedTask1, 5);
 }
 void process(){
-	debugMessage("[TASK]TaskMgr: Processing\r\n");
-	addTimedTask(formPacket, 25);
-	addTimedTask(sendData, 45);
+	logMessage("TaskMgr: Processing\r\n", 1);
+	enableInterrupts();
+	addTask(formPacket, 2);
+	addTask(sendData, 4);
 }
 
 void sendData(){
-	debugMessage("[TASK]TaskMgr: Transmitting\r\n");
-	addTimedTask(readData, 100);
+	logMessage("TaskMgr: Transmitting\r\n", 1);
+	enableInterrupts();
+	addTask(readData, 1);
 }
 
