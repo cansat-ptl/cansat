@@ -149,6 +149,12 @@
     <Compile Include="drivers\devices\ds18b20.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="external\i2c\i2c_master.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="external\i2c\i2c_master.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="external\pff3a\diskio.c">
       <SubType>compile</SubType>
     </Compile>
@@ -219,6 +225,7 @@
   <ItemGroup>
     <Folder Include="drivers" />
     <Folder Include="drivers\devices" />
+    <Folder Include="external\i2c" />
     <Folder Include="external\pff3a" />
     <Folder Include="kernel" />
     <Folder Include="external" />
