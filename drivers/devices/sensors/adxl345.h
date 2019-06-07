@@ -11,9 +11,9 @@
 
 #include <avr/io.h>
 #include <stdint.h>
-#include "../spi.h"
+#include "../../spi.h"
 
-#define ADXLDRV_VER "0.0.2-bleeding"
+#define ADXLDRV_VER "0.0.3-bleeding"
 #define ADXLDRV_TIMESTAMP __TIMESTAMP__
 
 #define ADXL345_PORT PORTA
@@ -31,6 +31,7 @@
 #define ADXL345_REG_Z0 0x36
 #define ADXL345_REG_Z1 0x37
 
+#define ERR_ADXL_DEVID_MISMATCH 1
 
 uint8_t	adxl345_init();
 int16_t adxl345_readX();
