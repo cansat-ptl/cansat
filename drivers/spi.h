@@ -70,6 +70,8 @@ uint8_t spi_write(uint8_t data);
 void spi_writeRegister(uint8_t address, uint8_t data);
 uint8_t spi_readRegister(uint8_t address, uint8_t isDelayed);
 void spi_transfer(uint8_t type, uint8_t address, uint8_t * data, uint8_t size);
+uint8_t spi_simpleRead();
+void spi_simpleWrite(uint8_t data);
 void spi_busStop();
 
 #endif /* SPI_H_ */

@@ -4,10 +4,6 @@
  * Created: 07.06.2019 23:15:20
  *  Author: Admin
  */ 
-//Made by g4lvanix
-//https://github.com/g4lvanix/I2C-master-lib
-
-
 #include "twi.h"
 
 void twi_init(){
