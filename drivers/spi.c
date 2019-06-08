@@ -27,10 +27,10 @@ uint8_t spi_write(uint8_t data){
 	return response;
 }
 
-void spi_writeRegister(uint8_t address, uint8_t data){
+void spi_writeRegister(uint8_t address, uint8_t data, uint8_t mask){
 	SPI_PORT &= ~(1<<SPI_SS);
 	
-	SPDR = (address | 0x80);
+	SPDR = (address | mask);
 	while(!(SPSR & (1<<SPIF)));
 	
 	SPDR = data;
@@ -57,13 +57,13 @@ uint8_t spi_readRegister(uint8_t address, uint8_t isDelayed){
 	return response;
 }
 
-void spi_transfer(uint8_t type, uint8_t address, uint8_t * data, uint8_t size){
+void spi_transfer(uint8_t type, uint8_t address, uint8_t * data, uint8_t size, uint8_t mask){
 	SPI_PORT &= ~(1<<SPI_SS);
 	
 	if(type == SPI_WRITE)
-		SPDR = (address | 0x80);
+		SPDR = (address | mask);
 	else
-		SPDR = (address & ~0x80);
+		SPDR = (address & ~mask);
 	
 	for(int i = 0; i < size; i++){
 		SPDR = data[i];

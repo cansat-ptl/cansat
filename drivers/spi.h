@@ -15,7 +15,7 @@
 #include <avr/interrupt.h>
 #include <avr/iom128.h>
 
-#define SPIDRV_VER "0.9.3-rc2"
+#define SPIDRV_VER "0.9.5-rc3"
 #define SPIDRV_TIMESTAMP __TIMESTAMP__
 
 #ifndef SPIconfig
@@ -67,9 +67,9 @@
 void spi_init();
 void spi_busSetup(uint8_t speed, uint8_t dord, uint8_t mode, uint8_t spi2x);
 uint8_t spi_write(uint8_t data);
-void spi_writeRegister(uint8_t address, uint8_t data);
+void spi_writeRegister(uint8_t address, uint8_t data, uint8_t mask);
 uint8_t spi_readRegister(uint8_t address, uint8_t isDelayed);
-void spi_transfer(uint8_t type, uint8_t address, uint8_t * data, uint8_t size);
+void spi_transfer(uint8_t type, uint8_t address, uint8_t * data, uint8_t size, uint8_t mask);
 uint8_t spi_simpleRead();
 void spi_simpleWrite(uint8_t data);
 void spi_busStop();
