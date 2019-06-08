@@ -21,18 +21,18 @@ void nrf24_setupTx(){
 	spi_writeRegister(NRF_STATUS_REG, 0x30, 0x20);
 	
 	uint8_t buffer[5];
-	buffer[0] = 0x34;
-	buffer[1] = 0x43;
-	buffer[2] = 0x10;
-	buffer[3] = 0x10;
+	buffer[0] = 0xE7;
+	buffer[1] = 0xE7;
+	buffer[2] = 0xE7;
+	buffer[3] = 0xE7;
 	buffer[4] = 0x01;
 	spi_transfer(SPI_WRITE, NRF_TX_REG, buffer, 5, 0x20);
 	
-	buffer[0] = 0x34;
-	buffer[1] = 0x43;
-	buffer[2] = 0x10;
-	buffer[3] = 0x10;
-	buffer[4] = 0x01;
+	buffer[0] = 0xE7;
+	buffer[1] = 0xE7;
+	buffer[2] = 0xE7;
+	buffer[3] = 0xE7;
+	buffer[4] = 0x00;
 	spi_transfer(SPI_WRITE, NRF_RX_REG_P0, buffer, 5, 0x20);
 	
 	spi_writeRegister(NRF_AA_REG, 0x01, 0x20);
