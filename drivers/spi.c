@@ -13,18 +13,15 @@ void spi_init(){
 	SPSR = (0<<SPI2X);	
 }
 
-uint8_t spi_write(uint8_t data){
-	uint8_t response;
-	
+uint8_t spi_write(uint8_t data){	
 	SPI_PORT &= ~(1<<SPI_SS);
 	SPDR = data;
 	
 	while(!(SPSR & (1<<SPIF)));
-	response = SPDR;
 	
 	SPI_PORT |= (1<<SPI_SS);
 	
-	return response;
+	return SPDR;
 }
 
 void spi_writeRegister(uint8_t address, uint8_t data, uint8_t mask){
@@ -40,8 +37,6 @@ void spi_writeRegister(uint8_t address, uint8_t data, uint8_t mask){
 }
 
 uint8_t spi_readRegister(uint8_t address, uint8_t isDelayed){
-	uint8_t response;
-	
 	SPI_PORT &= ~(1<<SPI_SS);
 	SPDR = (address & ~0x80);
 	while(!(SPSR & (1<<SPIF)));
@@ -51,10 +46,9 @@ uint8_t spi_readRegister(uint8_t address, uint8_t isDelayed){
 		while(!(SPSR & (1<<SPIF)));
 	}
 	
-	response = SPDR;
 	SPI_PORT |= (1<<SPI_SS);
 	
-	return response;
+	return SPDR;
 }
 
 void spi_transfer(uint8_t type, uint8_t address, uint8_t * data, uint8_t size, uint8_t mask){
@@ -89,12 +83,10 @@ void spi_simpleWrite(uint8_t data){
 	SPDR = data;
 	while(!(SPSR & (1<<SPIF)));
 }
-uint8_t spi_simpleRead(){
-	uint8_t response;
-	SPDR = 0xFF;
+uint8_t spi_simpleRead(uint8_t filler){
+	SPDR = filler;
 	while(!(SPSR & (1<<SPIF)));
-	response = SPDR;
-	return response;
+	return SPDR;
 }
 
 void spi_busStop(){

@@ -37,7 +37,7 @@ extern volatile int rx0_pointer;
 extern volatile char *tx0_data;
 extern volatile int tx0_pointer;
 
-extern volatile char rx1_buffer[32];
+extern volatile char rx1_buffer[128];
 extern volatile int rx1_pointer;
 extern volatile char *tx1_data;
 extern volatile int tx1_pointer;

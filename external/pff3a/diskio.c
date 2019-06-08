@@ -26,7 +26,7 @@
 #define init_spi()  spi_busSetup(SPI_PRESCALER_4, MSBFIRST, SPI_MODE0, SPI_1X) 	/* Initialize SPI port (usi.S) */
 #define dly_100us() _delay_us(100)	/* Delay 100 microseconds (usi.S) */
 #define xmit_spi(d) spi_simpleWrite(d) /* Send a byte to the MMC (usi.S) */
-#define rcv_spi()	spi_simpleRead()   /* Send a 0xFF to the MMC and get the received byte (usi.S) */
+#define rcv_spi()	spi_simpleRead(0xFF)   /* Send a 0xFF to the MMC and get the received byte (usi.S) */
 
 
 

@@ -19,7 +19,7 @@ volatile int tx0_size = 0;
 volatile unsigned char creg0 = 0;
 volatile unsigned char creg1 = 0;
 	
-volatile char rx1_buffer[32] = "";
+volatile char rx1_buffer[128] = "";
 volatile char tx1_buffer[128] = "";
 volatile int rx1_pointer = 0;
 volatile char *tx1_data;

@@ -32,7 +32,7 @@ extern volatile int tx0_size;
 extern volatile unsigned char creg0;
 extern volatile unsigned char creg1;
 
-extern volatile char rx1_buffer[32];
+extern volatile char rx1_buffer[128];
 extern volatile char tx1_buffer[128];
 extern volatile int rx1_pointer;
 extern volatile char *tx1_data;
