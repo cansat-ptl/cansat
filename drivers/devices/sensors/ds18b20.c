@@ -2,7 +2,7 @@
  * ds18b20.c
  *
  * Created: 17.05.2019 17:58:11
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
 #include "ds18b20.h"
 

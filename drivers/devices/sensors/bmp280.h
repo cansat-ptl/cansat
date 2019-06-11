@@ -2,7 +2,7 @@
  * bmp280.h
  *
  * Created: 08.06.2019 22:31:45
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
 
 

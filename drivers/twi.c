@@ -2,7 +2,7 @@
  * twi.c
  *
  * Created: 07.06.2019 23:15:20
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
 #include "twi.h"
 

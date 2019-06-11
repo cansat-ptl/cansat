@@ -2,7 +2,7 @@
  * hal.h
  *
  * Created: 25.05.2019 20:44:34
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
 
 

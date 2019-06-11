@@ -2,7 +2,7 @@
  * twi.h
  *
  * Created: 07.06.2019 23:15:11
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
 #ifndef TWI_H_
 #define TWI_H_
@@ -15,7 +15,7 @@
 
 //Fix compile error by supplying a default F_CPU value
 #ifndef F_CPU
-#warning "F_CPU is not defined until twi.h"
+//#warning "F_CPU is not defined until twi.h"
 #define F_CPU 8000000L
 #endif
 //TWI predefines

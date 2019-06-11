@@ -2,7 +2,7 @@
  * ds18b20.h
  *
  * Created: 17.05.2019 17:58:22
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
 
 

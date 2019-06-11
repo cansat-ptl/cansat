@@ -2,7 +2,7 @@
  * nmea_process.c
  *
  * Created: 09.06.2019 0:38:03
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
 /*void nmea_process(){
 	for(int i = 0; i < rx1_pointer; i++){

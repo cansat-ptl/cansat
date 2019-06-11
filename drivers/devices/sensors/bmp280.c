@@ -2,7 +2,7 @@
  * bmp280.c
  *
  * Created: 08.06.2019 22:31:31
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
 #include "bmp280.h"
 

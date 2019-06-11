@@ -191,6 +191,12 @@
     <Compile Include="external\pff3a\pffconf.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="external\pololu-driver\imuv3.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="external\pololu-driver\imuv3.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="kernel\debug.c">
       <SubType>compile</SubType>
     </Compile>
@@ -245,6 +251,7 @@
     <Folder Include="drivers\devices" />
     <Folder Include="drivers\devices\sensors" />
     <Folder Include="drivers\devices\radio" />
+    <Folder Include="external\pololu-driver" />
     <Folder Include="external\nmea" />
     <Folder Include="external\pff3a" />
     <Folder Include="kernel" />

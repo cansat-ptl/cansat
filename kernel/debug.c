@@ -2,7 +2,7 @@
  * debug.c
  *
  * Created: 02.06.2019 20:53:16
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
 #include "debug.h"
 #include "globals.h"

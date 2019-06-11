@@ -2,7 +2,7 @@
  * debug.h
  *
  * Created: 02.06.2019 21:16:49
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
 
 

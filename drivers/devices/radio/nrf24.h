@@ -2,7 +2,7 @@
  * nrf24.h
  *
  * Created: 07.06.2019 23:14:48
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
 
 
