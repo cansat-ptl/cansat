@@ -24,10 +24,13 @@ uint8_t spi_write(uint8_t data){
 	return SPDR;
 }
 
-void spi_writeRegister(uint8_t address, uint8_t data, uint8_t mask){
+void spi_writeRegister(uint8_t address, uint8_t data, uint8_t mask, uint8_t isInverted){
 	SPI_PORT &= ~(1<<SPI_SS);
 	
-	SPDR = (address | mask);
+	if(isInverted)
+		SPDR = (address & ~mask);
+	else
+		SPDR = (address | mask);	
 	while(!(SPSR & (1<<SPIF)));
 	
 	SPDR = data;
@@ -36,9 +39,13 @@ void spi_writeRegister(uint8_t address, uint8_t data, uint8_t mask){
 	SPI_PORT |= (1<<SPI_SS);
 }
 
-uint8_t spi_readRegister(uint8_t address, uint8_t isDelayed){
+uint8_t spi_readRegister(uint8_t address, uint8_t isDelayed, uint8_t isInverted){
 	SPI_PORT &= ~(1<<SPI_SS);
-	SPDR = (address & ~0x80);
+	
+	if(isInverted)
+		SPDR = (address & ~0x80);
+	else
+		SPDR = (address | 0x80);
 	while(!(SPSR & (1<<SPIF)));
 	
 	if(isDelayed){
