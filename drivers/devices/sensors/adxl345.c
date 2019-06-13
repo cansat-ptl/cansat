@@ -25,7 +25,7 @@ uint8_t adxl345_init(){
 	return 0;
 }
 
-int16_t adxl345_readX(){
+float adxl345_readX(){
 	spi_busSetup(SPI_PRESCALER_4, LSBFIRST, SPI_MODE3, SPI_1X);
 	cli();
 	ADXL345_PORT |= (1<<ADXL345_CS);
@@ -36,10 +36,10 @@ int16_t adxl345_readX(){
 	spi_busStop();
 	x1 = x1 << 8;
 	x1 += x0;
-	return ((float)x1/32.0)*10;
+	return ((float)x1/32.0);
 }
 
-int16_t adxl345_readY(){
+float adxl345_readY(){
 	spi_busSetup(SPI_PRESCALER_4, LSBFIRST, SPI_MODE3, SPI_1X);
 	cli();
 	ADXL345_PORT |= (1<<ADXL345_CS);
@@ -53,7 +53,7 @@ int16_t adxl345_readY(){
 	return ((float)y1/32.0)*10;
 }
 
-int16_t adxl345_readZ(){
+float adxl345_readZ(){
 	spi_busSetup(SPI_PRESCALER_4, LSBFIRST, SPI_MODE3, SPI_1X);
 	cli();
 	ADXL345_PORT |= (1<<ADXL345_CS);
