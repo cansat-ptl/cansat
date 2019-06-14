@@ -43,8 +43,8 @@
 #define SPI_MODE2 2
 #define SPI_MODE3 3
 //SPI bit order predefines
-#define MSBFIRST 1
-#define LSBFIRST 0
+#define MSBFIRST 0
+#define LSBFIRST 1
 //SPI speed predefines
 #define SPI_PRESCALER_4 0
 #define SPI_PRESCALER_16 1
