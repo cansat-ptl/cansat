@@ -41,15 +41,18 @@ void nrf24_setupTx(){
 	spi_writeRegister(NRF_CH_REG, 40, 0x20);
 	spi_writeRegister(NRF_RFSET_REG, 0x0F, 0x20);
 	spi_writeRegister(NRF_CONFIG_REG, 0x0E, 0x20);
+	NRF_CSN_PORT |= (1 << NRF_CSN);
 	spi_busStop();
 }
 
 void nrf24_transmit(char * data, uint8_t size){
 	spi_busSetup(SPI_PRESCALER_4, MSBFIRST, SPI_MODE0, SPI_1X);
+	NRF_CSN_PORT &= ~(1 << NRF_CSN);
 	spi_transfer(SPI_WRITE, NRF_TX_UPLOAD, (uint8_t *)data, size-1, 0x00);
 	_delay_ms(2);
 	NRF_CE_PORT |= (1 << NRF_CE);
 	_delay_ms(1);
 	NRF_CE_PORT &= ~(1 << NRF_CE);
+	NRF_CSN_PORT |= (1 << NRF_CSN);
 	spi_busStop();
 }
