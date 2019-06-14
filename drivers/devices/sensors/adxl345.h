@@ -34,8 +34,8 @@
 #define ERR_ADXL_DEVID_MISMATCH 1
 
 uint8_t	adxl345_init();
-int16_t adxl345_readX();
-int16_t adxl345_readY();
-int16_t adxl345_readZ();
+float adxl345_readX();
+float adxl345_readY();
+float adxl345_readZ();
 
 #endif /* ADXL345_H_ */

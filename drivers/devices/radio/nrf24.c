@@ -19,7 +19,7 @@ void nrf24_setupTx(){
 	NRF_CSN_PORT &= ~(1 << NRF_CSN);
 	
 	spi_write(NRF_FLUSH);
-	spi_writeRegister(NRF_STATUS_REG, 0x30, 0x20);
+	spi_writeRegister(NRF_STATUS_REG, 0x30, 0x20, 1);
 	
 	uint8_t buffer[5];
 	buffer[0] = 0xE7;
@@ -36,12 +36,20 @@ void nrf24_setupTx(){
 	buffer[4] = 0x00;
 	spi_transfer(SPI_WRITE, NRF_RX_REG_P0, buffer, 5, 0x20);
 	
+<<<<<<< HEAD
 	spi_writeRegister(NRF_AA_REG, 0x01, 0x20);
 	spi_writeRegister(NRF_RXADDR_REG, 0x01, 0x20);
 	spi_writeRegister(NRF_CH_REG, 40, 0x20);
 	spi_writeRegister(NRF_RFSET_REG, 0x0F, 0x20);
 	spi_writeRegister(NRF_CONFIG_REG, 0x0E, 0x20);
 	NRF_CSN_PORT |= (1 << NRF_CSN);
+=======
+	spi_writeRegister(NRF_AA_REG, 0x01, 0x20, 1);
+	spi_writeRegister(NRF_RXADDR_REG, 0x01, 0x20, 1);
+	spi_writeRegister(NRF_CH_REG, 40, 0x20, 1);
+	spi_writeRegister(NRF_RFSET_REG, 0x0F, 0x20, 1);
+	spi_writeRegister(NRF_CONFIG_REG, 0x0E, 0x20, 1);
+>>>>>>> 42a6c9e7e92a0e6997b829f3bda8b39e4483ca9e
 	spi_busStop();
 }
 
