@@ -30,10 +30,12 @@
 #define DS_CMD_SKIPROM 0xCC
 #define DS_CMD_ALARMSEARCH 0xEC
 
+#ifndef DS18B20config
 #define DS18B20_PORT PORTA
 #define DS18B20_DDR DDRA
 #define DS18B20_PIN PINA
-#define DS18B20_IO 1
+#define DS18B20_IO PA1
+#endif
 
 #define DS_RESOLUTION_12BIT 625
 

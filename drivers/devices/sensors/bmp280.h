@@ -14,9 +14,11 @@
 #include "../../spi.h"
 #include <math.h>
 
+#ifndef BMP280config
 #define BMP280_PORT PORTA
 #define BMP280_DDR DDRA
-#define BMP280_CS 7
+#define BMP280_CS PA7
+#endif
 
 #define BMP280_REG_DIG_T1 0x88
 #define BMP280_REG_DIG_T2 0x8A

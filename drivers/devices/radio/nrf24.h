@@ -12,12 +12,19 @@
 #include "../../spi.h"
 #include <util/delay.h>
 
+#ifndef NRF24config
 #define NRF_CE_PORT PORTA
 #define NRF_CSN_PORT PORTA
 #define NRF_CE_DDR DDRA
 #define NRF_CSN_DDR DDRA
-#define NRF_CE 5
-#define NRF_CSN 6
+#define NRF_CE PA5
+#define NRF_CSN PA6
+#define NRF24_CONFIG 0x0E
+#define NRF24_CHANNEL 40
+#define NRF24_RFSET 0x0F
+#define NRF24_AA_EN 0x01
+#define NRF24_RXADDR 0x01
+#endif
 
 #define NRF_TX_UPLOAD 0xA0
 #define NRF_FLUSH 0xE1

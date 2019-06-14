@@ -12,18 +12,18 @@
 
 //#define DEBUG 1
 
-//------------------------Project settings------------------------
+//------------------------Project-settings------------------------
 #include <avr/io.h>
 #include <string.h>
 #include <stdio.h>
 #include <util/delay.h>
 #include "kernel/drivers.h"
 #include "kernel/kernel.h"
-#include "kernel/tasks.h"
+#include "tasks/tasks.h"
 #include "kernel/debug.h"
 //----------------------------------------------------------------
 
-//-------------------------UART settings--------------------------
+//-------------------------UART-settings--------------------------
 #define UARTconfig
 #define BAUD 9600							//UART baud rate
 #define UBRRVAL ((F_CPU/(16*BAUD)) - 1)		//UBBR value
@@ -37,7 +37,7 @@
 #define TX1IE 0								//TX0 byte transmit interrupt enable
 //----------------------------------------------------------------
 
-//-------------------------SPI settings---------------------------
+//-------------------------SPI-settings---------------------------
 #define SPIconfig
 //SPI module port registers
 #define SPI_PORT PORTB
@@ -58,7 +58,47 @@
 #define SPISPDH 0		//SPR1 bit of SPCR
 //----------------------------------------------------------------
 
-//-----------------------Kernel settings--------------------------
+//-----------------------Device-settings--------------------------
+#define NRF24config
+//NRF24 pin config
+#define NRF_CE_PORT PORTA
+#define NRF_CSN_PORT PORTA
+#define NRF_CE_DDR DDRA
+#define NRF_CSN_DDR DDRA
+#define NRF_CE PA5
+#define NRF_CSN PA6
+//NRF24 register config
+#define NRF24_CONFIG 0x0E //something
+#define NRF24_CHANNEL 40 //channel, calculated from (DEST_FREQ - 2400), e.g. 2440 - 2400 = 40
+#define NRF24_RFSET 0x0F //RF power
+#define NRF24_AA_EN 0x01 //Auto ack enable
+#define NRF24_RXADDR 0x01 //Destination address
+
+#define ADXL345config
+//ADXL345 pin config
+#define ADXL345_PORT PORTA
+#define ADXL345_DDR DDRA
+#define ADXL345_CS PA0
+//ADXL345 register config
+#define ADXL345_VALUE_POWERCTL 0x08 //main power control register, set to continuous measurement
+#define ADXL345_VALUE_FORMAT 0x03 //data format register, set to 16g low accuracy
+
+
+#define BMP280config
+//BMP280 pin config
+#define BMP280_PORT PORTA
+#define BMP280_DDR DDRA
+#define BMP280_CS PA7
+
+#define DS18B20config
+//DS18B20 pin config
+#define DS18B20_PORT PORTA
+#define DS18B20_DDR DDRA
+#define DS18B20_PIN PINA
+#define DS18B20_IO PA1
+//----------------------------------------------------------------
+
+//-----------------------Kernel-settings--------------------------
 #define MAX_QUEUE_SIZE 16
 #define ERR_QUEUE_OVERFLOW 1
 #define ERR_QUEUE_END 2

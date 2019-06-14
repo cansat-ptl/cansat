@@ -218,12 +218,6 @@
     <Compile Include="kernel\kernel.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="kernel\tasks.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="kernel\tasks.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="kernel\types.h">
       <SubType>compile</SubType>
     </Compile>
@@ -242,7 +236,16 @@
     <Compile Include="drivers\uart.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="tasks\autotest.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="tasks\init.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="tasks\nmea_process.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="tasks\tasks.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

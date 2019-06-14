@@ -23,6 +23,7 @@
 #include "drivers.h"
 #include "hal.h"
 #include "debug.h"
+#include "../tasks/tasks.h"
 #include <avr/common.h>
 #include <avr/interrupt.h>
 #include <avr/iom128.h>
@@ -30,15 +31,16 @@
 #include <string.h>
 #include <stdio.h>
 
-uint8_t addCall(task t_ptr);
-uint8_t addTask(task t_ptr, uint8_t t_period);
-uint8_t removeCall();
-uint8_t removeTask(uint8_t position);
-void clearTaskQueue();
-void clearCallQueue();
+uint8_t kernel_addCall(task t_ptr);
+uint8_t kernel_addTask(task t_ptr, uint8_t t_period);
+uint8_t kernel_removeCall();
+uint8_t kernel_removeTask(uint8_t position);
+void kernel_clearTaskQueue();
+void kernel_clearCallQueue();
 
 uint8_t kernelInit();
-uint8_t kernel();
-void timerService();
+
+void kernel_stopTimer();
+void kernel_startTimer();
 
 #endif /* KERNEL_H_ */

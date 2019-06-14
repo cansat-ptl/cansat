@@ -14,6 +14,7 @@
 #define MAX_QUEUE_SIZE 16
 
 extern uint8_t callIndex;
+extern volatile uint16_t kflags; 
 extern volatile uint8_t taskIndex;
 extern volatile task callQueue[MAX_QUEUE_SIZE];
 struct taskStruct {

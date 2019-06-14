@@ -22,5 +22,10 @@ int main(void){
 	logMessage(msg, 1);
 	sprintf(msg, "[INIT]Main: using SPI driver version %s built %s\r\n", SPIDRV_VER, SPIDRV_TIMESTAMP);
 	logMessage(msg, 1);
+	
+	adxl345_test();
+	bmp280_test();
+	ds18b20_test();
+	
 	kernelInit();
 }

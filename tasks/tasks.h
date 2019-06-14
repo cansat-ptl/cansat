@@ -11,15 +11,17 @@
 
 #include <string.h>
 #include <stdio.h>
-#include "kernel.h"
+#include "../kernel/kernel.h"
 
-void idle();
+inline void idle();
+
+inline void idle(){
+	nop();
+}
+
 void init();
-void readData();
-void formPacket();
-void process();
-void sendData();
-void repeatedTask();
-void repeatedTask1();
+void adxl345_test();
+void bmp280_test();
+void ds18b20_test();
 
 #endif /* TASKS_H_ */

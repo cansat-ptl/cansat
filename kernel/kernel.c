@@ -83,6 +83,7 @@
 	"POP    R0\n\t"::)
 
 uint8_t callIndex = 0; //Index of the last task in queue
+volatile uint16_t kflags = 0; 
 volatile uint8_t taskIndex = 0; //Index of the last task in queue
 volatile task callQueue[MAX_QUEUE_SIZE];
 volatile struct taskStruct taskQueue[MAX_QUEUE_SIZE];
@@ -90,7 +91,7 @@ volatile struct taskStruct taskQueue[MAX_QUEUE_SIZE];
 void idle(); //System idle task, MUST me declared in tasks.c
 void init(); //System init task, MUST me declared in tasks.c
 
-inline uint8_t addCall(task t_ptr){
+inline uint8_t kernel_addCall(task t_ptr){
 	#ifdef DEBUG
 		logMessage("Kernel: added call to queue\r\n", 1);
 	#endif
@@ -110,7 +111,7 @@ inline uint8_t addCall(task t_ptr){
 	}
 }
 
-uint8_t addTask(task t_ptr, uint8_t t_period){
+uint8_t kernel_addTask(task t_ptr, uint8_t t_period){
 	#ifdef DEBUG
 		logMessage("Kernel: added timed task to queue\r\n", 1);
 	#endif
@@ -133,7 +134,7 @@ uint8_t addTask(task t_ptr, uint8_t t_period){
 }
 
 
-inline uint8_t removeCall(){
+inline uint8_t kernel_removeCall(){
 	if(statusReg & (1 << 7))
 		disableInterrupts();
 	if(callIndex != 0){
@@ -150,7 +151,7 @@ inline uint8_t removeCall(){
 	return 0;
 }
 
-inline uint8_t removeTask(uint8_t position){
+inline uint8_t kernel_removeTask(uint8_t position){
 	if(statusReg & (1 << 7))
 		disableInterrupts();
 	taskIndex--;
@@ -166,7 +167,7 @@ inline uint8_t removeTask(uint8_t position){
 	return 0;
 }
 
-void clearCallQueue(){
+void kernel_clearCallQueue(){
 	logMessage("Kernel: call queue cleared\r\n", 2);
 	if(statusReg & (1 << 7))
 		disableInterrupts();
@@ -177,7 +178,7 @@ void clearCallQueue(){
 	enableInterrupts();
 }
 
-void clearTaskQueue(){
+void kernel_clearTaskQueue(){
 	logMessage("Kernel: task queue cleared\r\n", 2);
 	if(statusReg & (1 << 7))
 	disableInterrupts();
@@ -189,7 +190,7 @@ void clearTaskQueue(){
 	enableInterrupts();
 }
 
-inline void timerService(){
+inline void kernel_timerService(){
 	if(statusReg & (1 << 7))
 		disableInterrupts();
 	for(int i = 0; i < MAX_QUEUE_SIZE; i++){
@@ -198,51 +199,63 @@ inline void timerService(){
 			if(taskQueue[i].period != 0)
 				taskQueue[i].period--;
 			else {
-				addCall(taskQueue[i].pointer);
-				removeTask(i);
+				kernel_addCall(taskQueue[i].pointer);
+				kernel_removeTask(i);
 			}
 		}
 	}
 	enableInterrupts();
 }
 
-void startTimer(){
+void kernel_setupTimer(){
 	logMessage("DONE!\r\n", 0);
 	disableInterrupts();
 	TCCR1B |= (1 << WGM12)|(1 << CS11)|(1 << CS10); //prescaler 64
 	TCNT1 = 0; 
 	OCR1A = 5000;
+	enableInterrupts();
+}
+
+void kernel_startTimer(){
+	disableInterrupts();
 	TIMSK |= (1 << OCIE1A);
 	enableInterrupts();
 }
 
-inline uint8_t taskManager(){
+void kernel_stopTimer(){
+	disableInterrupts();
+	TIMSK &= ~(1 << OCIE1A);
+	enableInterrupts();
+}
+
+inline uint8_t kernel_taskManager(){
 	(callQueue[0])();
-	uint8_t code = removeCall();
+	uint8_t code = kernel_removeCall();
 	enableInterrupts();
 	return code;
 }
 
 uint8_t kernel(){
 	logMessage("DONE!\r\n", 0);
-	addTask(init, 1);
+	kernel_addTask(init, 1);
 	logMessage("Kernel: starting task manager...DONE!\r\n", 1);
 	while(1){
-		taskManager();
+		kernel_taskManager();
 	}
 }
 
 uint8_t kernelInit(){
 //	stackSetup(); Fix assembly includes
-	clearCallQueue();
-	clearTaskQueue();
+	kernel_clearCallQueue();
+	kernel_clearTaskQueue();
 	logMessage("Kernel: starting timer...", 1);
-	startTimer();
+	kernel_setupTimer();
+	kernel_startTimer();
 	logMessage("Kernel: starting kernel...", 1);
 	kernel();
 	return 0;
 }
 
 ISR(TIMER1_COMPA_vect){
-	timerService();
+	kernel_timerService();
 }
