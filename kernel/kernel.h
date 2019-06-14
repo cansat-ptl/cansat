@@ -9,7 +9,7 @@
 #ifndef KERNEL_H_
 #define KERNEL_H_
 
-#define KERNEL_VER "0.1.1-bleeding"
+#define KERNEL_VER "0.1.4-bleeding"
 #define KERNEL_TIMESTAMP __TIMESTAMP__
 
 #ifndef KERNELconfig

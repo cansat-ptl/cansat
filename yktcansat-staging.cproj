@@ -143,6 +143,12 @@
     <Compile Include="config.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\adc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\adc.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="drivers\devices\radio\nrf24.c">
       <SubType>compile</SubType>
     </Compile>

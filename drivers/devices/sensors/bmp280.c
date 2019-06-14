@@ -34,7 +34,7 @@ int32_t temp_calibrated;
 uint8_t bmp280_readRegister1(uint8_t address){
 	uint8_t response;
 	
-	spi_busSetup(SPI_PRESCALER_4, LSBFIRST, SPI_MODE0, SPI_1X);
+	spi_busSetup(SPI_PRESCALER_4, LSBFIRST, SPI_MODE3, SPI_1X);
 	SPI_PORT &= ~(1<<SPI_SS);
 	BMP280_PORT &= ~(1<<BMP280_CS);
 	
@@ -51,7 +51,7 @@ uint8_t bmp280_readRegister1(uint8_t address){
 uint16_t bmp280_readRegister2(uint8_t address){
 	uint16_t response;
 	
-	spi_busSetup(SPI_PRESCALER_4, LSBFIRST, SPI_MODE0, SPI_1X);
+	spi_busSetup(SPI_PRESCALER_4, LSBFIRST, SPI_MODE3, SPI_1X);
 	SPI_PORT &= ~(1<<SPI_SS);
 	BMP280_PORT &= ~(1<<BMP280_CS);
 	
@@ -70,7 +70,7 @@ uint16_t bmp280_readRegister2(uint8_t address){
 uint32_t bmp280_readRegister3(uint8_t address){
 	uint32_t response;
 	
-	spi_busSetup(SPI_PRESCALER_4, LSBFIRST, SPI_MODE0, SPI_1X);
+	spi_busSetup(SPI_PRESCALER_4, LSBFIRST, SPI_MODE3, SPI_1X);
 	SPI_PORT &= ~(1<<SPI_SS);
 	BMP280_PORT &= ~(1<<BMP280_CS);
 	
@@ -90,7 +90,7 @@ uint32_t bmp280_readRegister3(uint8_t address){
 
 void bmp280_writeRegister(uint8_t address, uint8_t data){
 	
-	spi_busSetup(SPI_PRESCALER_4, LSBFIRST, SPI_MODE0, SPI_1X);
+	spi_busSetup(SPI_PRESCALER_4, LSBFIRST, SPI_MODE3, SPI_1X);
 	SPI_PORT &= ~(1<<SPI_SS);
 	BMP280_PORT &= ~(1<<BMP280_CS);
 	

@@ -16,6 +16,11 @@
 #include <avr/interrupt.h>
 #include <avr/iom128.h>
 
+#define HIGH 1
+#define LOW 0
+#define OUTPUT 1
+#define INPUT 0
+
 #define disableInterrupts() cli()
 #define enableInterrupts() sei()
 #define statusReg SREG
@@ -33,6 +38,7 @@ inline void clearBit(volatile uint8_t *reg, uint8_t bit);
 inline volatile uint8_t checkBit(volatile uint8_t *reg, uint8_t bit);
 inline void writePin(volatile uint8_t *port, uint8_t pin, uint8_t value);
 inline volatile uint8_t readPin(volatile uint8_t *port, uint8_t pin);
+inline void setPinMode(volatile uint8_t *ddr, uint8_t pin, uint8_t value);
 
 inline void switchBit(volatile uint8_t *reg, uint8_t bit){
 	*reg ^= (1 << bit);
@@ -59,4 +65,8 @@ inline volatile uint8_t readPin(volatile uint8_t *port, uint8_t pin){
 	return (*port >> pin) & 1;
 }
 
+inline void setPinMode(volatile uint8_t *ddr, uint8_t pin, uint8_t value){
+	uint8_t nvalue = !!value;
+	*ddr ^= (-1 * nvalue ^ *ddr) & (1 << pin);
+}
 #endif /* HAL_H_ */
