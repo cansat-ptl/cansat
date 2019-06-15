@@ -30,6 +30,8 @@ void init();
 void adxl345_test();
 void bmp280_test();
 void ds18b20_test();
-void powerctrl();
+void imu_test();
+void powerCtrl();
+void checkDeployment();
 
 #endif /* TASKS_H_ */

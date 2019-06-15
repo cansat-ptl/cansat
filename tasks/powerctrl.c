@@ -6,8 +6,9 @@
  */ 
 
 #include "tasks.h"
+
 #define DEBUG 1
-void powerctrl(){
+void powerCtrl(){
 	#ifdef DEBUG
 		logMessage("Power check\r\n", 1);
 	#endif
@@ -27,5 +28,26 @@ void powerctrl(){
 			writePin(&PORTC, PC0, HIGH);
 		clearBit_m(tflags, PWSAVE);
 	}
-	kernel_addTask(powerctrl, 5);
+	kernel_addTask(powerCtrl, 5);
+}
+
+void checkDeployment(){
+	#ifdef DEBUG
+		logMessage("Reading light sensor\r\n", 1);
+	#endif
+	uint16_t light = adc_read(1);
+	if(light <= 255){
+		setBit_m(tflags, PWSAVE);
+		#ifdef DEBUG
+			logMessage("Status: deployed, removing task\r\n", 1);
+		#endif
+		kernel_addTask(powerCtrl, 5);
+	}
+	else {
+		clearBit_m(tflags, PWSAVE);
+		#ifdef DEBUG
+			logMessage("Status: stowed\r\n", 1);
+		#endif
+		kernel_addTask(checkDeployment, 5);
+	}	
 }

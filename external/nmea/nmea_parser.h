@@ -12,6 +12,19 @@ unsigned char packet_type;
  // $GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47
 volatile struct GPS_t GPS;
 
+//EXTREMELY dirty and inefficient latitude format conversion
+float convertToDecimal(float lat){
+	float temp1, temp2;
+	int temp3;
+	temp1 = lat/100;
+	temp3 = temp1;
+	temp1 -= (float)temp3;
+	temp1 *= 100;
+	temp1 /= 60;
+	temp2 = temp1 + (float)temp3;
+	return temp2;
+}
+
 unsigned char number_code(char chr)
 {
 	if ((chr>=0x30)&&(chr<=0x39))

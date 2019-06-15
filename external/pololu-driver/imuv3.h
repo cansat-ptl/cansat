@@ -44,14 +44,12 @@ struct L3GD
 	unsigned char ZL;
 }L3GD;
 
-void reg_write(unsigned char dev, unsigned char adr, unsigned char data);
+
 void lsm_init();
 void l3gd_init();
 void l3gd_read();
 void lsm_a_read();
 void lsm_m_read();
-int lsm_ack();
-int l3gd_ack();
 void imu_init();
 void imu_read();
 
