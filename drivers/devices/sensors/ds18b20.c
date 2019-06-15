@@ -14,7 +14,7 @@ uint8_t ds18b20_reset(){
 	DS18B20_DDR &= ~(1 << DS18B20_IO);
 	_delay_us(60);
 	uint8_t i = (DS18B20_PIN & (1<<DS18B20_IO));
-	_delay_us(420);
+	_delay_us(410);
 	sei();
 	return i;
 }
@@ -23,7 +23,7 @@ void ds18b20_writeBit(uint8_t value){
 	cli();
 	DS18B20_PORT &= ~(1 << DS18B20_IO);
 	DS18B20_DDR |= (1 << DS18B20_IO);
-	_delay_us(1);
+	_delay_us(6);
 	if(value) 
 		DS18B20_DDR &= ~(1 << DS18B20_IO);
 	_delay_us(60);
@@ -36,12 +36,12 @@ uint8_t ds18b20_readBit(void){
 	cli();
 	DS18B20_PORT &= ~(1 << DS18B20_IO);
 	DS18B20_DDR |= (1 << DS18B20_IO);
-	_delay_us(1);
+	_delay_us(6);
 	DS18B20_DDR &= ~(1 << DS18B20_IO);
-	_delay_us(14);
+	_delay_us(10);
 	if(DS18B20_PIN & (1<<DS18B20_IO)) 
 		value = 1;
-	_delay_us(45);
+	_delay_us(55);
 	sei();
 	return value;
 }
@@ -62,11 +62,12 @@ void ds18b20_writeByte(uint8_t value){
 	}
 }
 
-float ds18b20_readTemperature(void){
+char * ds18b20_readTemperature(void){
+	static char ds_data[16];
 	uint8_t raw[2];
 	int8_t digit;
 	uint16_t decimal;
-	float value = 0;
+	//float value = 0;
 	
 	ds18b20_reset();
 	ds18b20_writeByte(DS_CMD_SKIPROM);
@@ -84,12 +85,13 @@ float ds18b20_readTemperature(void){
 	
 	digit = raw[0] >> 4;
 	digit |= (raw[1] & 0x7) << 4;
-	value = (float)digit;
 	
 	decimal = raw[0] & 0xF;
-	decimal *= DS_RESOLUTION_12BIT;
-	if(digit < 0) value -= (float)(decimal / 1000);
-	else value += (float)(decimal / 1000);
+	decimal *= 625;
 	
-	return value;
+	sprintf(ds_data, "%+d.%04u", digit, decimal);
+	/*if(digit < 0) value -= (float)(decimal / 1000);
+	else value += (float)(decimal / 1000);*/
+	
+	return ds_data;
 }

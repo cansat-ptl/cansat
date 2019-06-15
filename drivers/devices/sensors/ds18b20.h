@@ -11,9 +11,13 @@
 
 #define DS18DRV_VER "0.0.1-bleeding"
 #define DS18DRV_TIMESTAMP __TIMESTAMP__
+#ifndef F_CPU
+#define F_CPU 8000000UL
+#endif
 
 #include <avr/io.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <util/delay.h>
 #include <avr/common.h>
 #include <avr/interrupt.h>
@@ -39,6 +43,6 @@
 
 #define DS_RESOLUTION_12BIT 625
 
-float ds18b20_readTemperature(void);
+char * ds18b20_readTemperature(void);
 
 #endif /* DS18B20_H_ */

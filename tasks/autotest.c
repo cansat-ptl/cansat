@@ -51,8 +51,8 @@ void ds18b20_test(){
 	for(int i = 0; i < 10; i++){
 		writePin(&PORTG, PG3, HIGH);
 		delay(250);
-		float t = ds18b20_readTemperature();
-		sprintf(msg, "DS data: %f\r\n", t);
+		char * t = ds18b20_readTemperature();
+		sprintf(msg, "DS data: %s\r\n", t);
 		logMessage(msg, 1);
 		writePin(&PORTG, PG3, LOW);
 		delay(250);
