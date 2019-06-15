@@ -26,6 +26,22 @@ volatile char *tx1_data;
 volatile int tx1_pointer = 0;
 volatile int tx1_size = 0;
 
+char * convert(uint16_t num, int base){
+	static char alphabet[]= "0123456789ABCDEF";
+	static char buffer[64];
+	char *ptr;
+	
+	ptr = &buffer[63];
+	*ptr = '\0';
+	
+	do {
+		*--ptr = alphabet[num % base];
+		num /= base;
+	} while(num != 0);
+	
+	return(ptr);
+}
+
 int uart0_init(unsigned int ubrr){
 	UBRR0H = 0;
 	UBRR0L = 51;
@@ -38,6 +54,20 @@ void uart0_transmit(){
 	UDR0 = tx0_buffer[0];
 	UCSR0B |= (1<<UDRIE);
 	creg0 |= (1<<TX0BUSY);
+}
+
+void uart0_putc(char c){
+	UDR0 = c;
+	while(UCSR0A & (1<<UDRE));
+}
+
+void uart_puts(char * msg){
+	int i = 0;
+	while(msg[i] != '\0'){
+		UDR0 = msg[i];
+		while(UCSR0A & (1<<UDRE));
+		i++;
+	}
 }
 
 void rx0_buffer_flush(){
@@ -69,7 +99,6 @@ ISR(USART0_UDRE_vect){
 		tx0_buffer_flush();
 	}
 }
-
 
 int uart1_init(unsigned int ubrr){
 	UBRR1H = 0;
@@ -113,4 +142,53 @@ ISR(USART1_UDRE_vect){
 		creg1 &= ~(1<<TX1BUSY);
 		tx1_buffer_flush();
 	}
+}
+
+void uart0_printf(char * format, ...){
+	char * c_char;
+	uint16_t i;
+	char * s;
+
+	va_list arg;
+	va_start(arg, format);
+	
+	for(c_char = format; *c_char != '\0'; c_char++){
+		while(*c_char != '%'){
+			uart0_putc(*c_char);
+			c_char++;
+		}
+		c_char++;
+		switch(*c_char){
+			case 'c':
+				i = va_arg(arg, int16_t);
+				uart0_putc(i);
+			break;
+			
+			case 'd': 
+				i = va_arg(arg, int16_t);
+				if(i < 0){
+					i = -i;
+					uart0_putc('-');
+				}
+				uart0_puts(convert(i, 10));
+			break;
+			
+			case 'o': 
+				i = va_arg(arg, uint16_t);
+				uart0_puts(convert(i, 8));
+			break;
+			
+			case 's':
+				s = va_arg(arg, char *);
+				uart0_puts(s);
+			break;
+			
+			case 'x':
+				i = va_arg(arg, uint16_t);
+				uart0_puts(convert(i, 16));
+			break;
+		}
+	}
+
+	va_end(arg);
 }

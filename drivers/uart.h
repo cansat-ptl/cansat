@@ -14,6 +14,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <string.h>
+#include <stdarg.h>
 
 #define TX0BUSY 0
 #define TX1BUSY 0
@@ -44,8 +45,12 @@ extern volatile int tx1_pointer;
 
 int uart0_init(unsigned int ubrr);
 void uart0_transmit();
+void uart0_putc(char c);
+void uart0_puts(char * msg);
+void uart0_printf(char * format, ...); //Величайший велосипед человечества
 void rx0_buffer_flush();
 void tx0_buffer_flush();
+
 int uart1_init(unsigned int ubrr);
 void uart1_transmit();
 void rx1_buffer_flush();

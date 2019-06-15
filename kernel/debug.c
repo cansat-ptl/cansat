@@ -18,9 +18,7 @@ char levels[5][16] = {
 inline void debugMessage(char* msg, uint8_t level) {
 	sprintf((char*)&tx0_buffer, "%s%s", levels[level], msg);
 	uart0_transmit();
-	while(creg0 & (1<<TX0BUSY)){
-		;
-	}
+	while(creg0 & (1<<TX0BUSY));
 }
 
 void debugMessageSD(char* msg, uint8_t level) {
