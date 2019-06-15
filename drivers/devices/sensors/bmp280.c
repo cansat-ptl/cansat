@@ -118,7 +118,7 @@ void bmp280_readCalibrationValues(){
 	dig_P9 = (int16_t)bmp280_readRegister2(BMP280_REG_DIG_P9);
 }
 
-float bmp280_readTemperature(){
+int16_t bmp280_readTemperature(){
 	int32_t var1, var2;
 
 	int32_t adc_T = (int32_t)bmp280_readRegister3(BMP280_REG_TEMPDATA);
@@ -129,10 +129,10 @@ float bmp280_readTemperature(){
 	temp_calibrated = var1 + var2;
 
 	float T  = (temp_calibrated * 5 + 128) >> 8;
-	return T / 100;
+	return (int16_t)T;
 }
 
-float bmp280_readPressure(){
+int16_t bmp280_readPressure(){
 	int64_t var1, var2, p;
 	bmp280_readTemperature();
 
@@ -156,17 +156,17 @@ float bmp280_readPressure(){
 	var2 = (((int64_t)dig_P8) * p) >> 19;
 
 	p = ((p + var1 + var2) >> 8) + (((int64_t)dig_P7)<<4);
-	return (float)p/256;
+	return (int16_t)p/256;
 }
 
-float bmp280_calcAltitude(float sea_prs){
+int16_t bmp280_calcAltitude(float sea_prs){
 	float altitude;
 
 	float prs= bmp280_readPressure();
 
 	altitude = 44330 * (1.0 - pow(prs / sea_prs, 0.1903));
 
-	return altitude;
+	return (int16_t)altitude;
 }
 
 void bmp280_init(){

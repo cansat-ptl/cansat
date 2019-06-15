@@ -9,6 +9,10 @@
 #ifndef BMP280_H_
 #define BMP280_H_
 
+#ifndef F_CPU
+#define F_CPU 8000000UL
+#endif
+
 #include <avr/io.h>
 #include <stdint.h>
 #include "../../spi.h"
@@ -46,8 +50,8 @@
 #define BMP280_REG_TEMPDATA 0xFA
 
 void bmp280_init();
-float bmp280_readTemperature();
-float bmp280_readPressure();
-float bmp280_calcAltitude(float sea_prs);
+int16_t bmp280_readTemperature();
+int16_t bmp280_readPressure();
+int16_t bmp280_calcAltitude(float sea_prs);
 
 #endif /* BMP280_H_ */

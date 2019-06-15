@@ -123,7 +123,9 @@ void tx1_buffer_flush(){
 	tx1_pointer = 0;
 	tx1_buffer[0] = '\x0';
 }
-
+/*
+#ifndef UART1_ISR
+#define UART1_ISR
 ISR(USART1_RX_vect){
 	char data = UDR1;
 	if(strlen((char*)&rx1_buffer) < 32){
@@ -131,7 +133,8 @@ ISR(USART1_RX_vect){
 		rx1_pointer++;
 	}
 }
-
+#endif
+*/
 ISR(USART1_UDRE_vect){
 	tx1_pointer+=1;
 	if(tx1_buffer[tx1_pointer] != '\x0'){

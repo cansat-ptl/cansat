@@ -9,6 +9,10 @@
 #ifndef ADXL345_H_
 #define ADXL345_H_
 
+#ifndef F_CPU
+#define F_CPU 8000000UL
+#endif
+
 #include <avr/io.h>
 #include <stdint.h>
 #include "../../spi.h"
@@ -38,8 +42,8 @@
 #define ERR_ADXL_DEVID_MISMATCH 1
 
 uint8_t	adxl345_init();
-float adxl345_readX();
-float adxl345_readY();
-float adxl345_readZ();
+int16_t adxl345_readX();
+int16_t adxl345_readY();
+int16_t adxl345_readZ();
 
 #endif /* ADXL345_H_ */

@@ -21,6 +21,28 @@ struct taskStruct {
 	task pointer;
 	uint8_t period;
 };
+
+struct GPS_t
+{
+	unsigned char valid;
+	unsigned char hour;
+	unsigned char minute;
+	unsigned char second;
+	unsigned char day;
+	unsigned char month;
+	unsigned char year;
+	unsigned int  millisecond;
+	unsigned int cource;
+	float latitude;
+	unsigned char P;
+	float longitude;
+	float speed;
+	float vspeed;
+	unsigned char J;
+	unsigned char Sats;
+};
+
+extern volatile struct GPS_t GPS;
 extern volatile struct taskStruct taskQueue[MAX_QUEUE_SIZE];
 
 extern volatile char rx0_buffer[32];

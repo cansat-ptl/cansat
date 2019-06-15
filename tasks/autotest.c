@@ -15,10 +15,10 @@ void adxl345_test(){
 	for(int i = 0; i < 10; i++){
 		writePin(&PORTG, PG3, HIGH);
 		delay(250);
-		float ax = adxl345_readX();
-		float ay = adxl345_readY();
-		float az = adxl345_readZ();
-		sprintf(msg, "ADXL data: %f %f %f\r\n", ax, ay, az);
+		int16_t ax = adxl345_readX();
+		int16_t ay = adxl345_readY();
+		int16_t az = adxl345_readZ();
+		sprintf(msg, "ADXL data: %d %d %d\r\n", ax, ay, az);
 		logMessage(msg, 1);
 		writePin(&PORTG, PG3, LOW);
 		delay(250);
@@ -34,9 +34,9 @@ void bmp280_test(){
 	for(int i = 0; i < 10; i++){
 		writePin(&PORTG, PG3, HIGH);
 		delay(250);
-		float t = bmp280_readTemperature();
-		float p = bmp280_readPressure();
-		sprintf(msg, "BMP data: %f %f\r\n", t, p);
+		int16_t t = bmp280_readTemperature();
+		int16_t p = bmp280_readPressure();
+		sprintf(msg, "BMP data: %d %d\r\n", t, p);
 		logMessage(msg, 1);
 		writePin(&PORTG, PG3, LOW);
 		delay(250);

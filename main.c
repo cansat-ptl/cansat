@@ -7,10 +7,12 @@
 
 
 #include "config.h"
-
+#include "kernel/globals.h"
+extern volatile struct GPS_t GPS;
 int main(void){
 	char msg[128]; 
 	uart0_init(51);
+	uart1_init(51);
 	spi_init();
 	adc_init();
 	//tc72_init();
@@ -29,6 +31,10 @@ int main(void){
 	adxl345_test();
 	bmp280_test();
 	ds18b20_test();
-	
+	while(1){
+		sprintf(msg, "GPS: %d %d %d\r\n", GPS.day, GPS.month, GPS.year);
+		logMessage(msg,1);
+		_delay_ms(500);
+	}
 	kernelInit();
 }
