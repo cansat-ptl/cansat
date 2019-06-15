@@ -13,6 +13,12 @@
 #include <stdio.h>
 #include "../kernel/kernel.h"
 
+#define STARTUP 2
+#define PWSAVE 1
+#define CAM_ON 0
+
+extern uint16_t tflags;
+
 inline void idle();
 
 inline void idle(){
@@ -23,5 +29,6 @@ void init();
 void adxl345_test();
 void bmp280_test();
 void ds18b20_test();
+void powerctrl();
 
 #endif /* TASKS_H_ */

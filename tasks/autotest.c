@@ -10,7 +10,7 @@
 void adxl345_test(){
 	kernel_stopTimer();
 	char msg[64];
-	logMessage("Testing ADXL345...", 1);
+	logMessage("Testing ADXL345...\r\n", 1);
 	adxl345_init();
 	for(int i = 0; i < 10; i++){
 		writePin(&PORTG, PG3, HIGH);
@@ -29,7 +29,7 @@ void adxl345_test(){
 void bmp280_test(){
 	kernel_stopTimer();
 	char msg[64];
-	logMessage("Testing BMP280...", 1);
+	logMessage("Testing BMP280...\r\n", 1);
 	bmp280_init();
 	for(int i = 0; i < 10; i++){
 		writePin(&PORTG, PG3, HIGH);
@@ -47,7 +47,7 @@ void bmp280_test(){
 void ds18b20_test(){
 	kernel_stopTimer();
 	char msg[64];
-	logMessage("Testing DS18B20...", 1);
+	logMessage("Testing DS18B20...\r\n", 1);
 	for(int i = 0; i < 10; i++){
 		writePin(&PORTG, PG3, HIGH);
 		delay(250);

@@ -8,7 +8,7 @@
 #ifndef UART_H_
 #define UART_H_
 
-#define UARTDRV_VER "1.0.0"
+#define UARTDRV_VER "1.1.0"
 #define UARTDRV_TIMESTAMP __TIMESTAMP__
 
 #include <avr/io.h>
@@ -45,8 +45,8 @@ extern volatile int tx1_pointer;
 
 int uart0_init(unsigned int ubrr);
 void uart0_transmit();
-void uart0_putc(char c);
-void uart0_puts(char * msg);
+void uart0_putc(char c); //Does not use interrupts
+void uart0_puts(char * msg); //Does not use interrupts
 void uart0_printf(char * format, ...); //Величайший велосипед человечества
 void rx0_buffer_flush();
 void tx0_buffer_flush();

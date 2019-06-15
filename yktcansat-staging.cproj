@@ -251,6 +251,9 @@
     <Compile Include="tasks\nmea_process.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="tasks\powerctrl.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="tasks\tasks.h">
       <SubType>compile</SubType>
     </Compile>

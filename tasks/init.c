@@ -7,9 +7,11 @@
 #include "tasks.h"
 #include "../kernel/globals.h"
 
+uint16_t tflags = 0;
+
 void init(){
 	logMessage("TaskMgr: Init task\r\n", 1);
 	enableInterrupts();
-	//addTask(readData, 10);
+	kernel_addTask(powerctrl, 10);
 	//addTimedTask(repeatedTask1, 10);
 }

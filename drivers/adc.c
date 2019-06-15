@@ -12,7 +12,7 @@ void adc_init(){
 }
 
 uint16_t adc_read(uint8_t channel){
-	ADMUX |= (channel << MUX0);
+	ADMUX = (0<<REFS1)|(1<<REFS0)|(channel << MUX0);
 	ADCSRA |= (1<<ADSC);
 	while((ADCSRA & (1<<ADSC)));
 	return (uint16_t)ADC;

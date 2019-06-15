@@ -12,6 +12,7 @@ int main(void){
 	char msg[128]; 
 	uart0_init(51);
 	spi_init();
+	adc_init();
 	//tc72_init();
 	sei();
 	sprintf(msg, "[INIT]Main: starting up\r\n");
