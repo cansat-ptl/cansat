@@ -19,6 +19,7 @@ int main(void){
 	adc_init();
 	//tc72_init();
 	sei();
+	kernel_checkMCUCSR();
 	sprintf(msg, "[INIT]Main: starting up\r\n");
 	logMessage(msg, 1);
 	sprintf(msg, "[INIT]Main: using kernel version %s built %s\r\n", KERNEL_VER, KERNEL_TIMESTAMP);

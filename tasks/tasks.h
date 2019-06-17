@@ -31,6 +31,7 @@ void adxl345_test();
 void bmp280_test();
 void ds18b20_test();
 void imu_test();
+void gps_test();
 void powerCtrl();
 void checkDeployment();
 
