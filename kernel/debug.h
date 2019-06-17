@@ -16,6 +16,7 @@
 #include "drivers.h"
 
 void debugMessage(char* msg, uint8_t level);
+void debugMessage_i(char* msg, uint8_t level);
 void debugMessageSD(char* msg, uint8_t level);
 void logMessage(char* msg, uint8_t level);
 

@@ -11,6 +11,8 @@
 
 #include "types.h"
 
+extern uint8_t mcucsr_mirror;
+
 #define MAX_QUEUE_SIZE 16
 
 extern uint8_t callIndex;

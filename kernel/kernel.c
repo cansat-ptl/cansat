@@ -88,6 +88,16 @@ volatile uint8_t taskIndex = 0; //Index of the last task in queue
 volatile task callQueue[MAX_QUEUE_SIZE];
 volatile struct taskStruct taskQueue[MAX_QUEUE_SIZE];
 
+const char wdt_reset_msg_l1[] PROGMEM = "The system has been reset by watchdog.\r\n";
+const char wdt_reset_msg_l2[] PROGMEM = "This is usually caused by software issues or faulty device connections.\r\n";
+const char wdt_reset_msg_l3[] PROGMEM = "Please, report this to the developer as quick as possible.\r\n";
+const char wdt_reset_msg_l4[] PROGMEM = "Error details: MCUCSR.WDRF = 1\r\n";
+
+const char bod_reset_msg_l1[] PROGMEM = "The system has been reset by brown-out detector.\r\n";
+const char bod_reset_msg_l2[] PROGMEM = "This is usually caused by an unstable power supply.\r\n";
+const char bod_reset_msg_l3[] PROGMEM = "Please, check power supply wire connections and circuitry as soon as possible.\r\n";
+const char bod_reset_msg_l4[] PROGMEM = "Error details: MCUCSR.BORF = 1\r\n";
+
 void idle(); //System idle task, MUST me declared in tasks.c
 void init(); //System init task, MUST me declared in tasks.c
 
@@ -229,6 +239,7 @@ void kernel_stopTimer(){
 }
 
 inline uint8_t kernel_taskManager(){
+	wdt_reset();
 	(callQueue[0])();
 	uint8_t code = kernel_removeCall();
 	enableInterrupts();
@@ -246,6 +257,7 @@ uint8_t kernel(){
 
 uint8_t kernelInit(){
 //	stackSetup(); Fix assembly includes
+	wdt_reset();
 	kernel_clearCallQueue();
 	kernel_clearTaskQueue();
 	logMessage("Kernel: starting timer...", 1);
@@ -254,6 +266,34 @@ uint8_t kernelInit(){
 	logMessage("Kernel: starting kernel...", 1);
 	kernel();
 	return 0;
+}
+
+void kernel_checkMCUCSR(){
+	char msg[128]; 
+	if(checkBit_m(mcucsr_mirror, WDRF)){
+		sprintf_P(msg, "%s", wdt_reset_msg_l1);
+		logMessage(msg, 4);
+		sprintf_P(msg, "%s", wdt_reset_msg_l2);
+		logMessage(msg, 4);
+		sprintf_P(msg, "%s", wdt_reset_msg_l3);
+		logMessage(msg, 4);
+		sprintf_P(msg, "%s", wdt_reset_msg_l4);
+		logMessage(msg, 4);
+		setBit_m(kflags, WDRF);
+		return;
+	}
+	if(checkBit_m(mcucsr_mirror, BORF)){
+		sprintf_P(msg, "%s", bod_reset_msg_l1);
+		logMessage(msg, 4);
+		sprintf_P(msg, "%s", bod_reset_msg_l2);
+		logMessage(msg, 4);
+		sprintf_P(msg, "%s", bod_reset_msg_l3);
+		logMessage(msg, 4);
+		sprintf_P(msg, "%s", bod_reset_msg_l4);
+		logMessage(msg, 4);
+		setBit_m(kflags, BORF);
+	}
+	return;
 }
 
 ISR(TIMER1_COMPA_vect){

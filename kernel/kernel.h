@@ -24,9 +24,11 @@
 #include "hal.h"
 #include "debug.h"
 #include "../tasks/tasks.h"
+#include "watchdog.h"
 #include <avr/common.h>
 #include <avr/interrupt.h>
 #include <avr/iom128.h>
+#include <avr/pgmspace.h>
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
@@ -37,10 +39,9 @@ uint8_t kernel_removeCall();
 uint8_t kernel_removeTask(uint8_t position);
 void kernel_clearTaskQueue();
 void kernel_clearCallQueue();
-
+void kernel_checkMCUCSR();
 uint8_t kernelInit();
 
 void kernel_stopTimer();
 void kernel_startTimer();
-
 #endif /* KERNEL_H_ */
