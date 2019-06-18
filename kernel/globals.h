@@ -11,11 +11,6 @@
 
 #include "types.h"
 
-#ifndef F_CPU
-//#warning "F_CPU is not defined
-#define F_CPU 8000000L
-#endif
-
 extern uint8_t mcucsr_mirror;
 
 #define MAX_QUEUE_SIZE 16

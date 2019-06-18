@@ -9,11 +9,6 @@
 #ifndef HAL_H_
 #define HAL_H_
 
-#ifndef F_CPU
-//#warning "F_CPU is not defined"
-#define F_CPU 8000000L
-#endif
-
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdint.h>

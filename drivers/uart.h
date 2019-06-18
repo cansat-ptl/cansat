@@ -19,13 +19,9 @@
 #define TX0BUSY 0
 #define TX1BUSY 0
 
-#ifndef F_CPU
-//#warning "F_CPU is not defined until uart.h"
-#define F_CPU 8000000L
-#endif
-
 #ifndef UARTconfig
 #define BAUD 9600							//UART baud rate
+#define F_CPU 8000000L						//CPU frequency
 #define UBRRVAL ((F_CPU/(16*BAUD)) - 1)		//UBBR value
 #define RX0EN 1								//RX0 enable
 #define TX0EN 1								//TX0 enable

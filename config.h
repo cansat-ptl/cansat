@@ -8,10 +8,7 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#ifndef F_CPU
-//#warning "F_CPU is not defined"
-#define F_CPU 8000000L
-#endif
+#define F_CPU 8000000L						//CPU frequency
 
 //#define DEBUG 1
 
@@ -20,8 +17,10 @@
 #include <string.h>
 #include <stdio.h>
 #include <util/delay.h>
+#include "kernel/drivers.h"
 #include "kernel/kernel.h"
 #include "tasks/tasks.h"
+#include "kernel/debug.h"
 //----------------------------------------------------------------
 
 //-------------------------UART-settings--------------------------
