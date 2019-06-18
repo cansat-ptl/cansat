@@ -205,9 +205,6 @@
     <Compile Include="external\pololu-driver\imuv3.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="kernel\debug.c">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="kernel\debug.h">
       <SubType>compile</SubType>
     </Compile>
@@ -220,16 +217,19 @@
     <Compile Include="kernel\hal.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="kernel\kernel.c">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="kernel\kernel.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="kernel\types.h">
+    <Compile Include="kernel\src\debug.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="kernel\watchdog.c">
+    <Compile Include="kernel\src\kernel.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="kernel\src\watchdog.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="kernel\types.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="kernel\watchdog.h">
@@ -250,22 +250,22 @@
     <Compile Include="drivers\uart.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="tasks\autotest.c">
+    <Compile Include="tasks\src\autotest.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="tasks\init.c">
+    <Compile Include="tasks\src\init.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="tasks\nmea_process.c">
+    <Compile Include="tasks\src\nmea_process.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="tasks\powerctrl.c">
+    <Compile Include="tasks\src\powerctrl.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="tasks\readsensors.c">
+    <Compile Include="tasks\src\readsensors.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="tasks\sendpacket.c">
+    <Compile Include="tasks\src\sendpacket.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="tasks\tasks.h">
@@ -282,7 +282,9 @@
     <Folder Include="external\pff3a" />
     <Folder Include="kernel" />
     <Folder Include="external" />
+    <Folder Include="kernel\src" />
     <Folder Include="tasks" />
+    <Folder Include="tasks\src" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

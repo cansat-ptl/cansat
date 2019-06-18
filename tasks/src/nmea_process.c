@@ -5,9 +5,9 @@
  *  Author: ThePetrovich
  */ 
 
-#include "tasks.h"
-#include "../kernel/globals.h"
-#include "../external/nmea/nmea_parser.h"
+#include "../tasks.h"
+#include "../../kernel/globals.h"
+#include "../../external/nmea/nmea_parser.h"
 
 /*void nmea_process(){
 	for(int i = 0; i < rx1_pointer; i++){

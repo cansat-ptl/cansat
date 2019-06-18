@@ -132,7 +132,7 @@ int16_t bmp280_readTemperature(){
 	return (int16_t)T;
 }
 
-int16_t bmp280_readPressure(){
+int32_t bmp280_readPressure(){
 	int64_t var1, var2, p;
 	bmp280_readTemperature();
 

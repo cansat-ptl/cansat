@@ -51,7 +51,7 @@
 
 void bmp280_init();
 int16_t bmp280_readTemperature();
-int16_t bmp280_readPressure();
+int32_t bmp280_readPressure();
 int16_t bmp280_calcAltitude(float sea_prs);
 
 #endif /* BMP280_H_ */

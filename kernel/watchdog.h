@@ -12,7 +12,7 @@
 #include <avr/wdt.h>
 
 void wdt_saveMCUCSR(void) __attribute__((naked)) __attribute__((section(".init3")));
-void wdt_disableWatchdog();
+//void wdt_disableWatchdog();
 void wdt_enableWatchdog();
 
 #endif /* WATCHDOG_H_ */

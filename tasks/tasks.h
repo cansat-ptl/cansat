@@ -19,6 +19,49 @@
 #define CAM_ON 0
 
 extern uint16_t tflags;
+extern uint16_t tests;
+
+struct packetMain_t {
+	char marker[31];
+	char n[16];
+	char et[16];
+	char vbat[16];
+	char alt[16];
+	char prs[32];
+	char t1[16];
+	char t2[16];
+	char end[4];
+} packetMain;
+
+struct packetOrient_t {
+	char marker[31];
+	char n[16];
+	char et[16];
+	char ax[16];
+	char ay[16];
+	char az[16];
+	char pitch[16];
+	char yaw[16];
+	char roll[16];
+	char end[4];
+} packetOrient;
+
+struct packetGPS_t {
+	char marker[31];
+	char n[16];
+	char et[16];
+	char sat[16];
+	char lat[32];
+	char lon[32];
+	char alt[16];
+	char end[4];
+} packetGPS;
+
+#define ADXL_TESTED 0
+#define BMP_TESTED 1
+#define DS_TESTED 2
+#define GPS_TESTED 3
+#define IMU_TESTED 4
 
 inline void idle();
 
@@ -27,12 +70,19 @@ inline void idle(){
 }
 
 void init();
+
 void adxl345_test();
 void bmp280_test();
 void ds18b20_test();
 void imu_test();
 void gps_test();
+void getTestValues();
+
 void powerCtrl();
 void checkDeployment();
+
+void readBMP();
+void readADXL();
+void readDS18();
 
 #endif /* TASKS_H_ */

@@ -5,16 +5,12 @@
  *  Author: Admin
  */ 
 
-#include "watchdog.h"
+#include "../watchdog.h"
 
 uint8_t mcucsr_mirror __attribute__ ((section (".noinit")));
 
 void wdt_saveMCUCSR(void){
 	mcucsr_mirror = MCUCSR;
-	wdt_disable();
-}
-
-void wdt_disableWatchdog(){
 	MCUCSR = 0;
 	wdt_disable();
 }

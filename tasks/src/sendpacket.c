@@ -4,7 +4,7 @@
  * Created: 16.06.2019 0:52:18
  *  Author: Admin
  */ 
-
+/*
 struct packetMain_t {
 	char marker[31];
 	char n[16];
@@ -39,4 +39,4 @@ struct packetGPS_t {
 	char lon[32];
 	char alt[16];
 	char end[4];
-} packetGPS;
+} packetGPS;*/

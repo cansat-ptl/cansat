@@ -5,8 +5,8 @@
  *  Author: ThePetrovich
  */ 
 
-#include "kernel.h"
-#include "globals.h"
+#include "../kernel.h"
+#include "../globals.h"
 
 #define stackSetup() asm volatile(  \
 	"ldi R16, hi8(RAMEND)\n\t"		    \
@@ -84,6 +84,7 @@
 
 uint8_t callIndex = 0; //Index of the last task in queue
 volatile uint16_t kflags = 0; 
+uint16_t kflags_mirror __attribute__ ((section (".noinit")));
 volatile uint8_t taskIndex = 0; //Index of the last task in queue
 volatile task callQueue[MAX_QUEUE_SIZE];
 volatile struct taskStruct taskQueue[MAX_QUEUE_SIZE];
@@ -92,7 +93,8 @@ const char wdt_reset_msg_l1[] PROGMEM = "The system has been reset by watchdog.\
 const char wdt_reset_msg_l2[] PROGMEM = "This is usually caused by software issues or faulty device connections.\r\n";
 const char wdt_reset_msg_l3[] PROGMEM = "Please, report this to the developer as quick as possible.\r\n";
 const char wdt_reset_msg_l4[] PROGMEM = "Error details: MCUCSR.WDRF = 1\r\n";
-
+const char msg_separator_start[] PROGMEM = "\r\n--------------------------------------------------------------------------------------\r\n";
+const char msg_separator_end[] PROGMEM = "--------------------------------------------------------------------------------------\r\n\r\n";
 const char bod_reset_msg_l1[] PROGMEM = "The system has been reset by brown-out detector.\r\n";
 const char bod_reset_msg_l2[] PROGMEM = "This is usually caused by an unstable power supply.\r\n";
 const char bod_reset_msg_l3[] PROGMEM = "Please, check power supply wire connections and circuitry as soon as possible.\r\n";
@@ -103,7 +105,7 @@ void init(); //System init task, MUST me declared in tasks.c
 
 inline uint8_t kernel_addCall(task t_ptr){
 	#ifdef DEBUG
-		logMessage("Kernel: added call to queue\r\n", 1);
+		logMessage("Kernel: added call to queue\r\n", 1, 1);
 	#endif
 	if(statusReg & (1 << 7)){
 		disableInterrupts();
@@ -116,14 +118,14 @@ inline uint8_t kernel_addCall(task t_ptr){
 	}
 	else {
 		enableInterrupts();
-		logMessage("Kernel: call queue overflow\r\n", 3);
+		logMessage("Kernel: call queue overflow\r\n", 3, 1);
 		return ERR_QUEUE_OVERFLOW;
 	}
 }
 
 uint8_t kernel_addTask(task t_ptr, uint8_t t_period){
 	#ifdef DEBUG
-		logMessage("Kernel: added timed task to queue\r\n", 1);
+		logMessage("Kernel: added timed task to queue\r\n", 1, 1);
 	#endif
 	if(statusReg & (1 << 7)){
 		disableInterrupts();
@@ -137,7 +139,7 @@ uint8_t kernel_addTask(task t_ptr, uint8_t t_period){
 	}
 	else {
 		enableInterrupts();
-		logMessage("Kernel: task queue overflow\r\n", 3);
+		logMessage("Kernel: task queue overflow\r\n", 3, 1);
 		return ERR_QUEUE_OVERFLOW;
 	}
 	enableInterrupts();
@@ -178,7 +180,7 @@ inline uint8_t kernel_removeTask(uint8_t position){
 }
 
 void kernel_clearCallQueue(){
-	logMessage("Kernel: call queue cleared\r\n", 2);
+	logMessage("Kernel: call queue cleared\r\n", 2, 1);
 	if(statusReg & (1 << 7))
 		disableInterrupts();
 	for(int i = 0; i < MAX_QUEUE_SIZE; i++){
@@ -189,7 +191,7 @@ void kernel_clearCallQueue(){
 }
 
 void kernel_clearTaskQueue(){
-	logMessage("Kernel: task queue cleared\r\n", 2);
+	logMessage("Kernel: task queue cleared\r\n", 2, 1);
 	if(statusReg & (1 << 7))
 	disableInterrupts();
 	for(int i = 0; i < MAX_QUEUE_SIZE; i++){
@@ -218,7 +220,7 @@ inline void kernel_timerService(){
 }
 
 void kernel_setupTimer(){
-	logMessage("DONE!\r\n", 0);
+	logMessage("DONE!\r\n", 0, 1);
 	disableInterrupts();
 	TCCR1B |= (1 << WGM12)|(1 << CS11)|(1 << CS10); //prescaler 64
 	TCNT1 = 0; 
@@ -239,7 +241,6 @@ void kernel_stopTimer(){
 }
 
 inline uint8_t kernel_taskManager(){
-	wdt_reset();
 	(callQueue[0])();
 	uint8_t code = kernel_removeCall();
 	enableInterrupts();
@@ -247,10 +248,11 @@ inline uint8_t kernel_taskManager(){
 }
 
 uint8_t kernel(){
-	logMessage("DONE!\r\n", 0);
+	logMessage("DONE!\r\n", 0, 1);
 	kernel_addTask(init, 1);
-	logMessage("Kernel: starting task manager...DONE!\r\n", 1);
+	logMessage("Kernel: starting task manager...DONE!\r\n", 1, 1);
 	while(1){
+		wdt_reset();
 		kernel_taskManager();
 	}
 }
@@ -260,37 +262,44 @@ uint8_t kernelInit(){
 	wdt_reset();
 	kernel_clearCallQueue();
 	kernel_clearTaskQueue();
-	logMessage("Kernel: starting timer...", 1);
+	logMessage("Kernel: starting timer...", 1, 1);
 	kernel_setupTimer();
 	kernel_startTimer();
-	logMessage("Kernel: starting kernel...", 1);
-	kernel();
+	logMessage("Kernel: starting kernel...", 1, 1);
 	return 0;
 }
 
 void kernel_checkMCUCSR(){
 	char msg[128]; 
 	if(checkBit_m(mcucsr_mirror, WDRF)){
-		sprintf_P(msg, "%s", wdt_reset_msg_l1);
-		logMessage(msg, 4);
-		sprintf_P(msg, "%s", wdt_reset_msg_l2);
-		logMessage(msg, 4);
-		sprintf_P(msg, "%s", wdt_reset_msg_l3);
-		logMessage(msg, 4);
-		sprintf_P(msg, "%s", wdt_reset_msg_l4);
-		logMessage(msg, 4);
+		sprintf_P(msg, PSTR("%S"), msg_separator_start);
+		logMessage(msg, 0, 0);
+		sprintf_P(msg, PSTR("%S"), wdt_reset_msg_l1);
+		logMessage(msg, 4, 0);
+		sprintf_P(msg, PSTR("%S"), wdt_reset_msg_l2);
+		logMessage(msg, 4, 0);
+		sprintf_P(msg, PSTR("%S"), wdt_reset_msg_l3);
+		logMessage(msg, 4, 0);
+		sprintf_P(msg, PSTR("%S"), wdt_reset_msg_l4);
+		logMessage(msg, 4, 0);
+		sprintf_P(msg, PSTR("%S"), msg_separator_end);
+		logMessage(msg, 0, 0);
 		setBit_m(kflags, WDRF);
 		return;
 	}
 	if(checkBit_m(mcucsr_mirror, BORF)){
-		sprintf_P(msg, "%s", bod_reset_msg_l1);
-		logMessage(msg, 4);
-		sprintf_P(msg, "%s", bod_reset_msg_l2);
-		logMessage(msg, 4);
-		sprintf_P(msg, "%s", bod_reset_msg_l3);
-		logMessage(msg, 4);
-		sprintf_P(msg, "%s", bod_reset_msg_l4);
-		logMessage(msg, 4);
+		sprintf_P(msg, PSTR("%S"), msg_separator_start);
+		logMessage(msg, 0, 0);
+		sprintf_P(msg, "%S", bod_reset_msg_l1);
+		logMessage(msg, 4, 0);
+		sprintf_P(msg, "%S", bod_reset_msg_l2);
+		logMessage(msg, 4, 0);
+		sprintf_P(msg, "%S", bod_reset_msg_l3);
+		logMessage(msg, 4, 0);
+		sprintf_P(msg, "%S", bod_reset_msg_l4);
+		logMessage(msg, 4, 0);
+		sprintf_P(msg, PSTR("%S"), msg_separator_end);
+		logMessage(msg, 0, 0);
 		setBit_m(kflags, BORF);
 	}
 	return;

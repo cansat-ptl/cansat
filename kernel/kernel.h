@@ -29,6 +29,7 @@
 #include <avr/interrupt.h>
 #include <avr/iom128.h>
 #include <avr/pgmspace.h>
+#include <avr/eeprom.h>
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
