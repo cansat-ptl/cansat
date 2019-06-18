@@ -85,5 +85,6 @@ void checkDeployment();
 void readBMP();
 void readADXL();
 void readDS18();
+void readGPS();
 
 #endif /* TASKS_H_ */

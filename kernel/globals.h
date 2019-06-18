@@ -13,7 +13,7 @@
 
 extern uint8_t mcucsr_mirror;
 
-#define MAX_QUEUE_SIZE 16
+#define MAX_QUEUE_SIZE 24
 
 extern uint8_t callIndex;
 extern volatile uint16_t kflags; 

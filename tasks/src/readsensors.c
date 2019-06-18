@@ -5,6 +5,7 @@
  *  Author: Admin
  */ 
 #include "../tasks.h"
+#include "../../kernel/globals.h"
 
 #define DEBUG 1
 
@@ -20,6 +21,7 @@ void readBMP(){
 	sprintf(packetMain.t2, "T2=%d;", t2);
 	sprintf(packetMain.prs, "PRS=%ld;", prs);
 	sprintf(packetMain.alt, "ALT=%d;", alt);
+	sprintf(packetGPS.alt, "ALT=%d;", alt);
 	kernel_addTask(readBMP, 10);
 	wdt_reset();
 }
@@ -48,7 +50,17 @@ void readDS18(){
 	kernel_addTask(readDS18, 15);
 	wdt_reset();
 }
-
+//Holy shiet
 void readIMU(){
 	
+}
+
+void readGPS(){
+	#ifdef DEBUG
+		logMessage(PSTR("Reading GPS data\r\n"), 1, 1);
+	#endif
+	sprintf(packetGPS.sat, "SAT=%d;", GPS.Sats);
+	sprintf(packetGPS.lat, "LAT=%.6f;", GPS.latitude);
+	sprintf(packetGPS.lon, "LON=%.6f;", GPS.longitude);
+	kernel_addTask(readGPS, 12);
 }

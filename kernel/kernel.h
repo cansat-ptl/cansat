@@ -13,7 +13,7 @@
 #define KERNEL_TIMESTAMP __TIMESTAMP__
 
 #ifndef KERNELconfig
-#define MAX_QUEUE_SIZE 16
+#define MAX_QUEUE_SIZE 24
 #define ERR_QUEUE_OVERFLOW 1
 #define ERR_QUEUE_END 2
 //#define DEBUG 1
