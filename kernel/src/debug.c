@@ -16,12 +16,21 @@ char levels[5][16] = {
 };
 
 inline void debugMessage(char* msg, uint8_t level) {
+	if(level != 0){
+		char buffer[48];
+		sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
+		uart0_puts(buffer);
+	}
 	uart0_puts(levels[level]);
 	uart0_puts(msg);
 }
 
-inline void debugMessage_p(const PROGMEM char * msg, uint8_t level) {
+inline void debugMessage_p(const char * msg, uint8_t level) {
 	char buffer[128];
+	if(level != 0){
+		sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
+		uart0_puts(buffer);
+	}
 	sprintf_P(buffer, PSTR("%S"), msg);
 	uart0_puts(levels[level]);
 	uart0_puts(buffer);
@@ -33,7 +42,7 @@ inline void debugMessage_i(char* msg, uint8_t level) {
 	while(creg0 & (1<<TX0BUSY));
 }
 
-inline void debugMessage_pi(const PROGMEM char * msg, uint8_t level) {
+inline void debugMessage_pi(const char * msg, uint8_t level) {
 	sprintf((char*)&tx0_buffer, "%s%s", levels[level], msg);
 	uart0_transmit();
 	while(creg0 & (1<<TX0BUSY));
@@ -41,7 +50,7 @@ inline void debugMessage_pi(const PROGMEM char * msg, uint8_t level) {
 
 void debugMessageSD(char* msg, uint8_t level);
 
-void debugMessageSD_p(const PROGMEM char * msg, uint8_t level);
+void debugMessageSD_p(const char * msg, uint8_t level);
 
 inline void logMessage(char* msg, uint8_t level, uint8_t pgm){
 	if(!pgm){
