@@ -105,7 +105,7 @@ void init(); //System init task, MUST me declared in tasks.c
 
 inline uint8_t kernel_addCall(task t_ptr){
 	#ifdef DEBUG
-		logMessage("Kernel: added call to queue\r\n", 1, 1);
+		logMessage(PSTR("Kernel: added call to queue\r\n"), 1, 1);
 	#endif
 	if(statusReg & (1 << 7)){
 		disableInterrupts();
@@ -118,14 +118,14 @@ inline uint8_t kernel_addCall(task t_ptr){
 	}
 	else {
 		enableInterrupts();
-		logMessage("Kernel: call queue overflow\r\n", 3, 1);
+		logMessage(PSTR("Kernel: call queue overflow\r\n"), 3, 1);
 		return ERR_QUEUE_OVERFLOW;
 	}
 }
 
 uint8_t kernel_addTask(task t_ptr, uint8_t t_period){
 	#ifdef DEBUG
-		logMessage("Kernel: added timed task to queue\r\n", 1, 1);
+		logMessage(PSTR("Kernel: added timed task to queue\r\n"), 1, 1);
 	#endif
 	if(statusReg & (1 << 7)){
 		disableInterrupts();
@@ -139,7 +139,7 @@ uint8_t kernel_addTask(task t_ptr, uint8_t t_period){
 	}
 	else {
 		enableInterrupts();
-		logMessage("Kernel: task queue overflow\r\n", 3, 1);
+		logMessage(PSTR("Kernel: task queue overflow\r\n"), 3, 1);
 		return ERR_QUEUE_OVERFLOW;
 	}
 	enableInterrupts();
@@ -180,7 +180,7 @@ inline uint8_t kernel_removeTask(uint8_t position){
 }
 
 void kernel_clearCallQueue(){
-	logMessage("Kernel: call queue cleared\r\n", 2, 1);
+	logMessage(PSTR("Kernel: call queue cleared\r\n"), 2, 1);
 	if(statusReg & (1 << 7))
 		disableInterrupts();
 	for(int i = 0; i < MAX_QUEUE_SIZE; i++){
@@ -191,7 +191,7 @@ void kernel_clearCallQueue(){
 }
 
 void kernel_clearTaskQueue(){
-	logMessage("Kernel: task queue cleared\r\n", 2, 1);
+	logMessage(PSTR("Kernel: task queue cleared\r\n"), 2, 1);
 	if(statusReg & (1 << 7))
 	disableInterrupts();
 	for(int i = 0; i < MAX_QUEUE_SIZE; i++){
@@ -220,7 +220,7 @@ inline void kernel_timerService(){
 }
 
 void kernel_setupTimer(){
-	logMessage("DONE!\r\n", 0, 1);
+	logMessage(PSTR("DONE!\r\n"), 0, 1);
 	disableInterrupts();
 	TCCR1B |= (1 << WGM12)|(1 << CS11)|(1 << CS10); //prescaler 64
 	TCNT1 = 0; 
@@ -248,9 +248,9 @@ inline uint8_t kernel_taskManager(){
 }
 
 uint8_t kernel(){
-	logMessage("DONE!\r\n", 0, 1);
+	logMessage(PSTR("DONE!\r\n"), 0, 1);
 	kernel_addTask(init, 1);
-	logMessage("Kernel: starting task manager...DONE!\r\n", 1, 1);
+	logMessage(PSTR("Kernel: starting task manager...DONE!\r\n"), 1, 1);
 	while(1){
 		wdt_reset();
 		kernel_taskManager();
@@ -262,10 +262,11 @@ uint8_t kernelInit(){
 	wdt_reset();
 	kernel_clearCallQueue();
 	kernel_clearTaskQueue();
-	logMessage("Kernel: starting timer...", 1, 1);
+	logMessage(PSTR("Kernel: starting timer..."), 1, 1);
 	kernel_setupTimer();
 	kernel_startTimer();
-	logMessage("Kernel: starting kernel...", 1, 1);
+	logMessage(PSTR("Kernel: starting kernel..."), 1, 1);
+	kernel();
 	return 0;
 }
 

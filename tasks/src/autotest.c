@@ -14,9 +14,9 @@ uint16_t tests_r = 0;
 void adxl345_test(){
 	kernel_stopTimer();
 	char msg[64];
-	logMessage("Testing ADXL345...\r\n", 1, 1);
+	logMessage(PSTR("Testing ADXL345...\r\n"), 1, 1);
 	if(adxl345_init() == ERR_ADXL_DEVID_MISMATCH)
-		logMessage("ADXL init error: no ADXL345 connected/DEVID mismatch\r\n", 3, 1);
+		logMessage(PSTR("ADXL init failure: no ADXL345 connected/DEVID mismatch\r\n"), 3, 1);
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
 		writePin(&PORTG, PG3, HIGH);
@@ -38,7 +38,7 @@ void adxl345_test(){
 void bmp280_test(){
 	kernel_stopTimer();
 	char msg[64];
-	logMessage("Testing BMP280...\r\n", 1, 1);
+	logMessage(PSTR("Testing BMP280...\r\n"), 1, 1);
 	bmp280_init();
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
@@ -60,7 +60,7 @@ void bmp280_test(){
 void ds18b20_test(){
 	kernel_stopTimer();
 	char msg[64];
-	logMessage("Testing DS18B20...\r\n", 1, 1);
+	logMessage(PSTR("Testing DS18B20...\r\n"), 1, 1);
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
 		writePin(&PORTG, PG3, HIGH);
@@ -79,7 +79,7 @@ void ds18b20_test(){
 
 void imu_test(){
 	kernel_stopTimer();
-	logMessage("Testing LSM303...\r\n", 1, 1);
+	logMessage(PSTR("Testing LSM303...\r\n"), 1, 1);
 	imu_init();
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
@@ -98,7 +98,7 @@ void imu_test(){
 
 void gps_test(){
 	kernel_stopTimer();
-	logMessage("Testing GPS...\r\n", 1, 1);
+	logMessage(PSTR("Testing GPS...\r\n"), 1, 1);
 	char msg[64];
 	for(int i = 0; i < 10; i++){
 		wdt_reset();

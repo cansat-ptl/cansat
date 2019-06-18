@@ -12,6 +12,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <avr/pgmspace.h>
 #include "../kernel/kernel.h"
 
 #define STARTUP 2
