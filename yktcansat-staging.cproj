@@ -208,12 +208,6 @@
     <Compile Include="kernel\debug.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="kernel\debug.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="kernel\drivers.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="kernel\globals.h">
       <SubType>compile</SubType>
     </Compile>
@@ -230,9 +224,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="kernel\watchdog.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="kernel\watchdog.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">

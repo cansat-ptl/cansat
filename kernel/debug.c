@@ -4,7 +4,7 @@
  * Created: 02.06.2019 20:53:16
  *  Author: ThePetrovich
  */ 
-#include "debug.h"
+#include "kernel.h"
 #include "globals.h"
 
 char levels[5][16] = {

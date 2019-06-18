@@ -14,7 +14,7 @@ void adxl345_test(){
 	char msg[64];
 	logMessage("Testing ADXL345...\r\n", 1);
 	if(adxl345_init() == ERR_ADXL_DEVID_MISMATCH)
-		logMessage("ADXL init error: no ADXL345 connected/DEVID mismatch\r\n", 3);
+		logMessage("ADXL init failure: no ADXL345 connected/DEVID mismatch\r\n", 3);
 	for(int i = 0; i < 10; i++){
 		writePin(&PORTG, PG3, HIGH);
 		delay(250);

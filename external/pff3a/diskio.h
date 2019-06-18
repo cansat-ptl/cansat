@@ -5,6 +5,11 @@
 #ifndef _DISKIO_DEFINED
 #define _DISKIO_DEFINED
 
+#ifndef F_CPU
+//#warning "F_CPU is not defined until twi.h"
+#define F_CPU 8000000L
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

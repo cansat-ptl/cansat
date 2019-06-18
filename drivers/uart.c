@@ -58,14 +58,13 @@ void uart0_transmit(){
 
 void uart0_putc(char c){
 	UDR0 = c;
-	while(UCSR0A & (1<<UDRE));
+	while(!(UCSR0A & (1<<UDRE)));
 }
 
 void uart0_puts(char * msg){
 	int i = 0;
 	while(msg[i] != '\0'){
-		UDR0 = msg[i];
-		while(UCSR0A & (1<<UDRE));
+		uart0_putc(msg[i]);
 		i++;
 	}
 }
