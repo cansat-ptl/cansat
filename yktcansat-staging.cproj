@@ -184,19 +184,19 @@
     <Compile Include="external\nmea\nmea_parser.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="external\pff3a\diskio.c">
+    <Compile Include="external\pff3a\diskio.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="external\pff3a\diskio.h">
+    <Compile Include="external\pff3a\integer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="external\pff3a\diskio.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="external\pff3a\pff.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="external\pff3a\pff.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="external\pff3a\pffconf.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="external\pololu-driver\imuv3.c">

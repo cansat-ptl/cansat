@@ -10,7 +10,7 @@
 uint16_t tflags = 0;
 
 void init(){
-	logMessage(PSTR("TaskMgr: Init task\r\n"), 1, 1);
+	logMessage((char *)PSTR("TaskMgr: Init task\r\n"), 1, 1);
 	enableInterrupts();
 	kernel_addTask(checkDeployment, 5);
 	kernel_addTask(readADXL, 6);

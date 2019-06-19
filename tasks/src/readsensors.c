@@ -11,7 +11,7 @@
 
 void readBMP(){
 	#ifdef DEBUG
-		logMessage(PSTR("Reading BMP280\r\n"), 1, 1);
+		logMessage((char *)PSTR("Reading BMP280\r\n"), 1, 1);
 	#endif
 	int16_t t2, alt;
 	int32_t prs;
@@ -28,7 +28,7 @@ void readBMP(){
 
 void readADXL(){
 	#ifdef DEBUG
-		logMessage(PSTR("Reading ADXL345\r\n"), 1, 1);
+		logMessage((char *)PSTR("Reading ADXL345\r\n"), 1, 1);
 	#endif
 	int16_t ax, ay, az;
 	ax = adxl345_readX();
@@ -43,7 +43,7 @@ void readADXL(){
 
 void readDS18(){
 	#ifdef DEBUG
-		logMessage(PSTR("Reading DS18B20\r\n"), 1, 1);
+		logMessage((char *)PSTR("Reading DS18B20\r\n"), 1, 1);
 	#endif
 	char * t1 = ds18b20_readTemperature();
 	sprintf(packetMain.t1, "T1=%s;", t1);
@@ -57,7 +57,7 @@ void readIMU(){
 
 void readGPS(){
 	#ifdef DEBUG
-		logMessage(PSTR("Reading GPS data\r\n"), 1, 1);
+		logMessage((char *)PSTR("Reading GPS data\r\n"), 1, 1);
 	#endif
 	sprintf(packetGPS.sat, "SAT=%d;", GPS.Sats);
 	sprintf(packetGPS.lat, "LAT=%.6f;", GPS.latitude);

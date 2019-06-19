@@ -44,6 +44,9 @@ struct GPS_t
 	unsigned char Sats;
 };
 
+FATFS fs;
+WORD logfile;
+
 extern volatile struct GPS_t GPS;
 extern volatile struct taskStruct taskQueue[MAX_QUEUE_SIZE];
 
