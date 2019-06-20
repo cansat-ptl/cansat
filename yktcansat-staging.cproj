@@ -226,6 +226,9 @@
     <Compile Include="kernel\src\kernel.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="kernel\src\sdcard.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="kernel\src\watchdog.c">
       <SubType>compile</SubType>
     </Compile>

@@ -12,6 +12,7 @@ extern volatile struct GPS_t GPS;
 extern uint16_t tests_r;
 
 int main(void){
+	FRESULT res;
 	getTestValues();
 	char msg[128]; 
 	DDRA |= (1 << PA3);
@@ -22,6 +23,14 @@ int main(void){
 	spi_init();
 	twi_init();
 	adc_init();
+	
+	res = pf_mount(&fs);
+	if(res == FR_OK){
+		logMessage((char *)PSTR("[INIT]SD card mount: OK\r\n"), 1, 1);
+		pf_lseek(0);
+	}
+	else logMessage((char *)PSTR("[INIT]SD card mount: ERR\r\n"), 1, 1);
+	
 	
 //	res = pf_mount(&fs);
 	

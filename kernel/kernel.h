@@ -45,4 +45,7 @@ uint8_t kernelInit();
 
 void kernel_stopTimer();
 void kernel_startTimer();
+
+void addMessage(char * data);
+void flushToSD();
 #endif /* KERNEL_H_ */
