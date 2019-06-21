@@ -10,19 +10,25 @@
 #include "kernel/globals.h"
 extern volatile struct GPS_t GPS;
 extern uint16_t tests_r;
-
+#define SD_DI   2
+#define SD_DO   3
+#define SD_CLK  1
+#define SD_CS   6
 int main(void){
 	FRESULT res;
-	getTestValues();
+	//getTestValues();
+	
 	char msg[128]; 
-	DDRA |= (1 << PA3);
-	DDRB = 0xFF;
+	//DDRA |= (1 << PA3);
 	
 	uart0_init(51);
 	uart1_init(51);
 	spi_init();
 	twi_init();
 	adc_init();
+	adxl345_pinSetup();
+	bmp280_pinSetup();
+	nrf24_pinSetup();
 	
 	res = pf_mount(&fs);
 	if(res == FR_OK){
@@ -31,12 +37,11 @@ int main(void){
 	}
 	else logMessage((char *)PSTR("[INIT]SD card mount: ERR\r\n"), 1, 1);
 	
-	
 //	res = pf_mount(&fs);
 	
 	sei();
 	kernel_checkMCUCSR();
-	wdt_enable(WDTO_2S);
+//	wdt_enable(WDTO_2S);
 	logMessage((char *)PSTR("[INIT]Main: starting up\r\n"), 1, 1);
 	wdt_reset();
 	sprintf_P(msg, PSTR("[INIT]Main: using kernel version %s built %s\r\n"), KERNEL_VER, KERNEL_TIMESTAMP);

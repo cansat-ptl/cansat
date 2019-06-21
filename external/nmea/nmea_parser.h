@@ -4,6 +4,7 @@
  * Created: 11.06.2019 22:43:33
  *  Author: bear1ake
  */ 
+
 #include "../../kernel/globals.h"
 char rmc_str[128];
 unsigned char rmc_index;

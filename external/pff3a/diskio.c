@@ -32,29 +32,28 @@ char str[21];
 //-----------------------------------------------------------------------
 void xmit_spi (BYTE data)		// Send a byte 
 { BYTE i;
-
+	
  for (i=0;i<8;i++)
   {
-   if ((data&0x80)==0x00) PORTB&=~_BV(SD_DI);
-                     else PORTB|=_BV(SD_DI);
+   if (data & 0x80) PORTC|=_BV(SD_DI);
+   else PORTC&=~_BV(SD_DI);
    data=data<<1; 
-   PORTB|=_BV(SD_CLK);
+   PORTC|=_BV(SD_CLK);
    asm("nop"); 
-   PORTB&=~_BV(SD_CLK);
+   PORTC&=~_BV(SD_CLK);
   }
 }
 
 BYTE rcv_spi (void)				// Send 0xFF and receive a byte 
 { BYTE i, res=0;
-
- PORTB|=_BV(SD_DI);
+ PORTC|=_BV(SD_DI);
 
  for (i=0;i<8;i++)
   {
-   PORTB|=_BV(SD_CLK);
+   PORTC|=_BV(SD_CLK);
    res=res<<1;
-   if ((PINB&_BV(SD_DO))!=0x00) res=res|0x01;
-   PORTB&=~_BV(SD_CLK);
+   if ((PINC&_BV(SD_DO))!=0x00) res=res|0x01;
+   PORTC&=~_BV(SD_CLK);
    asm("nop");
   }
  return res;
@@ -62,10 +61,10 @@ BYTE rcv_spi (void)				// Send 0xFF and receive a byte
 //-----------------------------------------------------------------------
 
 // Port Controls (Platform dependent) 
-#define SELECT()	PORTB &= ~_BV(SD_CS)		// MMC CS = L 
-#define	DESELECT()	PORTB |=  _BV(SD_CS)		// MMC CS = H 
-#define	MMC_SEL		!(PORTB & _BV(SD_CS))	// MMC CS status (true:selected) 
-#define	INIT_SPI()	{  PORTB=_BV(SD_CS)|_BV(SD_DO)|_BV(SD_DI); DDRB=_BV(SD_CS)|_BV(SD_DI)|_BV(SD_CLK); }	
+#define SELECT()	PORTC &= ~_BV(SD_CS)		// MMC CS = L 
+#define	DESELECT()	PORTC |=  _BV(SD_CS)		// MMC CS = H 
+#define	MMC_SEL		!(PORTC & _BV(SD_CS))	// MMC CS status (true:selected) 
+#define	INIT_SPI()	{  PORTC=_BV(SD_CS); DDRC=_BV(SD_CS)|_BV(SD_DI)|_BV(SD_CLK); }	
 
 
 //-----------------------------------------------------------------------
@@ -80,6 +79,7 @@ static
 void release_spi (void)
 {
 	rcv_spi();
+	DESELECT();
 }
 
 //-----------------------------------------------------------------------
@@ -143,7 +143,7 @@ DSTATUS disk_initialize (void)
 
 	INIT_SPI();
 
-//	if ((PINB&_BV(SD_INS))!=0x00) return STA_NOINIT;
+//	if ((PINC&_BV(SD_INS))!=0x00) return STA_NOINIT;
 
 #if _WRITE_FUNC
 	if (MMC_SEL) disk_writep(0, 0);		// Finalize write process if it is in progress 
@@ -154,42 +154,11 @@ DSTATUS disk_initialize (void)
 	if (send_cmd(CMD0, 0) == 1) {			// Enter Idle state 
 		if (send_cmd(CMD8, 0x1AA) == 1) {	// SDv2 
 
-// 	  		setpos(0,3);
-// 	  		str_lcd("SDv2");
-
 			for (n = 0; n < 4; n++) ocr[n] = rcv_spi();		// Get trailing return value of R7 resp 
-//  			setpos(8,0);
-//  			sprintf(str,"%02X",ocr[3]);
-//  			str_lcd(str);
-//  			setpos(11,0);
-//  			sprintf(str,"%02X",ocr[2]);
-//  			str_lcd(str);
-//  			setpos(14,0);
-//  			sprintf(str,"%02X",ocr[1]);
-//  			str_lcd(str);
-//  			setpos(17,0);
-//  			sprintf(str,"%02X",ocr[0]);
-//  			str_lcd(str);
 			if (ocr[2] == 0x01 && ocr[3] == 0xAA) {				// The card can work at vdd range of 2.7-3.6V 
-// 	  		setpos(5,3);
-// 	  		str_lcd("AA01");
 				for (tmr = 12000; tmr && send_cmd(ACMD41, 1UL << 30); tmr--) ;	// Wait for leaving idle state (ACMD41 with HCS bit) 
 				if (tmr && send_cmd(CMD58, 0) == 0) {		// Check CCS bit in the OCR 
-// 			  		setpos(10,3);
-// 					str_lcd("CCS");
 					for (n = 0; n < 4; n++) ocr[n] = rcv_spi();
-//  					setpos(8,1);
-//  					sprintf(str,"%02X",ocr[3]);
-//  					str_lcd(str);
-//  					setpos(11,1);
-//  					sprintf(str,"%02X",ocr[2]);
-//  					str_lcd(str);
-//  					setpos(14,1);
-//  					sprintf(str,"%02X",ocr[1]);
-//  					str_lcd(str);
-//  					setpos(17,1);
-//  					sprintf(str,"%02X",ocr[0]);
-//  					str_lcd(str);
 					ty = (ocr[0] & 0x40) ? CT_SD2 | CT_BLOCK : CT_SD2;	// SDv2 (HC or SC) 
 				}
 			}
@@ -205,9 +174,6 @@ DSTATUS disk_initialize (void)
 		}
 	}
 	CardType = ty;
-//   	sprintf(str,"%d",CardType);
-//   	setpos(0,1);
-//   	str_lcd(str);
 	release_spi();
 
 	return ty ? 0 : STA_NOINIT;
@@ -227,7 +193,7 @@ DRESULT disk_readp (
 	BYTE rc;
 	WORD bc;
 
-//	if ((PINB&_BV(SD_INS))!=0x00) return RES_ERROR;
+//	if ((PINC&_BV(SD_INS))!=0x00) return RES_ERROR;
 
 	if (!(CardType & CT_BLOCK))
 	{
@@ -285,8 +251,8 @@ DRESULT disk_writep (
 	WORD bc;
 	static WORD wc;
 
-// 	if ((PINB&_BV(SD_INS))!=0x00) return RES_ERROR;
-// 	if ((PINB&_BV(SD_WP))!=0x00) return RES_ERROR;
+// 	if ((PINC&_BV(SD_INS))!=0x00) return RES_ERROR;
+// 	if ((PINC&_BV(SD_WP))!=0x00) return RES_ERROR;
 
 	res = RES_ERROR;
 

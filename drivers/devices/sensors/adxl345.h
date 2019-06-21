@@ -16,17 +16,10 @@
 #include <avr/io.h>
 #include <stdint.h>
 #include "../../spi.h"
+#include "../../driver_config.h"
 
-#define ADXLDRV_VER "0.0.3-bleeding"
+#define ADXLDRV_VER "0.0.5-bleeding"
 #define ADXLDRV_TIMESTAMP __TIMESTAMP__
-
-#ifndef ADXL345config
-#define ADXL345_PORT PORTA
-#define ADXL345_DDR DDRA
-#define ADXL345_CS PA0
-#define ADXL345_VALUE_POWERCTL 0x08
-#define ADXL345_VALUE_FORMAT 0x03
-#endif
 
 #define ADXL345_DEFAULT_DEVID 0x00
 #define ADXL345_REG_DEVID 0x00
@@ -41,6 +34,7 @@
 
 #define ERR_ADXL_DEVID_MISMATCH 1
 
+void adxl345_pinSetup();
 uint8_t	adxl345_init();
 int16_t adxl345_readX();
 int16_t adxl345_readY();

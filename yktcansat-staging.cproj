@@ -175,6 +175,9 @@
     <Compile Include="drivers\devices\sensors\ds18b20.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\driver_config.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="drivers\twi.c">
       <SubType>compile</SubType>
     </Compile>
@@ -223,6 +226,9 @@
     <Compile Include="kernel\src\debug.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="kernel\src\hal.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="kernel\src\kernel.c">
       <SubType>compile</SubType>
     </Compile>
@@ -254,6 +260,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="tasks\src\autotest.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="tasks\src\compfilter.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="tasks\src\init.c">

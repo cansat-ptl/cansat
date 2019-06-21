@@ -6,7 +6,7 @@
  */ 
 #include "nrf24.h"
 
-void nrf24_init(){
+void nrf24_pinSetup(){
 	NRF_CE_DDR |= (1 << NRF_CE);
 	NRF_CSN_DDR |= (1 << NRF_CSN);
 }

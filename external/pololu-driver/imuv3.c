@@ -4,7 +4,13 @@
  * Created: 11.06.2019 22:43:33
  *  Author: bear1ake
  */ 
+
 #include "imuv3.h"
+#include "../../kernel/globals.h"
+
+volatile struct LSM_t LSM;
+volatile struct L3GD_t L3GD;
+
 
 void reg_write(unsigned char dev, unsigned char adr, unsigned char data)
 {

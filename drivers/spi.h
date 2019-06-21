@@ -5,7 +5,6 @@
  *  Author: ThePetrovich
  */ 
 
-
 #ifndef SPI_H_
 #define SPI_H_
 
@@ -14,29 +13,11 @@
 #include <avr/common.h>
 #include <avr/interrupt.h>
 #include <avr/iom128.h>
+#include "driver_config.h"
 
 #define SPIDRV_VER "0.9.5-rc3"
 #define SPIDRV_TIMESTAMP __TIMESTAMP__
 
-#ifndef SPIconfig
-//SPI module port registers
-#define SPI_PORT PORTB
-#define SPI_DDR DDRB
-//SPI module pins
-#define SPI_MISO 3
-#define SPI_MOSI 2
-#define SPI_SCK 1
-#define SPI_SS 0
-//SPI module settings
-#define SPIEN 1			//SPE bit of SPCR - SPI module enable
-#define SPIIEN 0		//SPIE bit of SPCR - SPI interrupt enable
-#define SPIDORD 0		//DORD bit of SPCR - default SPI bit order
-#define SPIMSTR 1		//MSTR bit of SPCR - SPI master mode enable
-#define SPIMODEL 0		//CPOL bit of SPCR - SPI clock polarity
-#define SPIMODEH 0		//CPHA bit of SPCR - SPI clock phase
-#define SPISPDL 0		//SPR0 bit of SPCR - SPI speed prescaler bit 0
-#define SPISPDH 0		//SPR1 bit of SPCR - SPI speed prescaler bit 1
-#endif
 //SPI mode predefines
 #define SPI_MODE0 0
 #define SPI_MODE1 1

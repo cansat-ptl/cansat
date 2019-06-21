@@ -5,11 +5,10 @@
  *  Author: ThePetrovich
  */ 
 
-
 #ifndef KERNEL_H_
 #define KERNEL_H_
 
-#define KERNEL_VER "0.1.4-bleeding"
+#define KERNEL_VER "0.1.9-bleeding"
 #define KERNEL_TIMESTAMP __TIMESTAMP__
 
 #ifndef KERNELconfig
@@ -46,6 +45,6 @@ uint8_t kernelInit();
 void kernel_stopTimer();
 void kernel_startTimer();
 
-void addMessage(char * data);
-void flushToSD();
+void sd_puts(char * data);
+void sd_flush();
 #endif /* KERNEL_H_ */

@@ -2,7 +2,7 @@
  * watchdog.c
  *
  * Created: 17.06.2019 23:04:09
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
 
 #include "../watchdog.h"

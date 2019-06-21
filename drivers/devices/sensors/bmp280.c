@@ -5,6 +5,7 @@
  *  Author: ThePetrovich
  */ 
 #include "bmp280.h"
+#include <util/delay.h>
 
 uint16_t dig_T1;
 int16_t  dig_T2;
@@ -31,10 +32,15 @@ int32_t temp_calibrated;
 
 //йняршкх х бекняхоедш
 
+void bmp280_pinSetup(){
+	BMP280_DDR |= (1 << BMP280_CS);
+	BMP280_PORT |= (1 << BMP280_CS);
+}
+
 uint8_t bmp280_readRegister1(uint8_t address){
 	uint8_t response;
 	
-	spi_busSetup(SPI_PRESCALER_4, LSBFIRST, SPI_MODE3, SPI_1X);
+	spi_busSetup(SPI_PRESCALER_16, MSBFIRST, SPI_MODE3, SPI_1X);
 	SPI_PORT &= ~(1<<SPI_SS);
 	BMP280_PORT &= ~(1<<BMP280_CS);
 	
@@ -51,7 +57,7 @@ uint8_t bmp280_readRegister1(uint8_t address){
 uint16_t bmp280_readRegister2(uint8_t address){
 	uint16_t response;
 	
-	spi_busSetup(SPI_PRESCALER_4, LSBFIRST, SPI_MODE3, SPI_1X);
+	spi_busSetup(SPI_PRESCALER_16, MSBFIRST, SPI_MODE3, SPI_1X);
 	SPI_PORT &= ~(1<<SPI_SS);
 	BMP280_PORT &= ~(1<<BMP280_CS);
 	
@@ -70,7 +76,7 @@ uint16_t bmp280_readRegister2(uint8_t address){
 uint32_t bmp280_readRegister3(uint8_t address){
 	uint32_t response;
 	
-	spi_busSetup(SPI_PRESCALER_4, LSBFIRST, SPI_MODE3, SPI_1X);
+	spi_busSetup(SPI_PRESCALER_16, MSBFIRST, SPI_MODE3, SPI_1X);
 	SPI_PORT &= ~(1<<SPI_SS);
 	BMP280_PORT &= ~(1<<BMP280_CS);
 	
@@ -90,7 +96,7 @@ uint32_t bmp280_readRegister3(uint8_t address){
 
 void bmp280_writeRegister(uint8_t address, uint8_t data){
 	
-	spi_busSetup(SPI_PRESCALER_4, LSBFIRST, SPI_MODE3, SPI_1X);
+	spi_busSetup(SPI_PRESCALER_16, MSBFIRST, SPI_MODE3, SPI_1X);
 	SPI_PORT &= ~(1<<SPI_SS);
 	BMP280_PORT &= ~(1<<BMP280_CS);
 	
@@ -118,8 +124,8 @@ void bmp280_readCalibrationValues(){
 	dig_P9 = (int16_t)bmp280_readRegister2(BMP280_REG_DIG_P9);
 }
 
-int16_t bmp280_readTemperature(){
-	int32_t var1, var2;
+int32_t bmp280_readTemperature(){
+	int32_t var1, var2, T = 0;
 
 	int32_t adc_T = (int32_t)bmp280_readRegister3(BMP280_REG_TEMPDATA);
 	adc_T >>= 4;
@@ -128,35 +134,39 @@ int16_t bmp280_readTemperature(){
 	var2  = (((((adc_T>>4) - ((int32_t)dig_T1)) * ((adc_T>>4) - ((int32_t)dig_T1))) >> 12) * ((int32_t)dig_T3)) >> 14;
 	temp_calibrated = var1 + var2;
 
-	float T  = (temp_calibrated * 5 + 128) >> 8;
-	return (int16_t)T;
+	T  = (temp_calibrated * 5 + 128) >> 8;
+	return T;
 }
 
-int32_t bmp280_readPressure(){
-	int64_t var1, var2, p;
-	bmp280_readTemperature();
-
+uint32_t bmp280_readPressure(){
+	int32_t var1, var2;
+	uint32_t p;
+	
+	_delay_ms(100);
 	int32_t adc_P = (int32_t)bmp280_readRegister3(BMP280_REG_PRESSUREDATA);
 	adc_P >>= 4;
-
-	var1 = ((int64_t)temp_calibrated) - 128000;
-	var2 = var1 * var1 * (int64_t)dig_P6;
-	var2 = var2 + ((var1*(int64_t)dig_P5)<<17);
-	var2 = var2 + (((int64_t)dig_P4)<<35);
-	var1 = ((var1 * var1 * (int64_t)dig_P3)>>8) + ((var1 * (int64_t)dig_P2)<<12); //WHAT THE FUCK I DONT EVEN
-	var1 = (((((int64_t)1)<<47)+var1))*((int64_t)dig_P1)>>33;
-
-	if (var1 == 0) {
+	
+	var1 = (((int32_t)temp_calibrated)>>1) - (int32_t)64000;
+	var2 = (((var1>>2) * (var1>>2)) >> 11 ) * ((int32_t)dig_P6);
+	var2 = var2 + ((var1*((int32_t)dig_P5))<<1);
+	var2 = (var2>>2) + (((int32_t)dig_P4)<<16);
+	var1 = (((dig_P3 * (((var1>>2) * (var1>>2)) >> 13 )) >> 3) + ((((int32_t)dig_P2) * var1)>>1))>>18;
+	var1 =((((32768 + var1)) * ((int32_t)dig_P1))>>15);
+	if (var1 == 0){
 		return 0;
 	}
-	
-	p = 1048576 - adc_P;
-	p = (((p<<31) - var2)*3125) / var1;
-	var1 = (((int64_t)dig_P9) * (p>>13) * (p>>13)) >> 25;
-	var2 = (((int64_t)dig_P8) * p) >> 19;
-
-	p = ((p + var1 + var2) >> 8) + (((int64_t)dig_P7)<<4);
-	return (int16_t)p/256;
+	p = (((uint32_t)(((int32_t)1048576)-adc_P)-(var2>>12)))*3125;
+	if (p < 0x80000000){
+		p = (p << 1) / ((uint32_t)var1);
+	}
+	else
+	{
+		p = (p / (uint32_t)var1) * 2;
+	}
+	var1 = (((int32_t)dig_P9) * ((int32_t)(((p>>3) * (p>>3))>>13)))>>12;
+	var2 = (((int32_t)(p>>2)) * ((int32_t)dig_P8))>>13;
+	p = (uint32_t)((int32_t)p + ((var1 + var2 + dig_P7) >> 4));
+	return p;
 }
 
 int16_t bmp280_calcAltitude(float sea_prs){

@@ -2,8 +2,9 @@
  * autotest.c
  *
  * Created: 14.06.2019 19:23:32
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
+
 #include "../tasks.h"
 #include "../../kernel/globals.h"
 
@@ -45,6 +46,7 @@ void bmp280_test(){
 		writePin(&PORTG, PG3, HIGH);
 		delay(250);
 		int16_t t = bmp280_readTemperature();
+		delay(100);
 		int16_t p = bmp280_readPressure();
 		sprintf(msg, "BMP data: %d %d\r\n", t, p);
 		logMessage(msg, 1, 0);
@@ -98,6 +100,7 @@ void imu_test(){
 
 void gps_test(){
 	kernel_stopTimer();
+	wdt_reset();
 	logMessage((char *)PSTR("Testing GPS...\r\n"), 1, 1);
 	char msg[64];
 	for(int i = 0; i < 10; i++){

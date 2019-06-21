@@ -16,13 +16,11 @@
 #include <avr/io.h>
 #include <stdint.h>
 #include "../../spi.h"
+#include "../../driver_config.h"
 #include <math.h>
 
-#ifndef BMP280config
-#define BMP280_PORT PORTA
-#define BMP280_DDR DDRA
-#define BMP280_CS PA7
-#endif
+#define BMPDRV_VER "0.0.2-bleeding"
+#define BMPDRV_TIMESTAMP __TIMESTAMP__
 
 #define BMP280_REG_DIG_T1 0x88
 #define BMP280_REG_DIG_T2 0x8A
@@ -49,9 +47,10 @@
 #define BMP280_REG_PRESSUREDATA 0xF7
 #define BMP280_REG_TEMPDATA 0xFA
 
+void bmp280_pinSetup();
 void bmp280_init();
-int16_t bmp280_readTemperature();
-int32_t bmp280_readPressure();
+int32_t bmp280_readTemperature();
+uint32_t bmp280_readPressure();
 int16_t bmp280_calcAltitude(float sea_prs);
 
 #endif /* BMP280_H_ */

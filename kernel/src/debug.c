@@ -4,12 +4,12 @@
  * Created: 02.06.2019 20:53:16
  *  Author: ThePetrovich
  */ 
+
 #include "../debug.h"
 #include "../globals.h"
-#define SD_LOGGING 1
 
-void addMessage(char * data);
-void flushToSD();
+void sd_puts(char * data);
+void sd_flush();
 
 char levels[5][16] = {
 	"",
@@ -56,24 +56,22 @@ void debugMessageSD(char* msg, uint8_t level){
 	char buffer[128];
 	if(level != 0){
 		sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
-		addMessage(buffer);
+		sd_puts(buffer);
 	}
-	addMessage(levels[level]);
+	sd_puts(levels[level]);
 	sprintf(buffer, "%s", msg);
-	addMessage(buffer);
+	sd_puts(buffer);
 }
 
 void debugMessageSD_p(const char * msg, uint8_t level){
-//	spi_busSetup(SPI_PRESCALER_4, LSBFIRST, SPI_MODE3, SPI_1X);
 	char buffer[128];
 	if(level != 0){
 		sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
-		addMessage(buffer);
+		sd_puts(buffer);
 	}
-	addMessage(levels[level]);
+	sd_puts(levels[level]);
 	sprintf_P(buffer, PSTR("%S"), msg);
-	addMessage(buffer);
-//	spi_busStop();*/
+	sd_puts(buffer);
 }
 
 inline void logMessage(char* msg, uint8_t level, uint8_t pgm){

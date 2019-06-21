@@ -18,33 +18,6 @@
 #define L3GD_adr	0xD5
 #define L3GD_xyz	0x28
 
-struct LSM
-{
-	unsigned char XH_A;
-	unsigned char XL_A;
-	unsigned char YH_A;
-	unsigned char YL_A;
-	unsigned char ZH_A;
-	unsigned char ZL_A;	
-	unsigned char XH_M;
-	unsigned char XL_M;
-	unsigned char YH_M;
-	unsigned char YL_M;
-	unsigned char ZH_M;
-	unsigned char ZL_M;
-}LSM;
-
-struct L3GD
-{
-	unsigned char XH;
-	unsigned char XL;
-	unsigned char YH;
-	unsigned char YL;
-	unsigned char ZH;
-	unsigned char ZL;
-}L3GD;
-
-
 void lsm_init();
 void l3gd_init();
 void l3gd_read();

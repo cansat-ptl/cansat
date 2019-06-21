@@ -9,7 +9,7 @@
 #ifndef DS18B20_H_
 #define DS18B20_H_
 
-#define DS18DRV_VER "0.0.1-bleeding"
+#define DS18DRV_VER "0.0.2-bleeding"
 #define DS18DRV_TIMESTAMP __TIMESTAMP__
 #ifndef F_CPU
 #define F_CPU 8000000UL
@@ -21,6 +21,7 @@
 #include <util/delay.h>
 #include <avr/common.h>
 #include <avr/interrupt.h>
+#include "../../driver_config.h"
 
 #define DS_CMD_CONVERTTEMP 0x44
 #define DS_CMD_RSCRATCHPAD 0xBE
@@ -33,13 +34,6 @@
 #define DS_CMD_MATCHROM 0x55
 #define DS_CMD_SKIPROM 0xCC
 #define DS_CMD_ALARMSEARCH 0xEC
-
-#ifndef DS18B20config
-#define DS18B20_PORT PORTA
-#define DS18B20_DDR DDRA
-#define DS18B20_PIN PINA
-#define DS18B20_IO PA1
-#endif
 
 #define DS_RESOLUTION_12BIT 625
 

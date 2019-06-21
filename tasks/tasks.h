@@ -87,4 +87,7 @@ void readADXL();
 void readDS18();
 void readGPS();
 
+void sendGPS();
+void sendMain();
+
 #endif /* TASKS_H_ */

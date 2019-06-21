@@ -8,6 +8,7 @@
 #include "../kernel.h"
 #include "../globals.h"
 
+
 #define stackSetup() asm volatile(  \
 	"ldi R16, hi8(RAMEND)\n\t"		    \
 	"out SPH, R16\n\t"		            \
@@ -82,6 +83,10 @@
 	"POP    R1\n\t"					\
 	"POP    R0\n\t"::)
 
+#define VERBOSE 0
+
+uint64_t e_time = 0;
+uint8_t debug = 0;
 uint8_t callIndex = 0; //Index of the last task in queue
 volatile uint16_t kflags = 0; 
 uint16_t kflags_mirror __attribute__ ((section (".noinit")));
@@ -104,9 +109,9 @@ void idle(); //System idle task, MUST me declared in tasks.c
 void init(); //System init task, MUST me declared in tasks.c
 
 inline uint8_t kernel_addCall(task t_ptr){
-	#ifdef DEBUG
-		logMessage(PSTR("Kernel: added call to queue\r\n"), 1, 1);
-	#endif
+	if(debug == 1 && VERBOSE){
+		logMessage((char *)PSTR("Kernel: added call to queue\r\n"), 1, 1);
+	}
 	if(statusReg & (1 << 7)){
 		disableInterrupts();
 	}
@@ -124,9 +129,9 @@ inline uint8_t kernel_addCall(task t_ptr){
 }
 
 uint8_t kernel_addTask(task t_ptr, uint8_t t_period){
-	#ifdef DEBUG
-		logMessage(PSTR("Kernel: added timed task to queue\r\n"), 1, 1);
-	#endif
+	if(debug == 1 && VERBOSE){
+		logMessage((char *)PSTR("Kernel: added timed task to queue\r\n"), 1, 1);
+	}
 	if(statusReg & (1 << 7)){
 		disableInterrupts();
 	}
@@ -216,6 +221,7 @@ inline void kernel_timerService(){
 			}
 		}
 	}
+	e_time += 10;
 	enableInterrupts();
 }
 
@@ -224,7 +230,7 @@ void kernel_setupTimer(){
 	disableInterrupts();
 	TCCR1B |= (1 << WGM12)|(1 << CS11)|(1 << CS10); //prescaler 64
 	TCNT1 = 0; 
-	OCR1A = 5000;
+	OCR1A = 1250;
 	enableInterrupts();
 }
 
@@ -254,19 +260,28 @@ uint8_t kernel(){
 	while(1){
 		wdt_reset();
 		kernel_taskManager();
+		switchBit(&LED_KRN_PORT, LED_KRN);
 	}
 }
 
 uint8_t kernelInit(){
 //	stackSetup(); Fix assembly includes
+	setupPins();
+	delay(10);
+	if(checkBit_m(JUMPER_PORT, JUMPER_IN)) debug = 1;
+	
 	wdt_reset();
 	kernel_clearCallQueue();
+	wdt_reset();
 	kernel_clearTaskQueue();
+	wdt_reset();
+	
 	logMessage((char *)PSTR("Kernel: starting timer..."), 1, 1);
 	kernel_setupTimer();
 	kernel_startTimer();
 	logMessage((char *)PSTR("Kernel: starting kernel..."), 1, 1);
 	kernel();
+	
 	return 0;
 }
 

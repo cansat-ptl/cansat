@@ -2,9 +2,8 @@
  * watchdog.h
  *
  * Created: 17.06.2019 23:04:25
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
-
 
 #ifndef WATCHDOG_H_
 #define WATCHDOG_H_

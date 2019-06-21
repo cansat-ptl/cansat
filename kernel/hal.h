@@ -5,7 +5,6 @@
  *  Author: ThePetrovich
  */ 
 
-
 #ifndef HAL_H_
 #define HAL_H_
 
@@ -15,6 +14,31 @@
 #include <avr/common.h>
 #include <avr/interrupt.h>
 #include <avr/iom128.h>
+
+#define JUMPER_PORT PORTA
+#define JUMPER_DDR DDRA
+#define JUMPER_IN PA0
+#define JUMPER_OUT PA1
+
+#define LED_BUILTIN_PORT PORTG
+#define LED_BUILTIN_DDR DDRG
+#define LED_BUILTIN PG3
+
+#define LED_WRK_PORT PORTG
+#define LED_WRK_DDR DDRG
+#define LED_WRK PG3
+
+#define LED_KRN_PORT PORTG
+#define LED_KRN_DDR DDRG
+#define LED_KRN PG1
+
+#define LED_TX_PORT PORTG
+#define LED_TX_DDR DDRG
+#define LED_TX PG2
+
+#define LED_DBG_PORT PORTG
+#define LED_DBG_DDR DDRG
+#define LED_DBG PG4
 
 #define HIGH 1
 #define LOW 0
@@ -69,4 +93,6 @@ inline void setPinMode(volatile uint8_t *ddr, uint8_t pin, uint8_t value){
 	uint8_t nvalue = !!value;
 	*ddr ^= (-1 * nvalue ^ *ddr) & (1 << pin);
 }
+
+void setupPins();
 #endif /* HAL_H_ */

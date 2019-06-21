@@ -5,7 +5,6 @@
  *  Author: ThePetrovich
  */ 
 
-
 #ifndef GLOBALS_H_
 #define GLOBALS_H_
 
@@ -14,6 +13,9 @@
 extern uint8_t mcucsr_mirror;
 
 #define MAX_QUEUE_SIZE 24
+
+extern uint64_t e_time;
+extern uint8_t debug;
 
 extern uint8_t callIndex;
 extern volatile uint16_t kflags; 
@@ -44,11 +46,36 @@ struct GPS_t
 	unsigned char Sats;
 };
 
-FATFS fs;
-WORD logfile;
+struct LSM_t
+{
+	unsigned char XH_A;
+	unsigned char XL_A;
+	unsigned char YH_A;
+	unsigned char YL_A;
+	unsigned char ZH_A;
+	unsigned char ZL_A;
+	unsigned char XH_M;
+	unsigned char XL_M;
+	unsigned char YH_M;
+	unsigned char YL_M;
+	unsigned char ZH_M;
+	unsigned char ZL_M;
+};
+
+struct L3GD_t
+{
+	unsigned char XH;
+	unsigned char XL;
+	unsigned char YH;
+	unsigned char YL;
+	unsigned char ZH;
+	unsigned char ZL;
+};
 
 extern volatile struct GPS_t GPS;
 extern volatile struct taskStruct taskQueue[MAX_QUEUE_SIZE];
+extern volatile struct LSM_t LSM;
+extern volatile struct L3GD_t L3GD;
 
 extern volatile char rx0_buffer[32];
 extern volatile char tx0_buffer[128];

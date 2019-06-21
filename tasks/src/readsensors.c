@@ -2,17 +2,18 @@
  * readsensors.c
  *
  * Created: 16.06.2019 0:49:48
- *  Author: Admin
+ *  Author: ThePetrovich
  */ 
+
 #include "../tasks.h"
 #include "../../kernel/globals.h"
 
-#define DEBUG 1
+float convertToDecimal(float lat);
 
 void readBMP(){
-	#ifdef DEBUG
+	if(debug == 1){
 		logMessage((char *)PSTR("Reading BMP280\r\n"), 1, 1);
-	#endif
+	}
 	int16_t t2, alt;
 	int32_t prs;
 	t2 = bmp280_readTemperature();
@@ -22,32 +23,33 @@ void readBMP(){
 	sprintf(packetMain.prs, "PRS=%ld;", prs);
 	sprintf(packetMain.alt, "ALT=%d;", alt);
 	sprintf(packetGPS.alt, "ALT=%d;", alt);
-	kernel_addTask(readBMP, 10);
+	kernel_addTask(readBMP, 40);
 	wdt_reset();
 }
 
 void readADXL(){
-	#ifdef DEBUG
+	if(debug == 1){
 		logMessage((char *)PSTR("Reading ADXL345\r\n"), 1, 1);
-	#endif
+	}
 	int16_t ax, ay, az;
 	ax = adxl345_readX();
 	ay = adxl345_readY();
 	az = adxl345_readZ();
-	sprintf(packetOrient.ax, "AX=%d;", ax);
-	sprintf(packetOrient.ay, "AY=%d;", ay);
-	sprintf(packetOrient.az, "AZ=%d;", az);
-	kernel_addTask(readADXL, 5);
+	sprintf(packetOrient.ax, "AX=%d;", ax*10);
+	sprintf(packetOrient.ay, "AY=%d;", ay*10);
+	sprintf(packetOrient.az, "AZ=%d;", az*10);
+	kernel_addTask(readADXL, 20);
 	wdt_reset();
 }
 
 void readDS18(){
-	#ifdef DEBUG
+	if(debug == 1){
 		logMessage((char *)PSTR("Reading DS18B20\r\n"), 1, 1);
-	#endif
+	}
 	char * t1 = ds18b20_readTemperature();
-	sprintf(packetMain.t1, "T1=%s;", t1);
-	kernel_addTask(readDS18, 15);
+	float t1_conv = atof(t1);
+	sprintf(packetMain.t1, "T1=%d;", (int)(t1_conv*10.0));
+	kernel_addTask(readDS18, 60);
 	wdt_reset();
 }
 //Holy shiet
@@ -56,11 +58,11 @@ void readIMU(){
 }
 
 void readGPS(){
-	#ifdef DEBUG
+	if(debug == 1){
 		logMessage((char *)PSTR("Reading GPS data\r\n"), 1, 1);
-	#endif
+	}
 	sprintf(packetGPS.sat, "SAT=%d;", GPS.Sats);
-	sprintf(packetGPS.lat, "LAT=%.6f;", GPS.latitude);
-	sprintf(packetGPS.lon, "LON=%.6f;", GPS.longitude);
-	kernel_addTask(readGPS, 12);
+	sprintf(packetGPS.lat, "LAT=%.6f;", convertToDecimal(GPS.latitude));
+	sprintf(packetGPS.lon, "LON=%.6f;", convertToDecimal(GPS.longitude));
+	kernel_addTask(readGPS, 48);
 }

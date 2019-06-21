@@ -3,7 +3,8 @@
  *
  * Created: 07.06.2019 23:15:11
  *  Author: ThePetrovich
- */ 
+ */
+ 
 #ifndef TWI_H_
 #define TWI_H_
 

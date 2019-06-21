@@ -5,7 +5,6 @@
  *  Author: ThePetrovich
  */ 
 
-
 #ifndef DEBUG_H_
 #define DEBUG_H_
 
@@ -23,5 +22,8 @@ void debugMessage_p(const char * msg, uint8_t level);
 void debugMessage_pi(const char * msg, uint8_t level);
 void debugMessageSD_p(const char * msg, uint8_t level);
 void logMessage(char* msg, uint8_t level, uint8_t pgm);
+
+FATFS fs;
+WORD logfile;
 
 #endif /* DEBUG_H_ */
