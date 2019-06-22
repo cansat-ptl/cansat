@@ -47,4 +47,5 @@ void kernel_startTimer();
 
 void sd_puts(char * data);
 void sd_flush();
+void sd_readPtr();
 #endif /* KERNEL_H_ */

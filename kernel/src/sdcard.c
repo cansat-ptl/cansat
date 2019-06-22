@@ -14,6 +14,11 @@ char sd_buffer0[512];
 char sd_buffer1[256];
 uint16_t sd_index = 0;
 uint64_t sd_pointer = 0;
+uint64_t sd_ptr_e EEMEM;
+
+void sd_readPtr(){
+	eeprom_read_block(&sd_pointer, &sd_ptr_e, 4);
+}
 
 void sd_puts(char * data){
 	int i;
@@ -38,6 +43,7 @@ void sd_flush(){
 	WORD bw;
 	FRESULT res;
 	uint8_t cs_flags = 0;
+	/*
 	if(checkBit_m(ADXL345_PORT,ADXL345_CS)){
 		writePin(&ADXL345_PORT, ADXL345_CS, 0);
 		setBit_m(cs_flags, 0);
@@ -50,7 +56,7 @@ void sd_flush(){
 		writePin(&NRF_CSN_PORT, NRF_CSN, 0);
 		setBit_m(cs_flags, 2);
 	}	
-	
+	*/
 	res = pf_open("/debug.log");
 	if(res == FR_OK){
 		cli();
@@ -63,7 +69,9 @@ void sd_flush(){
 		sd_buffer1[0] = 0;
 		sd_pointer += 512;
 	}
+	//eeprom_write_block(&sd_pointer, &sd_ptr_e, 4);
 	else debugMessage_p(PSTR("Could not open /debug.log, SD card failure\r\n"), 3);
+	/*
 	if(checkBit_m(cs_flags, 0)){
 		writePin(&ADXL345_PORT, ADXL345_CS, 1);
 	}
@@ -72,5 +80,5 @@ void sd_flush(){
 	}
 	if(checkBit_m(cs_flags, 2)){
 		writePin(&NRF_CSN_PORT, NRF_CSN, 1);
-	}
+	}*/
 }

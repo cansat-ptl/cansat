@@ -98,8 +98,8 @@ const char wdt_reset_msg_l1[] PROGMEM = "The system has been reset by watchdog.\
 const char wdt_reset_msg_l2[] PROGMEM = "This is usually caused by software issues or faulty device connections.\r\n";
 const char wdt_reset_msg_l3[] PROGMEM = "Please, report this to the developer as quick as possible.\r\n";
 const char wdt_reset_msg_l4[] PROGMEM = "Error details: MCUCSR.WDRF = 1\r\n";
-const char msg_separator_start[] PROGMEM = "\r\n--------------------------------------------------------------------------------------\r\n";
-const char msg_separator_end[] PROGMEM = "--------------------------------------------------------------------------------------\r\n\r\n";
+const char msg_separator_start[] PROGMEM = "\r\n------------------------------------------------------------------------------------------------------\r\n";
+const char msg_separator_end[] PROGMEM = "------------------------------------------------------------------------------------------------------\r\n\r\n";
 const char bod_reset_msg_l1[] PROGMEM = "The system has been reset by brown-out detector.\r\n";
 const char bod_reset_msg_l2[] PROGMEM = "This is usually caused by an unstable power supply.\r\n";
 const char bod_reset_msg_l3[] PROGMEM = "Please, check power supply wire connections and circuitry as soon as possible.\r\n";
@@ -268,7 +268,7 @@ uint8_t kernelInit(){
 //	stackSetup(); Fix assembly includes
 	setupPins();
 	delay(10);
-	if(checkBit_m(JUMPER_PORT, JUMPER_IN)) debug = 1;
+	if(checkBit_m(JUMPER_PIN, JUMPER_IN)) debug = 1;
 	
 	wdt_reset();
 	kernel_clearCallQueue();

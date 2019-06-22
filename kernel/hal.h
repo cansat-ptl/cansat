@@ -17,6 +17,7 @@
 
 #define JUMPER_PORT PORTA
 #define JUMPER_DDR DDRA
+#define JUMPER_PIN PINA
 #define JUMPER_IN PA0
 #define JUMPER_OUT PA1
 
@@ -24,21 +25,21 @@
 #define LED_BUILTIN_DDR DDRG
 #define LED_BUILTIN PG3
 
-#define LED_WRK_PORT PORTG
-#define LED_WRK_DDR DDRG
-#define LED_WRK PG3
+#define LED_WRK_PORT PORTA
+#define LED_WRK_DDR DDRA
+#define LED_WRK PA4
 
-#define LED_KRN_PORT PORTG
-#define LED_KRN_DDR DDRG
-#define LED_KRN PG1
+#define LED_KRN_PORT PORTA
+#define LED_KRN_DDR DDRA
+#define LED_KRN PA5
 
-#define LED_TX_PORT PORTG
-#define LED_TX_DDR DDRG
-#define LED_TX PG2
+#define LED_TX_PORT PORTA
+#define LED_TX_DDR DDRA
+#define LED_TX PA6
 
-#define LED_DBG_PORT PORTG
-#define LED_DBG_DDR DDRG
-#define LED_DBG PG4
+#define LED_DBG_PORT PORTA
+#define LED_DBG_DDR DDRA
+#define LED_DBG PA7
 
 #define HIGH 1
 #define LOW 0

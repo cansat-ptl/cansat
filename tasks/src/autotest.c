@@ -15,9 +15,18 @@ uint16_t tests_r = 0;
 void adxl345_test(){
 	kernel_stopTimer();
 	char msg[64];
+	
 	logMessage((char *)PSTR("Testing ADXL345...\r\n"), 1, 1);
-	if(adxl345_init() == ERR_ADXL_DEVID_MISMATCH)
-		logMessage((char *)PSTR("ADXL init failure: no ADXL345 connected/DEVID mismatch\r\n"), 3, 1);
+	for(int i = 0; i < 5; i++){
+		if(adxl345_init() == ERR_ADXL_DEVID_MISMATCH)
+		logMessage((char *)PSTR("ADXL init failure: no ADXL345 connected/DEVID mismatch, retrying...\r\n"), 3, 1);
+		else {
+			logMessage((char *)PSTR("ADXL init success\r\n"), 3, 1);
+			break;
+		}
+		wdt_reset();
+	}
+	
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
 		writePin(&PORTG, PG3, HIGH);
@@ -30,6 +39,7 @@ void adxl345_test(){
 		writePin(&PORTG, PG3, LOW);
 		delay(250);
 	}
+	
 	setBit_m(tests_r, ADXL_TESTED);
 	eeprom_write_word(&tests, tests_r);
 	kernel_startTimer();
@@ -39,20 +49,32 @@ void adxl345_test(){
 void bmp280_test(){
 	kernel_stopTimer();
 	char msg[64];
+	
 	logMessage((char *)PSTR("Testing BMP280...\r\n"), 1, 1);
-	bmp280_init();
+	for(int i = 0; i < 5; i++){
+		if(bmp280_init() == ERR_BMP_DEVID_MISMATCH)
+			logMessage((char *)PSTR("BMP init failure: no BMP280 connected/DEVID mismatch, retrying...\r\n"), 3, 1);
+		else {
+			logMessage((char *)PSTR("BMP init success\r\n"), 3, 1);
+			break;
+		}
+		wdt_reset();
+	}
+	
+	bmp280_printCalibrationData();
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
 		writePin(&PORTG, PG3, HIGH);
 		delay(250);
-		int16_t t = bmp280_readTemperature();
+		double t = bmp280_readTemperature();
 		delay(100);
-		int16_t p = bmp280_readPressure();
-		sprintf(msg, "BMP data: %d %d\r\n", t, p);
+		double p = bmp280_readPressure();
+		sprintf(msg, "BMP data: %f %f\r\n", t, p);
 		logMessage(msg, 1, 0);
 		writePin(&PORTG, PG3, LOW);
 		delay(250);
 	}
+	
 	setBit_m(tests_r, BMP_TESTED);
 	eeprom_write_word(&tests, tests_r);
 	kernel_startTimer();
@@ -62,6 +84,7 @@ void bmp280_test(){
 void ds18b20_test(){
 	kernel_stopTimer();
 	char msg[64];
+	
 	logMessage((char *)PSTR("Testing DS18B20...\r\n"), 1, 1);
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
@@ -73,6 +96,7 @@ void ds18b20_test(){
 		writePin(&PORTG, PG3, LOW);
 		delay(250);
 	}
+	
 	setBit_m(tests_r, DS_TESTED);
 	eeprom_write_word(&tests, tests_r);
 	kernel_startTimer();
@@ -83,6 +107,7 @@ void imu_test(){
 	kernel_stopTimer();
 	logMessage((char *)PSTR("Testing LSM303...\r\n"), 1, 1);
 	imu_init();
+	
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
 		writePin(&PORTG, PG3, HIGH);
@@ -92,6 +117,7 @@ void imu_test(){
 		writePin(&PORTG, PG3, LOW);
 		delay(250);
 	}
+	
 	setBit_m(tests_r, IMU_TESTED);
 	eeprom_write_word(&tests, tests_r);
 	kernel_startTimer();
@@ -100,9 +126,9 @@ void imu_test(){
 
 void gps_test(){
 	kernel_stopTimer();
-	wdt_reset();
-	logMessage((char *)PSTR("Testing GPS...\r\n"), 1, 1);
 	char msg[64];
+	
+	logMessage((char *)PSTR("Testing GPS...\r\n"), 1, 1);
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
 		writePin(&PORTG, PG3, HIGH);
@@ -114,6 +140,7 @@ void gps_test(){
 		writePin(&PORTG, PG3, LOW);
 		delay(250);
 	}
+	
 	setBit_m(tests_r, GPS_TESTED);
 	eeprom_write_word(&tests, tests_r);
 	kernel_startTimer();

@@ -23,6 +23,7 @@ int main(void){
 	
 	uart0_init(51);
 	uart1_init(51);
+	//sd_readPtr();
 	spi_init();
 	twi_init();
 	adc_init();

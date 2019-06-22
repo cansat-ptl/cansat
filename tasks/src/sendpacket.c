@@ -49,7 +49,7 @@ uint32_t gpsn = 0, mainn = 0, orientn = 0;
 void sendGPS(){
 	sprintf(packetGPS.marker, "YKTSAT5:GPS:");
 	sprintf(packetGPS.n, "N=%lu;", ++gpsn);
-	sprintf(packetGPS.et, "ET=%d;", (int)e_time/1000);
+	sprintf(packetGPS.et, "ET=%lld;", e_time/1000);
 	sprintf(packetGPS.end, "\r\n");
 	logMessage((char *)PSTR("GPS telemetry: "), 1, 1);
 	logMessage(packetGPS.marker, 0, 0);
@@ -66,7 +66,7 @@ void sendGPS(){
 void sendMain(){
 	sprintf(packetMain.marker, "YKTSAT5:MAIN:");
 	sprintf(packetMain.n, "N=%lu;", ++mainn);
-	sprintf(packetMain.et, "ET=%d;", (int)e_time/1000);
+	sprintf(packetMain.et, "ET=%lld;", e_time/1000);
 	sprintf(packetMain.end, "\r\n");
 	logMessage((char *)PSTR("Main telemetry: "), 1, 1);
 	logMessage(packetMain.marker, 0, 0);

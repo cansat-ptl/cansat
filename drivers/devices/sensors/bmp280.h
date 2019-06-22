@@ -19,8 +19,11 @@
 #include "../../driver_config.h"
 #include <math.h>
 
-#define BMPDRV_VER "0.0.2-bleeding"
+#define BMPDRV_VER "0.0.4-rc1"
 #define BMPDRV_TIMESTAMP __TIMESTAMP__
+
+#define BMP280_CHIPID 0x58
+#define ERR_BMP_DEVID_MISMATCH 1
 
 #define BMP280_REG_DIG_T1 0x88
 #define BMP280_REG_DIG_T2 0x8A
@@ -48,9 +51,12 @@
 #define BMP280_REG_TEMPDATA 0xFA
 
 void bmp280_pinSetup();
-void bmp280_init();
-int32_t bmp280_readTemperature();
-uint32_t bmp280_readPressure();
+uint8_t bmp280_init();
+double bmp280_readTemperature();
+double bmp280_readPressure();
 int16_t bmp280_calcAltitude(float sea_prs);
+
+#include "../../uart.h"
+void bmp280_printCalibrationData();
 
 #endif /* BMP280_H_ */

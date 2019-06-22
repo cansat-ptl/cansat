@@ -15,13 +15,14 @@
 
 #include <avr/io.h>
 #include <stdint.h>
+#include <util/delay.h>
 #include "../../spi.h"
 #include "../../driver_config.h"
 
 #define ADXLDRV_VER "0.0.5-bleeding"
 #define ADXLDRV_TIMESTAMP __TIMESTAMP__
 
-#define ADXL345_DEFAULT_DEVID 0x00
+#define ADXL345_DEFAULT_DEVID 0xE5
 #define ADXL345_REG_DEVID 0x00
 #define ADXL345_REG_POWERCTL 0x2D
 #define ADXL345_REG_FORMAT 0x31
