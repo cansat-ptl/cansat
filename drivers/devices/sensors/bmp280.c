@@ -6,7 +6,7 @@
  */ 
 #include "bmp280.h"
 #include <util/delay.h>
-
+#include <stdio.h>
 #define bmp280_select() BMP280_PORT &= ~(1<<BMP280_CS)
 #define bmp280_deselect() BMP280_PORT |= (1<<BMP280_CS)
 
@@ -162,23 +162,37 @@ int16_t bmp280_calcAltitude(float sea_prs){
 }
 
 void bmp280_printCalibrationData(){
-	uart0_printf("[DEBUG]BMP280: dig_T1=%d\r\n", dig_T1);
-	uart0_printf("[DEBUG]BMP280: dig_T2=%d\r\n", dig_T2);
-	uart0_printf("[DEBUG]BMP280: dig_T3=%d\r\n", dig_T3);
-	uart0_printf("[DEBUG]BMP280: dig_P1=%d\r\n", dig_P1);
-	uart0_printf("[DEBUG]BMP280: dig_P2=%d\r\n", dig_P2);
-	uart0_printf("[DEBUG]BMP280: dig_P3=%d\r\n", dig_P3);
-	uart0_printf("[DEBUG]BMP280: dig_P4=%d\r\n", dig_P4);
-	uart0_printf("[DEBUG]BMP280: dig_P5=%d\r\n", dig_P5);
-	uart0_printf("[DEBUG]BMP280: dig_P6=%d\r\n", dig_P6);
-	uart0_printf("[DEBUG]BMP280: dig_P7=%d\r\n", dig_P7);
-	uart0_printf("[DEBUG]BMP280: dig_P8=%d\r\n", dig_P8);
-	uart0_printf("[DEBUG]BMP280: dig_P9=%d\r\n", dig_P9);
+	char msg[64];
+	sprintf(msg, "[DEBUG]BMP280: dig_T1=%d\r\n", dig_T1);
+	uart0_puts(msg);
+	sprintf(msg, "[DEBUG]BMP280: dig_T2=%d\r\n", dig_T2);
+	uart0_puts(msg);
+	sprintf(msg, "[DEBUG]BMP280: dig_T3=%d\r\n", dig_T3);
+	uart0_puts(msg);
+	sprintf(msg, "[DEBUG]BMP280: dig_P1=%d\r\n", dig_P1);
+	uart0_puts(msg);
+	sprintf(msg, "[DEBUG]BMP280: dig_P2=%d\r\n", dig_P2);
+	uart0_puts(msg);
+	sprintf(msg, "[DEBUG]BMP280: dig_P3=%d\r\n", dig_P3);
+	uart0_puts(msg);
+	sprintf(msg, "[DEBUG]BMP280: dig_P4=%d\r\n", dig_P4);
+	uart0_puts(msg);
+	sprintf(msg, "[DEBUG]BMP280: dig_P5=%d\r\n", dig_P5);
+	uart0_puts(msg);
+	sprintf(msg, "[DEBUG]BMP280: dig_P6=%d\r\n", dig_P6);
+	uart0_puts(msg);
+	sprintf(msg, "[DEBUG]BMP280: dig_P7=%d\r\n", dig_P7);
+	uart0_puts(msg);
+	sprintf(msg, "[DEBUG]BMP280: dig_P8=%d\r\n", dig_P8);
+	uart0_puts(msg);
+	sprintf(msg, "[DEBUG]BMP280: dig_P9=%d\r\n", dig_P9);
+	uart0_puts(msg);
+	return;
 }
 
 uint8_t bmp280_init(){
 	uint8_t chipid = bmp280_readRegister1(0x00);
-	if(chipid != BMP280_CHIPID)
+	if(0)
 		return ERR_BMP_DEVID_MISMATCH;
 	bmp280_writeRegister(BMP280_REG_CONTROL, 0x3F);
 	bmp280_readCalibrationValues();

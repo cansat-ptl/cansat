@@ -7,7 +7,11 @@
 #include "twi.h"
 
 void twi_init(){
-	TWBR = (uint8_t)TWBRVAL;
+	TWBR = 2;
+	TWSR = 0;
+	PORTD = (1<<PD1) | (1<<PD0);
+	DDRD = ~(1<<PD1) & (1<<PD0);
+	TWCR = (1<<TWINT)|(1<<TWEN);
 }
 
 uint8_t twi_start(uint8_t address){
@@ -43,7 +47,7 @@ uint8_t twi_write(uint8_t data){
 }
 
 uint8_t twi_read_ack(){
-	sendStart();
+	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWEA);
 	while(!(TWCR & (1<<TWINT)));
 	return TWDR;
 }

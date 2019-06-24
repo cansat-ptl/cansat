@@ -68,11 +68,13 @@ Transmits and retrieves a single register from the SPI module.
 Arguments: uint8_t address - register address
 		   uint8_t isDelayed - if set to 1, a 0xFF will be sent
 		    after a register read request
+		   uint8_t mask - address mask - required for some devices
+		    to set up R/W mode. Leave 0 if no mask should be applied
 		   uint8_t isInverted - determines how mask will be applied.
-			0 - address | 0x80, 1 - address & ~0x80
+			0 - address | mask, 1 - address & ~mask
 Returns: uint8_t - register value
 ------------------------------------------------------------*/
-uint8_t spi_readRegister(uint8_t address, uint8_t isDelayed, uint8_t isInverted){
+uint8_t spi_readRegister(uint8_t address, uint8_t isDelayed, uint8_t mask, uint8_t isInverted){
 	SPI_PORT &= ~(1<<SPI_SS);
 	
 	if(isInverted)

@@ -8,6 +8,9 @@
 #ifndef DEBUG_H_
 #define DEBUG_H_
 
+#define DBG_MOD_VER "0.9.1-staging"
+#define DBG_MOD_TIMESTAMP __TIMESTAMP__
+
 #define UART_LOGGING 1
 
 #include <stdint.h>
@@ -15,13 +18,13 @@
 #include <stdio.h>
 #include "drivers.h"
 
-void debugMessage(char* msg, uint8_t level);
-void debugMessage_i(char* msg, uint8_t level);
-void debugMessageSD(char* msg, uint8_t level);
-void debugMessage_p(const char * msg, uint8_t level);
-void debugMessage_pi(const char * msg, uint8_t level);
-void debugMessageSD_p(const char * msg, uint8_t level);
-void logMessage(char* msg, uint8_t level, uint8_t pgm);
+void debug_sendMessage(char* msg, uint8_t level);
+void debug_sendMessage_i(char* msg, uint8_t level);
+void debug_sendMessageSD(char* msg, uint8_t level);
+void debug_sendMessage_p(const char * msg, uint8_t level);
+void debug_sendMessage_pi(const char * msg, uint8_t level);
+void debug_sendMessageSD_p(const char * msg, uint8_t level);
+void debug_logMessage(char* msg, uint8_t level, uint8_t pgm);
 
 FATFS fs;
 WORD logfile;

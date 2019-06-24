@@ -12,11 +12,11 @@ int16_t ax_g = 0, ay_g = 0, az_g = 0;
 float pitch = 0, yaw = 0, roll = 0;
 
 void imu_setupTimer(){
-	disableInterrupts();
+	hal_disableInterrupts();
 	TCCR3B |= (1 << WGM12)|(1 << CS11)|(1 << CS10); //prescaler 64
 	TCNT3 = 0;
 	OCR3A = 31250;
-	enableInterrupts();
+	hal_enableInterrupts();
 }
 
 void imu_filter(){

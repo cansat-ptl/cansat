@@ -51,15 +51,15 @@ void sendGPS(){
 	sprintf(packetGPS.n, "N=%lu;", ++gpsn);
 	sprintf(packetGPS.et, "ET=%lld;", e_time/1000);
 	sprintf(packetGPS.end, "\r\n");
-	logMessage((char *)PSTR("GPS telemetry: "), 1, 1);
-	logMessage(packetGPS.marker, 0, 0);
-	logMessage(packetGPS.n, 0, 0);
-	logMessage(packetGPS.et, 0, 0);
-	logMessage(packetGPS.sat, 0, 0);
-	logMessage(packetGPS.lat, 0, 0);
-	logMessage(packetGPS.lon, 0, 0);
-	logMessage(packetGPS.alt, 0, 0);
-	logMessage(packetGPS.end, 0, 0);
+	debug_logMessage((char *)PSTR("GPS telemetry: "), 1, 1);
+	debug_logMessage(packetGPS.marker, 0, 0);
+	debug_logMessage(packetGPS.n, 0, 0);
+	debug_logMessage(packetGPS.et, 0, 0);
+	debug_logMessage(packetGPS.sat, 0, 0);
+	debug_logMessage(packetGPS.lat, 0, 0);
+	debug_logMessage(packetGPS.lon, 0, 0);
+	debug_logMessage(packetGPS.alt, 0, 0);
+	debug_logMessage(packetGPS.end, 0, 0);
 	kernel_addTask(sendGPS, 50);
 }
 
@@ -68,15 +68,15 @@ void sendMain(){
 	sprintf(packetMain.n, "N=%lu;", ++mainn);
 	sprintf(packetMain.et, "ET=%lld;", e_time/1000);
 	sprintf(packetMain.end, "\r\n");
-	logMessage((char *)PSTR("Main telemetry: "), 1, 1);
-	logMessage(packetMain.marker, 0, 0);
-	logMessage(packetMain.n, 0, 0);
-	logMessage(packetMain.et, 0, 0);
-	logMessage(packetMain.vbat, 0, 0);
-	logMessage(packetMain.alt, 0, 0);
-	logMessage(packetMain.prs, 0, 0);
-	logMessage(packetMain.t1, 0, 0);
-	logMessage(packetMain.t2, 0, 0);
-	logMessage(packetMain.end, 0, 0);
+	debug_logMessage((char *)PSTR("Main telemetry: "), 1, 1);
+	debug_logMessage(packetMain.marker, 0, 0);
+	debug_logMessage(packetMain.n, 0, 0);
+	debug_logMessage(packetMain.et, 0, 0);
+	debug_logMessage(packetMain.vbat, 0, 0);
+	debug_logMessage(packetMain.alt, 0, 0);
+	debug_logMessage(packetMain.prs, 0, 0);
+	debug_logMessage(packetMain.t1, 0, 0);
+	debug_logMessage(packetMain.t2, 0, 0);
+	debug_logMessage(packetMain.end, 0, 0);
 	kernel_addTask(sendMain, 100);
 }

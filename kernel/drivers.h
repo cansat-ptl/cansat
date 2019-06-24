@@ -8,6 +8,9 @@
 #ifndef DRIVERS_H_
 #define DRIVERS_H_
 
+#define SDCARD_DRV_VER "R0.0.2"
+#define SDCARD_DRV_TIMESTAMP __TIMESTAMP__
+
 #include "../drivers/uart.h"
 #include "../drivers/spi.h"
 #include "../drivers/twi.h"

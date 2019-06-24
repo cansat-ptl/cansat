@@ -7,7 +7,7 @@
 
 #include "../hal.h"
 
-void setupPins(){
+void hal_setupPins(){
 	JUMPER_DDR |= (1<<JUMPER_OUT);
 	JUMPER_PORT |= (1<<JUMPER_OUT);
 	LED_KRN_DDR |= (1<<LED_KRN);

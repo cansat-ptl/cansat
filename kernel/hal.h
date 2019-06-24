@@ -8,6 +8,9 @@
 #ifndef HAL_H_
 #define HAL_H_
 
+#define HAL_MOD_VER "0.1.2-staging"
+#define HAL_MOD_TIMESTAMP __TIMESTAMP__
+
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdint.h>
@@ -46,54 +49,54 @@
 #define OUTPUT 1
 #define INPUT 0
 
-#define disableInterrupts() cli()
-#define enableInterrupts() sei()
-#define statusReg SREG
-#define nop() asm volatile ("NOP")
+#define hal_disableInterrupts() cli()
+#define hal_enableInterrupts() sei()
+#define hal_statusReg SREG
+#define hal_nop() asm volatile ("NOP")
 #define delay(x) _delay_ms(x);
 
-#define setBit_m(x,y) x |= (1 << y)
-#define clearBit_m(x,y) x &= ~(1<< y)
-#define checkBit_m(x,y) ((0u == (x & (1<<y)))?0u:1u)
-#define switchBit_m(x,y) (x ^= (1<<y))
+#define hal_setBit_m(x,y) x |= (1 << y)
+#define hal_clearBit_m(x,y) x &= ~(1<< y)
+#define hal_checkBit_m(x,y) ((0u == (x & (1<<y)))?0u:1u)
+#define hal_switchBit_m(x,y) (x ^= (1<<y))
 
-inline void switchBit(volatile uint8_t *reg, uint8_t bit);
-inline void setBit(volatile uint8_t *reg, uint8_t bit);
-inline void clearBit(volatile uint8_t *reg, uint8_t bit);
-inline volatile uint8_t checkBit(volatile uint8_t *reg, uint8_t bit);
-inline void writePin(volatile uint8_t *port, uint8_t pin, uint8_t value);
-inline volatile uint8_t readPin(volatile uint8_t *port, uint8_t pin);
-inline void setPinMode(volatile uint8_t *ddr, uint8_t pin, uint8_t value);
+inline void hal_switchBit(volatile uint8_t *reg, uint8_t bit);
+inline void hal_setBit(volatile uint8_t *reg, uint8_t bit);
+inline void hal_clearBit(volatile uint8_t *reg, uint8_t bit);
+inline volatile uint8_t hal_checkBit(volatile uint8_t *reg, uint8_t bit);
+inline void hal_writePin(volatile uint8_t *port, uint8_t pin, uint8_t value);
+inline volatile uint8_t hal_readPin(volatile uint8_t *port, uint8_t pin);
+inline void hal_setPinMode(volatile uint8_t *ddr, uint8_t pin, uint8_t value);
 
-inline void switchBit(volatile uint8_t *reg, uint8_t bit){
+inline void hal_switchBit(volatile uint8_t *reg, uint8_t bit){
 	*reg ^= (1 << bit);
 }
 
-inline void setBit(volatile uint8_t *reg, uint8_t bit){
+inline void hal_setBit(volatile uint8_t *reg, uint8_t bit){
 	*reg ^= (1 << bit);
 }
 
-inline void clearBit(volatile uint8_t *reg, uint8_t bit){
+inline void hal_clearBit(volatile uint8_t *reg, uint8_t bit){
 	*reg &= ~(1 << bit);
 }
 
-inline volatile uint8_t checkBit(volatile uint8_t *reg, uint8_t bit){
+inline volatile uint8_t hal_checkBit(volatile uint8_t *reg, uint8_t bit){
 	return (*reg >> bit) & 1;
 }
 
-inline void writePin(volatile uint8_t *port, uint8_t pin, uint8_t value){
+inline void hal_writePin(volatile uint8_t *port, uint8_t pin, uint8_t value){
 	uint8_t nvalue = !!value;
 	*port ^= (-1 * nvalue ^ *port) & (1 << pin);
 }
 //Actually does the same thing as checkBit(), but i'll keep it here just in case
-inline volatile uint8_t readPin(volatile uint8_t *port, uint8_t pin){
+inline volatile uint8_t hal_readPin(volatile uint8_t *port, uint8_t pin){
 	return (*port >> pin) & 1;
 }
 
-inline void setPinMode(volatile uint8_t *ddr, uint8_t pin, uint8_t value){
+inline void hal_setPinMode(volatile uint8_t *ddr, uint8_t pin, uint8_t value){
 	uint8_t nvalue = !!value;
 	*ddr ^= (-1 * nvalue ^ *ddr) & (1 << pin);
 }
 
-void setupPins();
+void hal_setupPins();
 #endif /* HAL_H_ */

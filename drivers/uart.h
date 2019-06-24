@@ -30,17 +30,100 @@ extern volatile int rx1_pointer;
 extern volatile char *tx1_data;
 extern volatile int tx1_pointer;
 
+/*------------------------------------------------------------
+UART0 setup - uart0_init(unsigned int ubrr)
+Sets up UART0 registers
+Arguments: unsigned int ubrr - UBRR value, calculated using
+		    formula in drivers/uart.h. Defines UART0 baud rate.
+Returns: int - 0 (additional checks may be added later)
+------------------------------------------------------------*/
 int uart0_init(unsigned int ubrr);
+
+/*------------------------------------------------------------
+UART0 interrupted TX start - uart0_transmit(unsigned int ubrr)
+Transmits data stored in tx0_buffer using uart0 interrupts.
+Data should be put in buffer BEFORE the transmission starts.
+Arguments: none
+Returns: nothing
+------------------------------------------------------------*/
 void uart0_transmit();
-void uart0_putc(char c); //Does not use interrupts
-void uart0_puts(char * msg); //Does not use interrupts
+
+/*------------------------------------------------------------
+UART0 uninterrupted character TX - uart0_putc(char c)
+Transmits a single character through uart0. Does not require
+interrupts.
+Arguments: char c - character to be sent
+Returns: nothing
+------------------------------------------------------------*/
+void uart0_putc(char c);
+
+/*------------------------------------------------------------
+UART0 uninterrupted string TX - uart0_puts(char * msg)
+Transmits a string through uart0. Does not require
+interrupts.
+Arguments: char * msg - string pointer
+Returns: nothing
+------------------------------------------------------------*/
+void uart0_puts(char * msg);
+
+/*------------------------------------------------------------
+UART0 custom printf - uart0_printf(char * format, ...)
+prints a formatted string to uart0 without stdio.
+Arguments: char * format - same as printf's format, but does
+			not support floats.
+		   arg1, arg2, ... - values, as specified in format.
+Returns: nothing
+------------------------------------------------------------*/
 void uart0_printf(char * format, ...); //Величайший велосипед человечества
+
+/*------------------------------------------------------------
+UART0 receive buffer flush - rx0_buffer_flush()
+Clears the uart0 receive buffer (rx0_buffer).
+Arguments: none
+Returns: nothing
+------------------------------------------------------------*/
 void rx0_buffer_flush();
+
+/*------------------------------------------------------------
+UART0 transmit buffer flush - tx0_buffer_flush()
+Clears the uart0 transmit buffer (rx0_buffer).
+Arguments: none
+Returns: nothing
+------------------------------------------------------------*/
 void tx0_buffer_flush();
 
+/*------------------------------------------------------------
+UART1 setup - uart1_init(unsigned int ubrr)
+Sets up UART1 registers
+Arguments: unsigned int ubrr - UBRR value, calculated using
+		    formula in drivers/uart.h. Defines UART0 baud rate.
+Returns: int - 0 (additional checks may be added later)
+------------------------------------------------------------*/
 int uart1_init(unsigned int ubrr);
+
+/*------------------------------------------------------------
+UART1 interrupted TX start - uart1_transmit(unsigned int ubrr)
+Transmits data stored in tx1_buffer using uart1 interrupts.
+Data should be put in buffer BEFORE the transmission starts.
+Arguments: none
+Returns: nothing
+------------------------------------------------------------*/
 void uart1_transmit();
+
+/*------------------------------------------------------------
+UART1 receive buffer flush - rx1_buffer_flush()
+Clears the uart1 receive buffer (rx1_buffer).
+Arguments: none
+Returns: nothing
+------------------------------------------------------------*/
 void rx1_buffer_flush();
+
+/*------------------------------------------------------------
+UART1 transmit buffer flush - tx1_buffer_flush()
+Clears the uart1 transmit buffer (rx1_buffer).
+Arguments: none
+Returns: nothing
+------------------------------------------------------------*/
 void tx1_buffer_flush();
 
 #endif /* UART_H_ */

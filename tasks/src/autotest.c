@@ -16,12 +16,12 @@ void adxl345_test(){
 	kernel_stopTimer();
 	char msg[64];
 	
-	logMessage((char *)PSTR("Testing ADXL345...\r\n"), 1, 1);
+	debug_logMessage((char *)PSTR("Testing ADXL345...\r\n"), 1, 1);
 	for(int i = 0; i < 5; i++){
 		if(adxl345_init() == ERR_ADXL_DEVID_MISMATCH)
-		logMessage((char *)PSTR("ADXL init failure: no ADXL345 connected/DEVID mismatch, retrying...\r\n"), 3, 1);
+		debug_logMessage((char *)PSTR("ADXL init failure: no ADXL345 connected/DEVID mismatch, retrying...\r\n"), 3, 1);
 		else {
-			logMessage((char *)PSTR("ADXL init success\r\n"), 3, 1);
+			debug_logMessage((char *)PSTR("ADXL init success\r\n"), 3, 1);
 			break;
 		}
 		wdt_reset();
@@ -29,18 +29,18 @@ void adxl345_test(){
 	
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
-		writePin(&PORTG, PG3, HIGH);
+		hal_writePin(&PORTG, PG3, HIGH);
 		delay(250);
 		int16_t ax = adxl345_readX();
 		int16_t ay = adxl345_readY();
 		int16_t az = adxl345_readZ();
 		sprintf(msg, "ADXL data: %d %d %d\r\n", ax, ay, az);
-		logMessage(msg, 1, 0);
-		writePin(&PORTG, PG3, LOW);
+		debug_logMessage(msg, 1, 0);
+		hal_writePin(&PORTG, PG3, LOW);
 		delay(250);
 	}
 	
-	setBit_m(tests_r, ADXL_TESTED);
+	hal_setBit_m(tests_r, ADXL_TESTED);
 	eeprom_write_word(&tests, tests_r);
 	kernel_startTimer();
 	wdt_reset();
@@ -50,12 +50,12 @@ void bmp280_test(){
 	kernel_stopTimer();
 	char msg[64];
 	
-	logMessage((char *)PSTR("Testing BMP280...\r\n"), 1, 1);
+	debug_logMessage((char *)PSTR("Testing BMP280...\r\n"), 1, 1);
 	for(int i = 0; i < 5; i++){
 		if(bmp280_init() == ERR_BMP_DEVID_MISMATCH)
-			logMessage((char *)PSTR("BMP init failure: no BMP280 connected/DEVID mismatch, retrying...\r\n"), 3, 1);
+			debug_logMessage((char *)PSTR("BMP init failure: no BMP280 connected/DEVID mismatch, retrying...\r\n"), 3, 1);
 		else {
-			logMessage((char *)PSTR("BMP init success\r\n"), 3, 1);
+			debug_logMessage((char *)PSTR("BMP init success\r\n"), 3, 1);
 			break;
 		}
 		wdt_reset();
@@ -64,18 +64,18 @@ void bmp280_test(){
 	bmp280_printCalibrationData();
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
-		writePin(&PORTG, PG3, HIGH);
+		hal_writePin(&PORTG, PG3, HIGH);
 		delay(250);
 		double t = bmp280_readTemperature();
 		delay(100);
 		double p = bmp280_readPressure();
 		sprintf(msg, "BMP data: %f %f\r\n", t, p);
-		logMessage(msg, 1, 0);
-		writePin(&PORTG, PG3, LOW);
+		debug_logMessage(msg, 1, 0);
+		hal_writePin(&PORTG, PG3, LOW);
 		delay(250);
 	}
 	
-	setBit_m(tests_r, BMP_TESTED);
+	hal_setBit_m(tests_r, BMP_TESTED);
 	eeprom_write_word(&tests, tests_r);
 	kernel_startTimer();
 	wdt_reset();
@@ -85,19 +85,19 @@ void ds18b20_test(){
 	kernel_stopTimer();
 	char msg[64];
 	
-	logMessage((char *)PSTR("Testing DS18B20...\r\n"), 1, 1);
+	debug_logMessage((char *)PSTR("Testing DS18B20...\r\n"), 1, 1);
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
-		writePin(&PORTG, PG3, HIGH);
+		hal_writePin(&PORTG, PG3, HIGH);
 		delay(250);
 		char * t = ds18b20_readTemperature();
 		sprintf(msg, "DS data: %s\r\n", t);
-		logMessage(msg, 1, 0);
-		writePin(&PORTG, PG3, LOW);
+		debug_logMessage(msg, 1, 0);
+		hal_writePin(&PORTG, PG3, LOW);
 		delay(250);
 	}
 	
-	setBit_m(tests_r, DS_TESTED);
+	hal_setBit_m(tests_r, DS_TESTED);
 	eeprom_write_word(&tests, tests_r);
 	kernel_startTimer();
 	wdt_reset();
@@ -105,20 +105,39 @@ void ds18b20_test(){
 
 void imu_test(){
 	kernel_stopTimer();
-	logMessage((char *)PSTR("Testing LSM303...\r\n"), 1, 1);
+	debug_logMessage((char *)PSTR("Testing LSM303...\r\n"), 1, 1);
 	imu_init();
+	
+	char msg[128];
+	
+	int16_t gyrData_raw_x = 0, gyrData_raw_y = 0, gyrData_raw_z = 0;
+	int16_t accData_raw_x = 0, accData_raw_y = 0, accData_raw_z = 0;
 	
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
-		writePin(&PORTG, PG3, HIGH);
+		hal_writePin(&PORTG, PG3, HIGH);
 		delay(250);
 		imu_read();
-		logMessage("Reading imu data\r\n", 1, 0);
-		writePin(&PORTG, PG3, LOW);
+			gyrData_raw_x |= (L3GD.XH << 8);
+			gyrData_raw_x |= L3GD.XL;
+			gyrData_raw_y |= (L3GD.YH << 8);
+			gyrData_raw_y |= L3GD.YL;
+			gyrData_raw_z |= (L3GD.ZH << 8);
+			gyrData_raw_z |= L3GD.ZL;
+			
+			accData_raw_x |= (LSM.XH_A << 8);
+			accData_raw_x |= LSM.XL_A;
+			accData_raw_y |= (LSM.YH_A << 8);
+			accData_raw_y |= LSM.YL_A;
+			accData_raw_z |= (LSM.ZH_A << 8);
+			accData_raw_z |= LSM.ZL_A;
+		sprintf(msg, "IMU data: %d %d %d %d %d %d\r\n", gyrData_raw_x, gyrData_raw_y, gyrData_raw_z, accData_raw_x, accData_raw_y, accData_raw_z);
+		debug_logMessage(msg, 1, 0);
+		hal_writePin(&PORTG, PG3, LOW);
 		delay(250);
 	}
 	
-	setBit_m(tests_r, IMU_TESTED);
+	hal_setBit_m(tests_r, IMU_TESTED);
 	eeprom_write_word(&tests, tests_r);
 	kernel_startTimer();
 	wdt_reset();
@@ -128,23 +147,36 @@ void gps_test(){
 	kernel_stopTimer();
 	char msg[64];
 	
-	logMessage((char *)PSTR("Testing GPS...\r\n"), 1, 1);
+	debug_logMessage((char *)PSTR("Testing GPS...\r\n"), 1, 1);
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
-		writePin(&PORTG, PG3, HIGH);
+		hal_writePin(&PORTG, PG3, HIGH);
 		delay(250);
 		float lat = convertToDecimal(GPS.latitude);
 		float lon = convertToDecimal(GPS.longitude);
 		sprintf(msg, "GPS: %d %d %d %f %f\r\n", GPS.day, GPS.month, GPS.year, lat, lon);
-		logMessage(msg,1, 0);
-		writePin(&PORTG, PG3, LOW);
+		debug_logMessage(msg,1, 0);
+		hal_writePin(&PORTG, PG3, LOW);
 		delay(250);
 	}
 	
-	setBit_m(tests_r, GPS_TESTED);
+	hal_setBit_m(tests_r, GPS_TESTED);
 	eeprom_write_word(&tests, tests_r);
 	kernel_startTimer();
 	wdt_reset();
+}
+
+void autotest(){
+	if(!hal_checkBit_m(tests_r, ADXL_TESTED))
+		adxl345_test();
+	if(!hal_checkBit_m(tests_r, BMP_TESTED))
+		bmp280_test();
+	if(!hal_checkBit_m(tests_r, DS_TESTED))
+		ds18b20_test();
+	if(!hal_checkBit_m(tests_r, IMU_TESTED))
+		imu_test();
+	if(!hal_checkBit_m(tests_r, GPS_TESTED))
+		gps_test();
 }
 
 void getTestValues(){

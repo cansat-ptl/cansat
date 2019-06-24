@@ -16,6 +16,16 @@ uint16_t sd_index = 0;
 uint64_t sd_pointer = 0;
 uint64_t sd_ptr_e EEMEM;
 
+void sd_init(){
+	FRESULT res;
+	res = pf_mount(&fs);
+	if(res == FR_OK){
+		debug_logMessage((char *)PSTR("[INIT]initd: SD card mount           [OK]\r\n"), 1, 1);
+		pf_lseek(0);
+	}
+	else debug_logMessage((char *)PSTR("[INIT]initd: SD card mount           [ERR]\r\n"), 1, 1);
+}
+
 void sd_readPtr(){
 	eeprom_read_block(&sd_pointer, &sd_ptr_e, 4);
 }
@@ -42,21 +52,6 @@ void sd_puts(char * data){
 void sd_flush(){
 	WORD bw;
 	FRESULT res;
-	uint8_t cs_flags = 0;
-	/*
-	if(checkBit_m(ADXL345_PORT,ADXL345_CS)){
-		writePin(&ADXL345_PORT, ADXL345_CS, 0);
-		setBit_m(cs_flags, 0);
-	}
-	if(checkBit_m(BMP280_PORT,BMP280_CS)){
-		writePin(&BMP280_PORT, BMP280_CS, 0);
-		setBit_m(cs_flags, 1);
-	}
-	if(checkBit_m(NRF_CSN_PORT,NRF_CSN)){
-		writePin(&NRF_CSN_PORT, NRF_CSN, 0);
-		setBit_m(cs_flags, 2);
-	}	
-	*/
 	res = pf_open("/debug.log");
 	if(res == FR_OK){
 		cli();
@@ -69,16 +64,5 @@ void sd_flush(){
 		sd_buffer1[0] = 0;
 		sd_pointer += 512;
 	}
-	//eeprom_write_block(&sd_pointer, &sd_ptr_e, 4);
-	else debugMessage_p(PSTR("Could not open /debug.log, SD card failure\r\n"), 3);
-	/*
-	if(checkBit_m(cs_flags, 0)){
-		writePin(&ADXL345_PORT, ADXL345_CS, 1);
-	}
-	if(checkBit_m(cs_flags, 1)){
-		writePin(&BMP280_PORT, BMP280_CS, 1);
-	}
-	if(checkBit_m(cs_flags, 2)){
-		writePin(&NRF_CSN_PORT, NRF_CSN, 1);
-	}*/
+	else debug_sendMessage_p(PSTR("sdcardd: could not open /debug.log, SD card failure\r\n"), 3);
 }

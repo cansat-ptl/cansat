@@ -11,6 +11,9 @@
 #define KERNEL_VER "0.1.9-bleeding"
 #define KERNEL_TIMESTAMP __TIMESTAMP__
 
+#define SDCARD_MOD_VER "0.0.4-bleeding"
+#define SDCARD_MOD_TIMESTAMP __TIMESTAMP__
+
 #ifndef KERNELconfig
 #define MAX_QUEUE_SIZE 24
 #define ERR_QUEUE_OVERFLOW 1
@@ -48,4 +51,6 @@ void kernel_startTimer();
 void sd_puts(char * data);
 void sd_flush();
 void sd_readPtr();
+void sd_init();
+
 #endif /* KERNEL_H_ */

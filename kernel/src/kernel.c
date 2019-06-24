@@ -96,7 +96,7 @@ volatile struct taskStruct taskQueue[MAX_QUEUE_SIZE];
 
 const char wdt_reset_msg_l1[] PROGMEM = "The system has been reset by watchdog.\r\n";
 const char wdt_reset_msg_l2[] PROGMEM = "This is usually caused by software issues or faulty device connections.\r\n";
-const char wdt_reset_msg_l3[] PROGMEM = "Please, report this to the developer as quick as possible.\r\n";
+const char wdt_reset_msg_l3[] PROGMEM = "Please, report this to the developer as soon as possible.\r\n";
 const char wdt_reset_msg_l4[] PROGMEM = "Error details: MCUCSR.WDRF = 1\r\n";
 const char msg_separator_start[] PROGMEM = "\r\n------------------------------------------------------------------------------------------------------\r\n";
 const char msg_separator_end[] PROGMEM = "------------------------------------------------------------------------------------------------------\r\n\r\n";
@@ -110,50 +110,50 @@ void init(); //System init task, MUST me declared in tasks.c
 
 inline uint8_t kernel_addCall(task t_ptr){
 	if(debug == 1 && VERBOSE){
-		logMessage((char *)PSTR("Kernel: added call to queue\r\n"), 1, 1);
+		debug_logMessage((char *)PSTR("Kernel: added call to queue\r\n"), 1, 1);
 	}
-	if(statusReg & (1 << 7)){
-		disableInterrupts();
+	if(hal_statusReg & (1 << 7)){
+		hal_disableInterrupts();
 	}
 	if(taskIndex < MAX_QUEUE_SIZE){
 		callIndex++;
 		callQueue[callIndex] = t_ptr;
-		enableInterrupts();
+		hal_enableInterrupts();
 		return 0;
 	}
 	else {
-		enableInterrupts();
-		logMessage((char *)PSTR("Kernel: call queue overflow\r\n"), 3, 1);
+		hal_enableInterrupts();
+		debug_logMessage((char *)PSTR("Kernel: call queue overflow\r\n"), 3, 1);
 		return ERR_QUEUE_OVERFLOW;
 	}
 }
 
 uint8_t kernel_addTask(task t_ptr, uint8_t t_period){
 	if(debug == 1 && VERBOSE){
-		logMessage((char *)PSTR("Kernel: added timed task to queue\r\n"), 1, 1);
+		debug_logMessage((char *)PSTR("Kernel: added timed task to queue\r\n"), 1, 1);
 	}
-	if(statusReg & (1 << 7)){
-		disableInterrupts();
+	if(hal_statusReg & (1 << 7)){
+		hal_disableInterrupts();
 	}
 	if(taskIndex < MAX_QUEUE_SIZE){
 		taskIndex++;
 		taskQueue[taskIndex].pointer = t_ptr;
 		taskQueue[taskIndex].period = t_period;
-		enableInterrupts();
+		hal_enableInterrupts();
 		return 0;
 	}
 	else {
-		enableInterrupts();
-		logMessage((char *)PSTR("Kernel: task queue overflow\r\n"), 3, 1);
+		hal_enableInterrupts();
+		debug_logMessage((char *)PSTR("Kernel: task queue overflow\r\n"), 3, 1);
 		return ERR_QUEUE_OVERFLOW;
 	}
-	enableInterrupts();
+	hal_enableInterrupts();
 }
 
 
 inline uint8_t kernel_removeCall(){
-	if(statusReg & (1 << 7))
-		disableInterrupts();
+	if(hal_statusReg & (1 << 7))
+		hal_disableInterrupts();
 	if(callIndex != 0){
 		callIndex--;
 		for(int i = 0; i < MAX_QUEUE_SIZE-1; i++){
@@ -164,13 +164,13 @@ inline uint8_t kernel_removeCall(){
 	else {
 		callQueue[0] = idle;
 	}
-	enableInterrupts();
+	hal_enableInterrupts();
 	return 0;
 }
 
 inline uint8_t kernel_removeTask(uint8_t position){
-	if(statusReg & (1 << 7))
-		disableInterrupts();
+	if(hal_statusReg & (1 << 7))
+		hal_disableInterrupts();
 	taskIndex--;
 	taskQueue[position].pointer = idle;
 	taskQueue[position].period = 0;
@@ -180,36 +180,36 @@ inline uint8_t kernel_removeTask(uint8_t position){
 	}
 	taskQueue[MAX_QUEUE_SIZE-1].pointer = idle;
 	taskQueue[MAX_QUEUE_SIZE-1].period = 0;	
-	enableInterrupts();
+	hal_enableInterrupts();
 	return 0;
 }
 
 void kernel_clearCallQueue(){
-	logMessage((char *)PSTR("Kernel: call queue cleared\r\n"), 2, 1);
-	if(statusReg & (1 << 7))
-		disableInterrupts();
+	debug_logMessage((char *)PSTR("Kernel: call queue cleared\r\n"), 2, 1);
+	if(hal_statusReg & (1 << 7))
+		hal_disableInterrupts();
 	for(int i = 0; i < MAX_QUEUE_SIZE; i++){
 		callQueue[i] = idle;
 	}
 	callIndex = 0;
-	enableInterrupts();
+	hal_enableInterrupts();
 }
 
 void kernel_clearTaskQueue(){
-	logMessage((char *)PSTR("Kernel: task queue cleared\r\n"), 2, 1);
-	if(statusReg & (1 << 7))
-	disableInterrupts();
+	debug_logMessage((char *)PSTR("Kernel: task queue cleared\r\n"), 2, 1);
+	if(hal_statusReg & (1 << 7))
+	hal_disableInterrupts();
 	for(int i = 0; i < MAX_QUEUE_SIZE; i++){
 		taskQueue[i].pointer = idle;
 		taskQueue[i].period = 0;
 	}
 	taskIndex = 0;
-	enableInterrupts();
+	hal_enableInterrupts();
 }
 
 inline void kernel_timerService(){
-	if(statusReg & (1 << 7))
-		disableInterrupts();
+	if(hal_statusReg & (1 << 7))
+		hal_disableInterrupts();
 	for(int i = 0; i < MAX_QUEUE_SIZE; i++){
 		if(taskQueue[i].pointer == idle) continue;
 		else {
@@ -222,64 +222,60 @@ inline void kernel_timerService(){
 		}
 	}
 	e_time += 10;
-	enableInterrupts();
+	hal_enableInterrupts();
 }
 
 void kernel_setupTimer(){
-	logMessage((char *)PSTR("DONE!\r\n"), 0, 1);
-	disableInterrupts();
-	TCCR1B |= (1 << WGM12)|(1 << CS11)|(1 << CS10); //prescaler 64
+	debug_logMessage((char *)PSTR("DONE!\r\n"), 0, 1);
+	hal_disableInterrupts();
+	TCCR1B |= (1 << WGM12)|(1 << CS11)|(1 << CS10); // prescaler 64
 	TCNT1 = 0; 
 	OCR1A = 1250;
-	enableInterrupts();
+	hal_enableInterrupts();
 }
 
 void kernel_startTimer(){
-	disableInterrupts();
+	hal_disableInterrupts();
 	TIMSK |= (1 << OCIE1A);
-	enableInterrupts();
+	hal_enableInterrupts();
 }
 
 void kernel_stopTimer(){
-	disableInterrupts();
+	hal_disableInterrupts();
 	TIMSK &= ~(1 << OCIE1A);
-	enableInterrupts();
+	hal_enableInterrupts();
 }
 
 inline uint8_t kernel_taskManager(){
 	(callQueue[0])();
 	uint8_t code = kernel_removeCall();
-	enableInterrupts();
+	hal_enableInterrupts();
 	return code;
 }
 
 uint8_t kernel(){
-	logMessage((char *)PSTR("DONE!\r\n"), 0, 1);
+	debug_logMessage((char *)PSTR("DONE!\r\n"), 0, 1);
 	kernel_addTask(init, 1);
-	logMessage((char *)PSTR("Kernel: starting task manager...DONE!\r\n"), 1, 1);
+	debug_logMessage((char *)PSTR("Kernel: starting task manager...DONE!\r\n"), 1, 1);
 	while(1){
 		wdt_reset();
 		kernel_taskManager();
-		switchBit(&LED_KRN_PORT, LED_KRN);
+		hal_switchBit(&LED_KRN_PORT, LED_KRN);
 	}
 }
 
 uint8_t kernelInit(){
 //	stackSetup(); Fix assembly includes
-	setupPins();
-	delay(10);
-	if(checkBit_m(JUMPER_PIN, JUMPER_IN)) debug = 1;
-	
 	wdt_reset();
 	kernel_clearCallQueue();
 	wdt_reset();
 	kernel_clearTaskQueue();
 	wdt_reset();
 	
-	logMessage((char *)PSTR("Kernel: starting timer..."), 1, 1);
+	debug_logMessage((char *)PSTR("Kernel: starting timer..."), 1, 1);
 	kernel_setupTimer();
 	kernel_startTimer();
-	logMessage((char *)PSTR("Kernel: starting kernel..."), 1, 1);
+	debug_logMessage((char *)PSTR("Kernel: starting kernel..."), 1, 1);
 	kernel();
 	
 	return 0;
@@ -287,36 +283,36 @@ uint8_t kernelInit(){
 
 void kernel_checkMCUCSR(){
 	char msg[128]; 
-	if(checkBit_m(mcucsr_mirror, WDRF)){
+	if(hal_checkBit_m(mcucsr_mirror, WDRF)){
 		sprintf_P(msg, PSTR("%S"), msg_separator_start);
-		logMessage(msg, 0, 0);
+		debug_logMessage(msg, 0, 0);
 		sprintf_P(msg, PSTR("%S"), wdt_reset_msg_l1);
-		logMessage(msg, 4, 0);
+		debug_logMessage(msg, 4, 0);
 		sprintf_P(msg, PSTR("%S"), wdt_reset_msg_l2);
-		logMessage(msg, 4, 0);
+		debug_logMessage(msg, 4, 0);
 		sprintf_P(msg, PSTR("%S"), wdt_reset_msg_l3);
-		logMessage(msg, 4, 0);
+		debug_logMessage(msg, 4, 0);
 		sprintf_P(msg, PSTR("%S"), wdt_reset_msg_l4);
-		logMessage(msg, 4, 0);
+		debug_logMessage(msg, 4, 0);
 		sprintf_P(msg, PSTR("%S"), msg_separator_end);
-		logMessage(msg, 0, 0);
-		setBit_m(kflags, WDRF);
+		debug_logMessage(msg, 0, 0);
+		hal_setBit_m(kflags, WDRF);
 		return;
 	}
-	if(checkBit_m(mcucsr_mirror, BORF)){
+	if(hal_checkBit_m(mcucsr_mirror, BORF)){
 		sprintf_P(msg, PSTR("%S"), msg_separator_start);
-		logMessage(msg, 0, 0);
+		debug_logMessage(msg, 0, 0);
 		sprintf_P(msg, "%S", bod_reset_msg_l1);
-		logMessage(msg, 4, 0);
+		debug_logMessage(msg, 4, 0);
 		sprintf_P(msg, "%S", bod_reset_msg_l2);
-		logMessage(msg, 4, 0);
+		debug_logMessage(msg, 4, 0);
 		sprintf_P(msg, "%S", bod_reset_msg_l3);
-		logMessage(msg, 4, 0);
+		debug_logMessage(msg, 4, 0);
 		sprintf_P(msg, "%S", bod_reset_msg_l4);
-		logMessage(msg, 4, 0);
+		debug_logMessage(msg, 4, 0);
 		sprintf_P(msg, PSTR("%S"), msg_separator_end);
-		logMessage(msg, 0, 0);
-		setBit_m(kflags, BORF);
+		debug_logMessage(msg, 0, 0);
+		hal_setBit_m(kflags, BORF);
 	}
 	return;
 }

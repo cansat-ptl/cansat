@@ -187,13 +187,13 @@
     <Compile Include="external\nmea\nmea_parser.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="external\pff3a\diskio.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="external\pff3a\diskio.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="external\pff3a\integer.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="external\pff3a\diskio.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="external\pff3a\pff.c">
@@ -206,6 +206,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="external\pololu-driver\imuv3.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="external\pololu-driver\w2.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="kernel\debug.h">
@@ -235,10 +238,16 @@
     <Compile Include="kernel\src\sdcard.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="kernel\src\utils.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="kernel\src\watchdog.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="kernel\types.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="kernel\utils.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="kernel\watchdog.h">
@@ -289,9 +298,9 @@
     <Folder Include="drivers\devices" />
     <Folder Include="drivers\devices\sensors" />
     <Folder Include="drivers\devices\radio" />
+    <Folder Include="external\pff3a\" />
     <Folder Include="external\pololu-driver" />
     <Folder Include="external\nmea" />
-    <Folder Include="external\pff3a" />
     <Folder Include="kernel" />
     <Folder Include="external" />
     <Folder Include="kernel\src" />

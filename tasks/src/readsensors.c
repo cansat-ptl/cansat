@@ -12,7 +12,7 @@ float convertToDecimal(float lat);
 
 void readBMP(){
 	if(debug == 1){
-		logMessage((char *)PSTR("Reading BMP280\r\n"), 1, 1);
+		debug_logMessage((char *)PSTR("Reading BMP280\r\n"), 1, 1);
 	}
 	int16_t t2, alt;
 	int32_t prs;
@@ -29,7 +29,7 @@ void readBMP(){
 
 void readADXL(){
 	if(debug == 1){
-		logMessage((char *)PSTR("Reading ADXL345\r\n"), 1, 1);
+		debug_logMessage((char *)PSTR("Reading ADXL345\r\n"), 1, 1);
 	}
 	int16_t ax, ay, az;
 	ax = adxl345_readX();
@@ -44,7 +44,7 @@ void readADXL(){
 
 void readDS18(){
 	if(debug == 1){
-		logMessage((char *)PSTR("Reading DS18B20\r\n"), 1, 1);
+		debug_logMessage((char *)PSTR("Reading DS18B20\r\n"), 1, 1);
 	}
 	char * t1 = ds18b20_readTemperature();
 	float t1_conv = atof(t1);
@@ -59,7 +59,7 @@ void readIMU(){
 
 void readGPS(){
 	if(debug == 1){
-		logMessage((char *)PSTR("Reading GPS data\r\n"), 1, 1);
+		debug_logMessage((char *)PSTR("Reading GPS data\r\n"), 1, 1);
 	}
 	sprintf(packetGPS.sat, "SAT=%d;", GPS.Sats);
 	sprintf(packetGPS.lat, "LAT=%.6f;", convertToDecimal(GPS.latitude));

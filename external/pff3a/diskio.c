@@ -7,10 +7,10 @@
 #include "diskio.h"
 
 // Definitions for MMC/SDC connection
-#define SD_DI   2
-#define SD_DO   3
-#define SD_CLK  1 
-#define SD_CS   6
+#define SD_DI   1
+#define SD_DO   2
+#define SD_CLK  0 
+#define SD_CS   3
 // #define SD_INS  4
 // #define SD_WP   5
 
