@@ -14,16 +14,13 @@ uint16_t tflags = 0;
 void w2_init();
 
 void init(){
+	uart0_init(51);
+	PORTA = 0;
 	hal_enableInterrupts();
-	
-//	getTestValues();
+	//	getTestValues();
 	hal_setupPins();
 	delay(10);
 	if(hal_checkBit_m(JUMPER_PIN, JUMPER_IN)) debug = 1;
-	
-	uart0_init(51);
-	debug_sendMessage_p((char *)PSTR("[INIT]initd: debug interface init    [OK]\r\n"), 1);
-	wdt_reset();
 	
 	debug_sendMessage_p((char *)PSTR("[INIT]initd: SD card init            [OK]\r\n"), 1);
 	sd_init();
@@ -74,7 +71,8 @@ void init(){
 	kernel_addTask(readGPS, 60);
 	kernel_addTask(sendGPS, 80);
 	kernel_addTask(sendMain, 100);
-	kernel_addTask(readDS18, 70);
+	//kernel_addTask(readDS18, 70);
+	kernel_addTask(imu_filter, 100);
 	debug_logMessage((char *)PSTR("DONE!\r\n"), 0, 1);
 	wdt_reset();
 	
@@ -83,4 +81,5 @@ void init(){
 	util_printVersion();
 	
 	kernel_checkMCUCSR();
+	
 }

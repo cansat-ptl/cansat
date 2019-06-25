@@ -112,12 +112,14 @@ void imu_test(){
 	
 	int16_t gyrData_raw_x = 0, gyrData_raw_y = 0, gyrData_raw_z = 0;
 	int16_t accData_raw_x = 0, accData_raw_y = 0, accData_raw_z = 0;
-	
+	int16_t magData_raw_x = 0, magData_raw_y = 0, magData_raw_z = 0;
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
 		hal_writePin(&PORTG, PG3, HIGH);
 		delay(250);
 		imu_read();
+		gyrData_raw_x = gyrData_raw_y = gyrData_raw_z = 0;
+		accData_raw_x = accData_raw_y = accData_raw_z = 0;
 			gyrData_raw_x |= (L3GD.XH << 8);
 			gyrData_raw_x |= L3GD.XL;
 			gyrData_raw_y |= (L3GD.YH << 8);
@@ -131,7 +133,15 @@ void imu_test(){
 			accData_raw_y |= LSM.YL_A;
 			accData_raw_z |= (LSM.ZH_A << 8);
 			accData_raw_z |= LSM.ZL_A;
-		sprintf(msg, "IMU data: %d %d %d %d %d %d\r\n", gyrData_raw_x, gyrData_raw_y, gyrData_raw_z, accData_raw_x, accData_raw_y, accData_raw_z);
+			
+			magData_raw_x |= (LSM.XH_M << 8);
+			magData_raw_x |= LSM.XL_M;
+			magData_raw_y |= (LSM.YH_M << 8);
+			magData_raw_y |= LSM.YL_M;
+			magData_raw_z |= (LSM.ZH_M << 8);
+			magData_raw_z |= LSM.ZL_M;
+			
+		sprintf(msg, "IMU data: %d %d %d %d %d %d %d %d %d\r\n", gyrData_raw_x, gyrData_raw_y, gyrData_raw_z, accData_raw_x, accData_raw_y, accData_raw_z, magData_raw_x, magData_raw_y, magData_raw_z);
 		debug_logMessage(msg, 1, 0);
 		hal_writePin(&PORTG, PG3, LOW);
 		delay(250);

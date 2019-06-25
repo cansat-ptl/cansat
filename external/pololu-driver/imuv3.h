@@ -12,10 +12,10 @@
 
 #include "../../drivers/twi.h"
 
-#define LSM_adr		0x3D
+#define LSM_adr		0x3B
 #define LSM_A_xyz	0x28
 #define LSM_M_xyz	0x08
-#define L3GD_adr	0xD5
+#define L3GD_adr	0xD7
 #define L3GD_xyz	0x28
 
 void lsm_init();

@@ -91,4 +91,7 @@ void readGPS();
 void sendGPS();
 void sendMain();
 
+void imu_setupTimer();
+void imu_filter();
+
 #endif /* TASKS_H_ */

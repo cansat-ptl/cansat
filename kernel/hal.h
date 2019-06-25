@@ -56,9 +56,9 @@
 #define delay(x) _delay_ms(x);
 
 #define hal_setBit_m(x,y) x |= (1 << y)
-#define hal_clearBit_m(x,y) x &= ~(1<< y)
-#define hal_checkBit_m(x,y) ((0u == (x & (1<<y)))?0u:1u)
-#define hal_switchBit_m(x,y) (x ^= (1<<y))
+#define hal_clearBit_m(x,y) x &= ~(1 << y)
+#define hal_checkBit_m(x,y) ((0u == (x & (1 << y))) ? 0u : 1u)
+#define hal_switchBit_m(x,y) (x ^= (1 << y))
 
 inline void hal_switchBit(volatile uint8_t *reg, uint8_t bit);
 inline void hal_setBit(volatile uint8_t *reg, uint8_t bit);
