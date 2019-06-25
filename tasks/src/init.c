@@ -14,7 +14,7 @@ uint16_t tflags = 0;
 void w2_init();
 
 void init(){
-	uart0_init(51);
+	uart0_init(12);
 	PORTA = 0;
 	hal_enableInterrupts();
 	//	getTestValues();
@@ -22,9 +22,9 @@ void init(){
 	delay(10);
 	if(hal_checkBit_m(JUMPER_PIN, JUMPER_IN)) debug = 1;
 	
-	debug_sendMessage_p((char *)PSTR("[INIT]initd: SD card init            [OK]\r\n"), 1);
 	sd_init();
 	wdt_reset();
+	kernel_checkMCUCSR();
 	
 	uart1_init(51);
 	debug_logMessage((char *)PSTR("[INIT]initd: uart1 interface init    [OK]\r\n"), 1, 1);
@@ -71,15 +71,14 @@ void init(){
 	kernel_addTask(readGPS, 60);
 	kernel_addTask(sendGPS, 80);
 	kernel_addTask(sendMain, 100);
-	//kernel_addTask(readDS18, 70);
 	kernel_addTask(imu_filter, 100);
+	kernel_addTask(requestDS18, 70);
 	debug_logMessage((char *)PSTR("DONE!\r\n"), 0, 1);
 	wdt_reset();
 	
 	debug_logMessage((char *)PSTR("[INIT]initd: init process finished\r\n"), 1, 1);
 	
 	util_printVersion();
-	
-	kernel_checkMCUCSR();
+	//imu_setupTimer();
 	
 }

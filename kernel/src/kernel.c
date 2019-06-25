@@ -255,7 +255,6 @@ inline uint8_t kernel_taskManager(){
 
 uint8_t kernel(){
 	debug_logMessage((char *)PSTR("DONE!\r\n"), 0, 1);
-	kernel_addTask(init, 1);
 	debug_logMessage((char *)PSTR("Kernel: starting task manager...DONE!\r\n"), 1, 1);
 	while(1){
 		wdt_reset();
@@ -271,6 +270,7 @@ uint8_t kernelInit(){
 	wdt_reset();
 	kernel_clearTaskQueue();
 	wdt_reset();
+	init();
 	
 	debug_logMessage((char *)PSTR("Kernel: starting timer..."), 1, 1);
 	kernel_setupTimer();

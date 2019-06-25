@@ -23,7 +23,7 @@ void readBMP(){
 	sprintf(packetMain.prs, "PRS=%ld;", prs);
 	sprintf(packetMain.alt, "ALT=%d;", alt);
 	sprintf(packetGPS.alt, "ALT=%d;", alt);
-	kernel_addTask(readBMP, 40);
+	kernel_addTask(readBMP, 20);
 	wdt_reset();
 }
 
@@ -38,7 +38,17 @@ void readADXL(){
 	sprintf(packetOrient.ax, "AX=%d;", ax*10);
 	sprintf(packetOrient.ay, "AY=%d;", ay*10);
 	sprintf(packetOrient.az, "AZ=%d;", az*10);
-	kernel_addTask(readADXL, 20);
+	kernel_addTask(readADXL, 10);
+	wdt_reset();
+}
+
+void requestDS18(){
+	if(debug == 1){
+		debug_logMessage((char *)PSTR("Requesting temperature from DS18B20\r\n"), 1, 1);
+	}
+	ds18b20_requestTemperature();
+	kernel_addTask(readDS18, 75);
+	kernel_addTask(requestDS18, 76);
 	wdt_reset();
 }
 
@@ -48,8 +58,8 @@ void readDS18(){
 	}
 	char * t1 = ds18b20_readTemperature();
 	float t1_conv = atof(t1);
-	sprintf(packetMain.t1, "T1=%d;", (int)(t1_conv*10.0));
-	kernel_addTask(readDS18, 60);
+	sprintf(packetMain.t1, "T1=%d;\r\n", (int)(t1_conv*10.0));
+	debug_logMessage(packetMain.t1, 1, 0);
 	wdt_reset();
 }
 //Holy shiet
@@ -64,5 +74,5 @@ void readGPS(){
 	sprintf(packetGPS.sat, "SAT=%d;", GPS.Sats);
 	sprintf(packetGPS.lat, "LAT=%.6f;", convertToDecimal(GPS.latitude));
 	sprintf(packetGPS.lon, "LON=%.6f;", convertToDecimal(GPS.longitude));
-	kernel_addTask(readGPS, 48);
+	kernel_addTask(readGPS, 50);
 }

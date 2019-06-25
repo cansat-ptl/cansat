@@ -8,7 +8,7 @@
 #ifndef KERNEL_H_
 #define KERNEL_H_
 
-#define KERNEL_VER "0.1.9-bleeding"
+#define KERNEL_VER "0.2.0-rc1"
 #define KERNEL_TIMESTAMP __TIMESTAMP__
 
 #define SDCARD_MOD_VER "0.0.4-bleeding"
@@ -18,6 +18,7 @@
 #define MAX_QUEUE_SIZE 24
 #define ERR_QUEUE_OVERFLOW 1
 #define ERR_QUEUE_END 2
+#define TICKRATE 10 //in milliseconds
 //#define DEBUG 1
 #endif
 

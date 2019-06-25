@@ -20,10 +20,10 @@ void sd_init(){
 	FRESULT res;
 	res = pf_mount(&fs);
 	if(res == FR_OK){
-		debug_logMessage((char *)PSTR("[INIT]initd: SD card mount           [OK]\r\n"), 1, 1);
+		debug_logMessage((char *)PSTR("[INIT]initd: logging system init complete\r\n"), 1, 1);
 		pf_lseek(0);
 	}
-	else debug_logMessage((char *)PSTR("[INIT]initd: SD card mount           [ERR]\r\n"), 1, 1);
+	else debug_logMessage((char *)PSTR("[INIT]initd: logging system init failed\r\n"), 1, 1);
 }
 
 void sd_readPtr(){

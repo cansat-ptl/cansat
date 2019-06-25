@@ -13,6 +13,7 @@
 extern uint8_t mcucsr_mirror;
 
 #define MAX_QUEUE_SIZE 24
+#define TICKRATE 10
 
 extern uint64_t e_time;
 extern uint8_t debug;
@@ -23,7 +24,7 @@ extern volatile uint8_t taskIndex;
 extern volatile task callQueue[MAX_QUEUE_SIZE];
 struct taskStruct {
 	task pointer;
-	uint8_t period;
+	uint16_t period;
 };
 
 struct GPS_t

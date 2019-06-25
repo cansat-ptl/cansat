@@ -16,6 +16,7 @@ void imu_setupTimer(){
 	TCCR3B |= (1 << WGM12)|(1 << CS11)|(1 << CS10); //prescaler 64
 	TCNT3 = 0;
 	OCR3A = 31250;
+	TIMSK |= (1 << OCIE3A);
 	hal_enableInterrupts();
 }
 
@@ -23,6 +24,8 @@ void imu_filter(){
 	float pitchAcc, rollAcc;
 	int16_t gyrData_raw_x = 0, gyrData_raw_y = 0, gyrData_raw_z = 0;
 	int16_t accData_raw_x = 0, accData_raw_y = 0, accData_raw_z = 0;
+	
+	imu_read();
 	
 	gyrData_raw_x |= (L3GD.XH << 8);
 	gyrData_raw_x |= L3GD.XL;
@@ -38,8 +41,8 @@ void imu_filter(){
 	accData_raw_z |= (LSM.ZH_A << 8);
 	accData_raw_z |= LSM.ZL_A;
 	
-	pitch += (((float)gyrData_raw_x / 16.384) * 0.5);
-	roll -= (((float)gyrData_raw_z / 16.384) * 0.5);
+	pitch += (((float)gyrData_raw_x / 16.384) * 0.1);
+	roll -= (((float)gyrData_raw_z / 16.384) * 0.1);
 	
 	int forceMagnitudeApprox = abs(accData_raw_x) + abs(accData_raw_y) + abs(accData_raw_z);
 	if (forceMagnitudeApprox > 1024 && forceMagnitudeApprox < 32768)
@@ -53,7 +56,7 @@ void imu_filter(){
 	char msg[32];
 	sprintf(msg, "PR: %f %f\r\n", pitch, roll);
 	debug_logMessage(msg, 1, 0);
-	kernel_addTask(imu_filter, 25);
+	kernel_addTask(imu_filter, 5);
 }
 
 ISR(TIMER3_COMPA_vect){

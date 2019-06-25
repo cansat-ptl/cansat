@@ -59,7 +59,7 @@ Returns: int - 0 (additional checks may be added later)
 ------------------------------------------------------------*/
 int uart0_init(unsigned int ubrr){
 	UBRR0H = 0;
-	UBRR0L = 51;
+	UBRR0L = 12;
 	UCSR0B = (RX0EN<<RXEN)|(TX0EN<<TXEN)|(RX0IE<<RXCIE)|(TX0IE<<TXCIE)|(0<<UDRIE);
 	UCSR0C = (0<<USBS)|(1<<UCSZ00)|(1<<UCSZ01)|(0<<UCSZ02)|(0<<UPM00)|(0<<UPM01)|(0<<UMSEL0);
 	return 0;

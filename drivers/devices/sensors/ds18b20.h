@@ -38,5 +38,6 @@
 #define DS_RESOLUTION_12BIT 625
 
 char * ds18b20_readTemperature(void);
+void ds18b20_requestTemperature(void);
 
 #endif /* DS18B20_H_ */

@@ -62,18 +62,18 @@ void ds18b20_writeByte(uint8_t value){
 	}
 }
 
-char * ds18b20_readTemperature(void){
+void ds18b20_requestTemperature(void){
+	ds18b20_reset();
+	ds18b20_writeByte(DS_CMD_SKIPROM);
+	ds18b20_writeByte(DS_CMD_CONVERTTEMP);
+}
+	
+char * ds18b20_readTemperature(){
 	static char ds_data[16];
 	uint8_t raw[2];
 	int8_t digit;
 	uint16_t decimal;
 	//float value = 0;
-	
-	ds18b20_reset();
-	ds18b20_writeByte(DS_CMD_SKIPROM);
-	ds18b20_writeByte(DS_CMD_CONVERTTEMP);
-	
-	while(!ds18b20_readBit());
 	
 	ds18b20_reset();
 	ds18b20_writeByte(DS_CMD_SKIPROM);

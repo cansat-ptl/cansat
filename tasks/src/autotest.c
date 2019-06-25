@@ -90,6 +90,8 @@ void ds18b20_test(){
 		wdt_reset();
 		hal_writePin(&PORTG, PG3, HIGH);
 		delay(250);
+		ds18b20_requestTemperature();
+		delay(1000);
 		char * t = ds18b20_readTemperature();
 		sprintf(msg, "DS data: %s\r\n", t);
 		debug_logMessage(msg, 1, 0);

@@ -60,7 +60,7 @@ void sendGPS(){
 	debug_logMessage(packetGPS.lon, 0, 0);
 	debug_logMessage(packetGPS.alt, 0, 0);
 	debug_logMessage(packetGPS.end, 0, 0);
-	kernel_addTask(sendGPS, 50);
+	kernel_addTask(sendGPS, 25);
 }
 
 void sendMain(){
@@ -78,5 +78,5 @@ void sendMain(){
 	debug_logMessage(packetMain.t1, 0, 0);
 	debug_logMessage(packetMain.t2, 0, 0);
 	debug_logMessage(packetMain.end, 0, 0);
-	kernel_addTask(sendMain, 100);
+	kernel_addTask(sendMain, 75);
 }

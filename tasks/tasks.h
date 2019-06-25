@@ -86,6 +86,7 @@ void checkDeployment();
 void readBMP();
 void readADXL();
 void readDS18();
+void requestDS18();
 void readGPS();
 
 void sendGPS();
