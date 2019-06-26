@@ -41,10 +41,10 @@ void imu_filter(){
 	accData_raw_z |= (LSM.ZH_A << 8);
 	accData_raw_z |= LSM.ZL_A;
 	
-	pitch += (((float)gyrData_raw_x / 16.384) * 0.1);
-	roll -= (((float)gyrData_raw_z / 16.384) * 0.1);
+	pitch += (((float)gyrData_raw_x / 16.384) * 0.07);
+	roll -= (((float)gyrData_raw_z / 16.384) * 0.07);
 	
-	int forceMagnitudeApprox = abs(accData_raw_x) + abs(accData_raw_y) + abs(accData_raw_z);
+/*	int forceMagnitudeApprox = abs(accData_raw_x) + abs(accData_raw_y) + abs(accData_raw_z);
 	if (forceMagnitudeApprox > 1024 && forceMagnitudeApprox < 32768)
 	{
 		pitchAcc = atan2f((float)accData_raw_z, (float)accData_raw_y*-1) * 180 / M_PI;
@@ -52,7 +52,7 @@ void imu_filter(){
 		
 		rollAcc = atan2f((float)accData_raw_x, (float)accData_raw_y*-1) * 180 / M_PI;
 		roll = roll * 0.98 + rollAcc * 0.02;
-	}
+	}*/
 	char msg[32];
 	sprintf(msg, "PR: %f %f\r\n", pitch, roll);
 	debug_logMessage(msg, 1, 0);
