@@ -1,11 +1,11 @@
-#include "nRF.h"
+п»ї#include "nRF.h"
 
 static int nRF_stdw(char c, FILE *stream);
 
 static FILE nRF_stdout = FDEV_SETUP_STREAM(nRF_stdw, NULL, _FDEV_SETUP_WRITE);
 
 int buf_curlen = 0;
-static int nRF_stdw(char c, FILE *stream)//передача информации
+static int nRF_stdw(char c, FILE *stream) //РїРµСЂРµРґР°С‡Р° РёРЅС„РѕСЂРјР°С†РёРё
 {
 	nRF.buf[buf_curlen] = (unsigned char) c;
 	buf_curlen++;
@@ -20,19 +20,8 @@ static int nRF_stdw(char c, FILE *stream)//передача информации
 
 void nRF_write_multi(unsigned char a, unsigned char len)
 {
-	SPCR = (1<<SPE) | (1<<CPOL) | (1<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
 	cslo();
-	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
-	SPI_transmit_receive(a);
-	for(unsigned char i = 0; i < len; i++)
-		SPI_transmit_receive(nRF.buf[i]);
-		
-	nRF_CSN_port |= (1<<nRF_CSN_pin);
-	cshi();	
-	SPCR = 0;
-	
 	SPCR = (1<<SPE) | (0<<CPOL) | (0<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
-	cslo();
 	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
 	SPI_transmit_receive(a);
 	for(unsigned char i = 0; i < len; i++)
@@ -45,46 +34,10 @@ void nRF_write_multi(unsigned char a, unsigned char len)
 		nRF.buf[i] = 0;
 }
 
-void nRF_write_multi_alt(unsigned char a, unsigned char length)
-{
-	SPCR = (1<<SPE) | (1<<CPOL) | (1<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
-	cslo();
-	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
-	SPI_transmit_receive(a);
-	for(unsigned char i = 31; i >= 0; i--)
-		SPI_transmit_receive(nRF.buf[i]);
-		
-	nRF_CSN_port |= (1<<nRF_CSN_pin);
-	cshi();
-	SPCR = 0;
-	
-	SPCR = (1<<SPE) | (0<<CPOL) | (0<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
-	cslo();
-	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
-	SPI_transmit_receive(a);
-	for(unsigned char i = 31; i >= 0; i--)
-		SPI_transmit_receive(nRF.buf[i]);
-	nRF_CSN_port |= (1<<nRF_CSN_pin);
-	cshi();
-	SPCR = 0;
-	
-	for(unsigned char i = 31; i >= 0; i--)
-		nRF.buf[i] = 0;
-}
-
 void nRF_write(unsigned char a, unsigned char b)
 {
-	SPCR = (1<<SPE) | (1<<CPOL) | (1<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
 	cslo();
-	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
-	SPI_transmit_receive(a);
-	SPI_transmit_receive(b);
-	nRF_CSN_port |= (1<<nRF_CSN_pin);
-	cshi();
-	SPCR = 0;
-	
 	SPCR = (1<<SPE) | (0<<CPOL) | (0<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
-	cslo();
 	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
 	SPI_transmit_receive(a);
 	SPI_transmit_receive(b);
@@ -96,17 +49,8 @@ void nRF_write(unsigned char a, unsigned char b)
 unsigned char nRF_readReg(unsigned char a)
 {
 	unsigned char c;
-	SPCR = (1<<SPE) | (1<<CPOL) | (1<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
 	cslo();
-	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
-	c = SPI_transmit_receive(a & 0x1F);
-	c = SPI_transmit_receive(0x00);
-	nRF_CSN_port |= (1<<nRF_CSN_pin);
-	cshi();
-	SPCR = 0;
-	
 	SPCR = (1<<SPE) | (0<<CPOL) | (0<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
-	cslo();
 	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
 	c = SPI_transmit_receive(a & 0x1F);
 	c = SPI_transmit_receive(0x00);
@@ -120,18 +64,8 @@ unsigned char nRF_readReg(unsigned char a)
 unsigned char nRF_readReg_a(unsigned char a, int length)
 {
 	unsigned char c;
-	SPCR = (1<<SPE) | (1<<CPOL) | (1<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
-	cslo();
-	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
-	c = SPI_transmit_receive(a & 0x1F);
-	for(unsigned char i = 0; i < length; i++)
-		nRF.buf[i] = SPI_transmit_receive(0x00);
-	nRF_CSN_port |= (1<<nRF_CSN_pin);
-	cshi();
-	SPCR = 0;
-		
+	cslo();	
 	SPCR = (1<<SPE) | (0<<CPOL) | (0<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
-	cslo();
 	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
 	c = SPI_transmit_receive(a & 0x1F);
 	for(unsigned char i = 0; i < length; i++)
@@ -147,54 +81,52 @@ void nRF_stdef()
 	stdout = &nRF_stdout;
 }
 
-// nRF_init(частота в МГц)
+// nRF_init(С‡Р°СЃС‚РѕС‚Р° РІ РњР“С†)
 void nRF_init(int freq)
 {
-	//stdout = &nRF_stdout;
-	
-	// Включение РМ
+	// Р’РєР»СЋС‡РµРЅРёРµ Р Рњ
 	nRF_CE_ddr |= (1<<nRF_CE_pin);
 	nRF_CSN_ddr |= (1<<nRF_CSN_pin);
-	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
+	nRF_CSN_port |= (1<<nRF_CSN_pin);
 	nRF_CE_port &= ~(1<<nRF_CE_pin);					
 	
-	/* Настройка CONFIG: 
-	7: Резерв = 0 -> Допустим только 0,
-	6: MASK_RX_DR = 0 -> Вывести прерывание RX_DR как '0' на пин IRQ, 
-	5: MASK_TX_DS = 0 -> Вывести прерывание RX_DR как '0' на пин IRQ,
-	4: MASK_MAX_RT = 0 -> Вывести прерывание RX_DR как '0' на пин IRQ,
-	3: EN_CRC = 1 -> Включить CRC, 
-	2: CRCO = 0 -> Включить РМ, 
-	1: PWR_UP = 1 -> CRC 2 байта, 
+	/* РќР°СЃС‚СЂРѕР№РєР° CONFIG: 
+	7: Р РµР·РµСЂРІ = 0 -> Р”РѕРїСѓСЃС‚РёРј С‚РѕР»СЊРєРѕ 0,
+	6: MASK_RX_DR = 0 -> Р’С‹РІРµСЃС‚Рё РїСЂРµСЂС‹РІР°РЅРёРµ RX_DR РєР°Рє '0' РЅР° РїРёРЅ IRQ, 
+	5: MASK_TX_DS = 0 -> Р’С‹РІРµСЃС‚Рё РїСЂРµСЂС‹РІР°РЅРёРµ RX_DR РєР°Рє '0' РЅР° РїРёРЅ IRQ,
+	4: MASK_MAX_RT = 0 -> Р’С‹РІРµСЃС‚Рё РїСЂРµСЂС‹РІР°РЅРёРµ RX_DR РєР°Рє '0' РЅР° РїРёРЅ IRQ,
+	3: EN_CRC = 1 -> Р’РєР»СЋС‡РёС‚СЊ CRC, 
+	2: CRCO = 0 -> Р’РєР»СЋС‡РёС‚СЊ Р Рњ, 
+	1: PWR_UP = 1 -> CRC 2 Р±Р°Р№С‚Р°, 
 	0: PRIM_RX = 0 -> TX Control */
 	nRF_write_reg(0x00, 0b00001010);
 	 
-	/* Настройка SETUP: 
+	/* РќР°СЃС‚СЂРѕР№РєР° SETUP: 
 	7: CONT_WAVE = 0 -> "continuous carrier transmit when high is disabled",
-	6: Резерв = 0 -> Допустим только 0,
-	5: RF_DR_LOW = 0 -> Вместе с RF_DR_HIGH, скорость 2000 кбит/с,
-	4: PLL_LOCK = 0 -> PLL Lock выключен, использовать только при тестировании,
-	3: RF_DR_HIGH = 1 -> Вместе с RF_DR_LOW, скорость 250 кбит/с, 
-	2: RF_PWR(_A) = 1 -> 0 дБм (RF_PWR(_A) | RF_PWR(_B) = 00), 
-	1: RF_PWR(_B) = 1 -> 0 дБм (RF_PWR(_A) | RF_PWR(_B) = 00), 
-	0: Ничто = 0 -> Без разницы */
-	nRF_write_reg(0x06, 0b00001110);   	// Скорость 2000 кбит/с (RF_DR_LOW = 0, RF_DR_HIGH = 1), выходная мощность 0 дБм
+	6: Р РµР·РµСЂРІ = 0 -> Р”РѕРїСѓСЃС‚РёРј С‚РѕР»СЊРєРѕ 0,
+	5: RF_DR_LOW = 0 -> Р’РјРµСЃС‚Рµ СЃ RF_DR_HIGH, СЃРєРѕСЂРѕСЃС‚СЊ 2000 РєР±РёС‚/СЃ,
+	4: PLL_LOCK = 0 -> PLL Lock РІС‹РєР»СЋС‡РµРЅ, РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ С‚РѕР»СЊРєРѕ РїСЂРё С‚РµСЃС‚РёСЂРѕРІР°РЅРёРё,
+	3: RF_DR_HIGH = 1 -> Р’РјРµСЃС‚Рµ СЃ RF_DR_LOW, СЃРєРѕСЂРѕСЃС‚СЊ 250 РєР±РёС‚/СЃ, 
+	2: RF_PWR(_A) = 1 -> 0 РґР‘Рј (RF_PWR(_A) | RF_PWR(_B) = 00), 
+	1: RF_PWR(_B) = 1 -> 0 РґР‘Рј (RF_PWR(_A) | RF_PWR(_B) = 00), 
+	0: РќРёС‡С‚Рѕ = 0 -> Р‘РµР· СЂР°Р·РЅРёС†С‹ */
+	nRF_write_reg(0x06, 0b00001110);   	// РЎРєРѕСЂРѕСЃС‚СЊ 2000 РєР±РёС‚/СЃ (RF_DR_LOW = 0, RF_DR_HIGH = 1), РІС‹С…РѕРґРЅР°СЏ РјРѕС‰РЅРѕСЃС‚СЊ 0 РґР‘Рј
 
-	/* Настройка STATUS
-	7: Резерв = 0 -> Допустим только 0,
-	6: RX_DR = 1 -> Сброс прерывания принятия данных,
-	5: TX_DS = 1 -> Сброс прерывания отправки данных,
-	4: MAX_RT = 1 -> Сброс прерывания максимальных попыток отправки,
-	3-0: Доступно только для чтения */
+	/* РќР°СЃС‚СЂРѕР№РєР° STATUS
+	7: Р РµР·РµСЂРІ = 0 -> Р”РѕРїСѓСЃС‚РёРј С‚РѕР»СЊРєРѕ 0,
+	6: RX_DR = 1 -> РЎР±СЂРѕСЃ РїСЂРµСЂС‹РІР°РЅРёСЏ РїСЂРёРЅСЏС‚РёСЏ РґР°РЅРЅС‹С…,
+	5: TX_DS = 1 -> РЎР±СЂРѕСЃ РїСЂРµСЂС‹РІР°РЅРёСЏ РѕС‚РїСЂР°РІРєРё РґР°РЅРЅС‹С…,
+	4: MAX_RT = 1 -> РЎР±СЂРѕСЃ РїСЂРµСЂС‹РІР°РЅРёСЏ РјР°РєСЃРёРјР°Р»СЊРЅС‹С… РїРѕРїС‹С‚РѕРє РѕС‚РїСЂР°РІРєРё,
+	3-0: Р”РѕСЃС‚СѓРїРЅРѕ С‚РѕР»СЊРєРѕ РґР»СЏ С‡С‚РµРЅРёСЏ */
 	nRF_write_reg(0x07, 0b01110000);	
 
-	nRF_write_reg(0x01, 0b00111111);			// Включить AutoACK на pipe0 (0-бит)
-	nRF_write_reg(0x02, 0b00111111);			// Включить RX-адрес на pipe0 (0-бит)
-	nRF_write_reg(0x03, 0b00000011);	// AW
-	nRF_write_reg(0x04, 0b00011111);	// RETR
-	nRF_write_reg(0x05, 0x4C);	// Запись частотного канала
+	nRF_write_reg(0x01, 0b00111111);			// Р’РєР»СЋС‡РёС‚СЊ AutoACK РЅР° pipe0-5
+	nRF_write_reg(0x02, 0b00111111);			// Р’РєР»СЋС‡РёС‚СЊ RX-Р°РґСЂРµСЃ РЅР° pipe0-5
+	nRF_write_reg(0x03, 0b00000011);			// РЁРёСЂРёРЅР° Р°РґСЂРµСЃР° - 5 Р±Р°Р№С‚
+	nRF_write_reg(0x04, 0b00011111);			// 500 РјРєСЃ РјРµР¶РґСѓ РїРѕРІС‚РѕСЂРЅС‹РјРё РѕС‚РїСЂР°РІРєР°РјРё Рё РґРѕ 15 СЂР°Р· РїРѕРІС‚РѕСЂР°
+	nRF_write_reg(0x05, 0x4C);	// Р—Р°РїРёСЃСЊ С‡Р°СЃС‚РѕС‚РЅРѕРіРѕ РєР°РЅР°Р»Р°
 
-	// Запись адреса RX трубы 0
+	// Р—Р°РїРёСЃСЊ Р°РґСЂРµСЃР° RX С‚СЂСѓР±С‹ 0
 	nRF.buf[0] = 0xE7;
 	nRF.buf[1] = 0xE7;
 	nRF.buf[2] = 0xE7;
@@ -203,7 +135,7 @@ void nRF_init(int freq)
 
 	nRF_write_multi(0x0A, 5);
 	
-	// Запись адреса RX трубы 1
+	// Р—Р°РїРёСЃСЊ Р°РґСЂРµСЃР° RX С‚СЂСѓР±С‹ 1
 	nRF.buf[0] = 0xE7;
 	nRF.buf[1] = 0xE7;
 	nRF.buf[2] = 0xE7;
@@ -211,9 +143,9 @@ void nRF_init(int freq)
 	nRF.buf[4] = 0xE7;
 
 	nRF_write_multi(0x0B, 5);
-	// Конец записи адреса RX трубы 0 & 1
+	// РљРѕРЅРµС† Р·Р°РїРёСЃРё Р°РґСЂРµСЃР° RX С‚СЂСѓР±С‹ 0 & 1
 
-	// Запись адреса TX трубы 0
+	// Р—Р°РїРёСЃСЊ Р°РґСЂРµСЃР° TX С‚СЂСѓР±С‹ 0
 	nRF.buf[0] = 0xE7;
 	nRF.buf[1] = 0xE7;
 	nRF.buf[2] = 0xE7;
@@ -221,42 +153,31 @@ void nRF_init(int freq)
 	nRF.buf[4] = 0xE7;
 
 	nRF_write_multi(0x10, 5);
-	// Конец записи адреса RX трубы 0
+	// РљРѕРЅРµС† Р·Р°РїРёСЃРё Р°РґСЂРµСЃР° RX С‚СЂСѓР±С‹ 0
 	
-	nRF_write_reg(0x1C, 0x03);			// DYNPD
-	nRF_write_reg(0x1D, 0b00000111);	// FEATURE
+	nRF_write_reg(0x1C, 0b00111111);	// DYNPD РЅР° РІСЃРµ С‚СЂСѓР±С‹
+	nRF_write_reg(0x1D, 0b00000111);	// FEATURE ALL INCLUSIVE (Р”РёРЅР°РјРёС‡РµСЃРєРёР№ СЂР°Р·РјРµСЂ РїР°РєРµС‚РѕРІ, РїР°РєРµС‚С‹ СЃ ACK, РїР°РєРµС‚С‹ СЃ NO_ACK) 
 
-	// Оистить буферы
+	// РћРёСЃС‚РёС‚СЊ Р±СѓС„РµСЂС‹
 	nRF_write(0xE2, 0);
-	nRF_write(0xE1, 0);
+	nRF_write(0xE1, 0);					
 	
 	nRF_write_reg(0x07, 0b01110000);
 }
 
 unsigned char nRF_send(int len)
 {
-	nRF_write_reg(0x05, 0x4C);	// Запись частотного канала
+	nRF_write_reg(0x05, 0x4C);	// Р—Р°РїРёСЃСЊ С‡Р°СЃС‚РѕС‚РЅРѕРіРѕ РєР°РЅР°Р»Р° РґР»СЏ СЃР±СЂРѕСЃР° РєРѕР»РёС‡РµСЃС‚РІР° РїРѕС‚РµСЂСЏРЅРЅС‹С… РїР°РєРµС‚РѕРІ
 	uint8_t fifoReg = nRF_readReg(0x17);
-	printf("FIFO FIRST READ %x\r\n", fifoReg);
 	
 	if(fifoReg & (1<<5))
 		nRF_TxComplete();
 	
 	//nRF_write(0xE1, 0x00);
 	nRF_write(0xE2, 0x00);
-	
 	nRF_write_reg(0x07, 0b01110000);
-	fifoReg = nRF_readReg(0x17);
-	printf("FIFO BEFORE BUFFER %x\r\n", fifoReg);
-	_delay_us(100);
-	nRF_write_multi(0xA0, len);
-	fifoReg = nRF_readReg(0x17);
-	printf("FIFO AFTER BUFFER %x\r\n", fifoReg);
 	
-	//nRF_CE_port |= (1<<nRF_CE_pin);
-	//_delay_us(20);
-	//nRF_CE_port &= ~(1<<nRF_CE_pin);
-	//_delay_us(500);
+	nRF_write_multi(0xA0, len);
 	
 	if(nRF_TxComplete())
 		return 1;
@@ -265,15 +186,13 @@ unsigned char nRF_send(int len)
 
 unsigned char nRF_send_other(char * data)
 {
-	int i, n, N = strlen(data);
+	int i, N = strlen(data);
 	
 	if(N > 32)
 		N = 32;
 
-	for(i = 31, n = 0; (i >= 31-N) && (n < N); i--, n++)
-		nRF.buf[i] = (unsigned char) data[n];
-	
-	printf("NRF BUFFER %s\r\n", nRF.buf);
+	for(i = 0; i < N; i++)
+		nRF.buf[i] = (unsigned char) data[i];
 	
 	return nRF_send(N);
 }
@@ -284,22 +203,22 @@ uint8_t nRF_TxComplete()
 	uint8_t txBufferIsEmpty;
 	uint8_t packetWasSent, packetCouldNotBeSent;
 	uint8_t txAttemptCount = 0;
-	uint8_t result = 0; // Default to indicating a failure.
+	uint8_t result = 0; // Р¤Р»Р°Рі РґР»СЏ РЅРµ СѓСЃРїРµС€РЅРѕР№ РїРµСЂРµРґР°С‡Рё
 
-	// TX buffer can store 3 packets, sends retry up to 15 times, and the retry wait time is about half
-	// the time necessary to send a 32 byte packet and receive a 32 byte ACK response.  3 x 15 x 2 = 90
+	// FIFO Р±СѓС„РµСЂРѕРІ = 3
+	// Р”Р»СЏ РѕР±РјРµРЅР° СЃ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµРј РЅРµРѕР±С…РѕРґРёРјРѕ РґРІСѓС…СЃС‚РѕСЂРѕРЅРµРµ СЃРѕРѕР±С‰РµРЅРёРµ
+	// РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРІС‚РѕСЂРЅС‹С… РѕС‚РїСЂР°РІРѕРє = 15
+	// 3 * 15 * 2 = 90
 	const static uint8_t MAX_TX_ATTEMPT_COUNT = 90;
 
 	while (txAttemptCount++ < MAX_TX_ATTEMPT_COUNT)
 	{
 		fifoReg = nRF_readReg(0x17);
-		statusReg = nRF_readReg(0x07);
 		txBufferIsEmpty = fifoReg & (1<<4);
 
 		if (txBufferIsEmpty)
 		{
 			result = 1; // Indicate success.
-			printf("FIFO EMPTY SUCC %d\r\n", fifoReg);
 			break;
 		}
 
@@ -313,15 +232,12 @@ uint8_t nRF_TxComplete()
 		packetCouldNotBeSent = statusReg & (1<<4);
 
 		if (packetWasSent)
-		{
 			nRF_write_reg(0x07, 0b00100000);	   // Clear TX success flag.
-			printf("STAT TX_DS SUCC %d\r\n", statusReg);
-		}
+		
 		else if (packetCouldNotBeSent)
 		{
 			nRF_write(0xE1, 0);							// Clear TX buffer.
 			nRF_write_reg(0x07, 0b00010000);          // Clear max retry flag.
-			printf("PACKET LOSS SAD %d\r\n", statusReg);
 			break;
 		}
 	}

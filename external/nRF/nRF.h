@@ -1,19 +1,18 @@
-/* EN
+п»ї/* EN
 * Author: bear1ake
 * Thanks to: Dave Parson (author nRF_Lite.h), ThePetrovich
 * Date: June 2019
 * Note: define all pins and ports
 ** RU
-* Автор: bear1ake
-* Благодарности: Dave Parson (автор nRF_Lite.h), ThePetrovich
-* Дата: June 2019
-* Заметка: означить все пины и порты
+* РђРІС‚РѕСЂ: bear1ake
+* Р‘Р»Р°РіРѕРґР°СЂРЅРѕСЃС‚Рё: Dave Parson (Р°РІС‚РѕСЂ nRF_Lite.h), ThePetrovich
+* Р”Р°С‚Р°: June 2019
+* Р—Р°РјРµС‚РєР°: РѕР·РЅР°С‡РёС‚СЊ РІСЃРµ РїРёРЅС‹ Рё РїРѕСЂС‚С‹
 */
 
-// Настройки (Config)
-// Расскоментировать для использования (uncomment for use)
-#ifndef NRF_H    // Include guard; prevents header file from being processed
-#define NRF_H    // more than once per translation unit
+// РќР°СЃС‚СЂРѕР№РєРё (Config)
+#ifndef NRF_H    
+#define NRF_H
 
 #define nRF_CSN_port PORTB
 #define nRF_CSN_ddr DDRB
@@ -27,31 +26,7 @@
 #define F_CPU 8000000L
 #endif
 
-// Ниже рискованно (Below risky)
-#ifndef nRF_CSN_port
-# pragma message "nRF_CSN_port not defined, define it in nRF.h"
-#endif
-
-#ifndef nRF_CSN_ddr
-# warning nRF_CSN_ddr not defined
-#endif
-
-#ifndef nRF_CSN_pin
-# warning nRF_CSN_pin not defined
-#endif
-
-#ifndef nRF_CE_port
-# warning nRF_CSN_port not defined
-#endif
-
-#ifndef nRF_CE_ddr
-# warning nRF_CSN_ddr not defined
-#endif
-
-#ifndef nRF_CE_pin
-# warning nRF_CSN_pin not defined
-#endif
-
+// РќРёР¶Рµ СЂРёСЃРєРѕРІР°РЅРЅРѕ (Below risky)
 #include <stdio.h>
 #include <string.h>
 #include <avr/io.h>
