@@ -187,13 +187,16 @@
     <Compile Include="external\nmea\nmea_parser.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="external\nrf24\nrf24l01.c">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="external\nrf24\nrf24l01.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="external\nrf24\nrf24l01registers.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="external\nRF\nRF.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="external\nRF\nRF.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="external\pff3a\diskio.c">
@@ -307,7 +310,8 @@
     <Folder Include="drivers\devices" />
     <Folder Include="drivers\devices\sensors" />
     <Folder Include="drivers\devices\radio" />
-    <Folder Include="external\nrf24" />
+    <Folder Include="external\nRF" />
+    <Folder Include="external\nrf24\" />
     <Folder Include="external\pff3a\" />
     <Folder Include="external\pololu-driver" />
     <Folder Include="external\nmea" />

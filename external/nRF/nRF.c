@@ -20,15 +20,15 @@ static int nRF_stdw(char c, FILE *stream) //передача информаци�
 
 void nRF_write_multi(unsigned char a, unsigned char len)
 {
-	cslo();
-	SPCR = (1<<SPE) | (0<<CPOL) | (0<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
-	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
-	SPI_transmit_receive(a);
+	spi_cslow();
+	spi_busSetup(SPI_PRESCALER_4, MSBFIRST, SPI_MODE0, SPI_2X);
+	nRF_CSNLOW();
+	spi_simpleRead(a);
 	for(unsigned char i = 0; i < len; i++)
-		SPI_transmit_receive(nRF.buf[i]);
-	nRF_CSN_port |= (1<<nRF_CSN_pin);
-	cshi();
-	SPCR = 0;
+		spi_simpleRead(nRF.buf[i]);
+	nRF_CSNHIGH();
+	spi_cshigh();
+	spi_busStop();
 	
 	for(unsigned char i = 0; i < 32; i++)
 		nRF.buf[i] = 0;
@@ -36,27 +36,27 @@ void nRF_write_multi(unsigned char a, unsigned char len)
 
 void nRF_write(unsigned char a, unsigned char b)
 {
-	cslo();
-	SPCR = (1<<SPE) | (0<<CPOL) | (0<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
-	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
-	SPI_transmit_receive(a);
-	SPI_transmit_receive(b);
-	nRF_CSN_port |= (1<<nRF_CSN_pin);
-	cshi();
-	SPCR = 0;
+	spi_cslow();
+	spi_busSetup(SPI_PRESCALER_4, MSBFIRST, SPI_MODE0, SPI_2X);
+	nRF_CSNLOW();
+	spi_simpleRead(a);
+	spi_simpleRead(b);
+	nRF_CSNHIGH();
+	spi_cshigh();
+	spi_busStop();
 }
 
 unsigned char nRF_readReg(unsigned char a)
 {
 	unsigned char c;
-	cslo();
-	SPCR = (1<<SPE) | (0<<CPOL) | (0<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
-	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
-	c = SPI_transmit_receive(a & 0x1F);
-	c = SPI_transmit_receive(0x00);
-	nRF_CSN_port |= (1<<nRF_CSN_pin);
-	cshi();
-	SPCR = 0;
+	spi_cslow();
+	spi_busSetup(SPI_PRESCALER_4, MSBFIRST, SPI_MODE0, SPI_2X);
+	nRF_CSNLOW();
+	c = spi_simpleRead(a & 0x1F);
+	c = spi_simpleRead(0x00);
+	nRF_CSNHIGH();
+	spi_cshigh();
+	spi_busStop();
 		
 	return c;
 }
@@ -64,15 +64,15 @@ unsigned char nRF_readReg(unsigned char a)
 unsigned char nRF_readReg_a(unsigned char a, int length)
 {
 	unsigned char c;
-	cslo();	
-	SPCR = (1<<SPE) | (0<<CPOL) | (0<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
-	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
-	c = SPI_transmit_receive(a & 0x1F);
+	spi_cslow();	
+	spi_busSetup(SPI_PRESCALER_4, MSBFIRST, SPI_MODE0, SPI_2X);
+	nRF_CSNLOW();
+	c = spi_simpleRead(a & 0x1F);
 	for(unsigned char i = 0; i < length; i++)
-		nRF.buf[i] = SPI_transmit_receive(0x00);
-	nRF_CSN_port |= (1<<nRF_CSN_pin);
-	cshi();
-	SPCR = 0;
+		nRF.buf[i] = spi_simpleRead(0x00);
+	nRF_CSNHIGH();
+	spi_cshigh();
+	spi_busStop();
 	return c;
 }
 
@@ -87,8 +87,8 @@ void nRF_init(int freq)
 	// Включение РМ
 	nRF_CE_ddr |= (1<<nRF_CE_pin);
 	nRF_CSN_ddr |= (1<<nRF_CSN_pin);
-	nRF_CSN_port |= (1<<nRF_CSN_pin);
-	nRF_CE_port &= ~(1<<nRF_CE_pin);					
+	nRF_CSNHIGH();
+	nRF_CELOW();					
 	
 	/* Настройка CONFIG: 
 	7: Резерв = 0 -> Допустим только 0,
@@ -222,9 +222,9 @@ uint8_t nRF_TxComplete()
 			break;
 		}
 
-		nRF_CE_port |= (1<<nRF_CE_pin);
+		nRF_CEHIGH();
 		_delay_us(20);
-		nRF_CE_port &= ~(1<<nRF_CE_pin);
+		nRF_CELOW();
 		_delay_us(500);
 		
 		statusReg = nRF_readReg(0x07);

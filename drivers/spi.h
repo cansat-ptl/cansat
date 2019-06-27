@@ -45,6 +45,9 @@
 #define SPI_2X 1
 #define SPI_1X 0
 
+#define spi_cslow() SPI_PORT &= ~(1<<SPI_SS)
+#define spi_cshigh() SPI_PORT |= (1<<SPI_SS)
+
 /*------------------------------------------------------------
 SPI init - spi_init()
 Sets up SPI bus pins.

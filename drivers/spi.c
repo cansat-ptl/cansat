@@ -26,12 +26,12 @@ Arguments: uint8_t data - data that will be sent
 Returns: uint8_t - received data
 ------------------------------------------------------------*/
 uint8_t spi_write(uint8_t data){	
-	SPI_PORT &= ~(1<<SPI_SS);
+	spi_cslow();
 	SPDR = data;
 	
 	while(!(SPSR & (1<<SPIF)));
 	
-	SPI_PORT |= (1<<SPI_SS);
+	spi_cshigh();
 	
 	return SPDR;
 }
@@ -48,7 +48,7 @@ Arguments: uint8_t address - register address
 Returns: nothing
 ------------------------------------------------------------*/
 void spi_writeRegister(uint8_t address, uint8_t data, uint8_t mask, uint8_t isInverted){
-	SPI_PORT &= ~(1<<SPI_SS);
+	spi_cslow();
 	
 	if(isInverted)
 		SPDR = (address & ~mask);
@@ -59,7 +59,7 @@ void spi_writeRegister(uint8_t address, uint8_t data, uint8_t mask, uint8_t isIn
 	SPDR = data;
 	while(!(SPSR & (1<<SPIF)));
 	
-	SPI_PORT |= (1<<SPI_SS);
+	spi_cshigh();
 }
 
 /*------------------------------------------------------------
@@ -75,7 +75,7 @@ Arguments: uint8_t address - register address
 Returns: uint8_t - register value
 ------------------------------------------------------------*/
 uint8_t spi_readRegister(uint8_t address, uint8_t isDelayed, uint8_t mask, uint8_t isInverted){
-	SPI_PORT &= ~(1<<SPI_SS);
+	spi_cslow();
 	
 	if(isInverted)
 		SPDR = (address & ~0x80);
@@ -88,7 +88,7 @@ uint8_t spi_readRegister(uint8_t address, uint8_t isDelayed, uint8_t mask, uint8
 		while(!(SPSR & (1<<SPIF)));
 	}
 	
-	SPI_PORT |= (1<<SPI_SS);
+	spi_cshigh();
 	
 	return SPDR;
 }
@@ -107,7 +107,7 @@ Arguments: uint8_t type - operation type.
 Returns: nothing
 ------------------------------------------------------------*/
 void spi_transfer(uint8_t type, uint8_t address, uint8_t * data, uint8_t size, uint8_t mask){
-	SPI_PORT &= ~(1<<SPI_SS);
+	spi_cslow();
 	
 	if(type == SPI_WRITE)
 		SPDR = (address | mask);
@@ -121,7 +121,7 @@ void spi_transfer(uint8_t type, uint8_t address, uint8_t * data, uint8_t size, u
 			data[i] = SPDR;
 	}
 	while(!(SPSR & (1<<SPIF)));
-	SPI_PORT |= (1<<SPI_SS);
+	spi_cshigh();
 }
 
 /*------------------------------------------------------------

@@ -1,14 +1,16 @@
 ﻿/* EN
 * Author: bear1ake
-* Thanks to: Dave Parson (author nRF_Lite.h), ThePetrovich
+* Thanks to: Dave Parson (author of arduino NRFLite library), ThePetrovich
 * Date: June 2019
 * Note: define all pins and ports
 ** RU
 * Автор: bear1ake
-* Благодарности: Dave Parson (автор nRF_Lite.h), ThePetrovich
+* Благодарности: Dave Parson (автор библиотеки NRFLite), ThePetrovich
 * Дата: June 2019
 * Заметка: означить все пины и порты
 */
+
+
 
 // Настройки (Config)
 #ifndef NRF_H    
@@ -22,6 +24,11 @@
 #define nRF_CE_ddr DDRE
 #define nRF_CE_pin PE6
 
+#define nRF_CSNLOW() nRF_CSN_port &= ~(1<<nRF_CSN_pin)
+#define nRF_CSNHIGH() nRF_CSN_port |= (1<<nRF_CSN_pin)
+#define nRF_CELOW() nRF_CE_port &= ~(1<<nRF_CE_pin)
+#define nRF_CEHIGH() nRF_CE_port |= (1<<nRF_CE_pin)
+
 #ifndef F_CPU
 #define F_CPU 8000000L
 #endif
@@ -31,7 +38,7 @@
 #include <string.h>
 #include <avr/io.h>
 #include <util/delay.h>
-#include "spi.h"
+#include "../../drivers/spi.h"
 
 void nRF_write_multi(unsigned char a, unsigned char length);
 void nRF_write(unsigned char a, unsigned char b);
