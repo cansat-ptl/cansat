@@ -15,7 +15,7 @@
 #include <avr/iom128.h>
 #include "driver_config.h"
 
-#define SPIDRV_VER "0.9.5-rc3"
+#define SPIDRV_VER "0.9.6-rc3"
 #define SPIDRV_TIMESTAMP __TIMESTAMP__
 
 //SPI mode predefines
