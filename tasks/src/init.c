@@ -13,6 +13,17 @@
 uint16_t tflags = 0;
 void w2_init();
 
+void initTaskManager(){
+	kernel_addTask(checkDeployment, 100);
+	kernel_addTask(readADXL, 200);
+	kernel_addTask(readBMP, 400);
+	kernel_addTask(readGPS, 600);
+	kernel_addTask(sendGPS, 800);
+	kernel_addTask(sendMain, 1000);
+	kernel_addTask(imu_filter, 1000);
+	kernel_addTask(requestDS18, 700);
+}
+
 void init(){
 	uart0_init(12);
 	PORTA = 0;
@@ -21,6 +32,8 @@ void init(){
 	hal_setupPins();
 	delay(10);
 	if(hal_checkBit_m(JUMPER_PIN, JUMPER_IN)) debug = 1;
+	if(debug) hal_writePin(&LED_DBG_PORT, LED_DBG, 1);
+	else hal_writePin(&LED_DBG_PORT, LED_DBG, 0);
 	
 	sd_init();
 	wdt_reset();
@@ -65,20 +78,12 @@ void init(){
 	wdt_reset();
 	
 	debug_logMessage((char *)PSTR("[INIT]initd: Task system setup..."), 1, 1);
-	kernel_addTask(checkDeployment, 10);
-	kernel_addTask(readADXL, 20);
-	kernel_addTask(readBMP, 40);
-	kernel_addTask(readGPS, 60);
-	kernel_addTask(sendGPS, 80);
-	kernel_addTask(sendMain, 100);
-	kernel_addTask(imu_filter, 100);
-	kernel_addTask(requestDS18, 70);
+	initTaskManager();
 	debug_logMessage((char *)PSTR("DONE!\r\n"), 0, 1);
 	wdt_reset();
 	
 	debug_logMessage((char *)PSTR("[INIT]initd: init process finished\r\n"), 1, 1);
 	
-	util_printVersion();
+	//util_printVersion();
 	//imu_setupTimer();
-	
 }

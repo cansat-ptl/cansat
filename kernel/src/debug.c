@@ -12,6 +12,7 @@ void sd_puts(char * data);
 void sd_flush();
 
 #define SD_LOGGING 1
+#define UART_LOGGING_I 0
 
 char levels[5][16] = {
 	"",
@@ -23,7 +24,7 @@ char levels[5][16] = {
 
 inline void debug_sendMessage(char* msg, uint8_t level) {
 	if(level != 0){
-		char buffer[48];
+		char buffer[24];
 		sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
 		uart0_puts(buffer);
 	}
@@ -78,10 +79,9 @@ void debug_sendMessageSD_p(const char * msg, uint8_t level){
 
 inline void debug_logMessage(char* msg, uint8_t level, uint8_t pgm){
 	if(!pgm){
-		#ifdef UART_LOGGING
+		#if UART_LOGGING_I == 0
 			debug_sendMessage(msg, level);
-		#endif
-		#ifdef UART_LOGGING_I
+		#else
 			debug_sendMessage_i(msg, level);
 		#endif
 		#ifdef SD_LOGGING
@@ -89,10 +89,9 @@ inline void debug_logMessage(char* msg, uint8_t level, uint8_t pgm){
 		#endif
 	}
 	else {
-		#ifdef UART_LOGGING
+		#if UART_LOGGING_I == 0
 			debug_sendMessage_p(msg, level);
-		#endif
-		#ifdef UART_LOGGING_I
+		#else
 			debug_sendMessage_pi(msg, level);
 		#endif
 		#ifdef SD_LOGGING

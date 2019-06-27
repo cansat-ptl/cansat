@@ -16,13 +16,13 @@
 #ifndef NRF_H    
 #define NRF_H
 
-#define nRF_CSN_port PORTB
-#define nRF_CSN_ddr DDRB
-#define nRF_CSN_pin PB6
+#define nRF_CSN_port PORTE
+#define nRF_CSN_ddr DDRE
+#define nRF_CSN_pin PE6
 
 #define nRF_CE_port PORTE
 #define nRF_CE_ddr DDRE
-#define nRF_CE_pin PE6
+#define nRF_CE_pin PE5
 
 #define nRF_CSNLOW() nRF_CSN_port &= ~(1<<nRF_CSN_pin)
 #define nRF_CSNHIGH() nRF_CSN_port |= (1<<nRF_CSN_pin)

@@ -94,19 +94,9 @@ volatile uint8_t taskIndex = 0; //Index of the last task in queue
 volatile task callQueue[MAX_QUEUE_SIZE];
 volatile struct taskStruct taskQueue[MAX_QUEUE_SIZE];
 
-const char wdt_reset_msg_l1[] PROGMEM = "The system has been reset by watchdog.\r\n";
-const char wdt_reset_msg_l2[] PROGMEM = "This is usually caused by software issues or faulty device connections.\r\n";
-const char wdt_reset_msg_l3[] PROGMEM = "Please, report this to the developer as soon as possible.\r\n";
-const char wdt_reset_msg_l4[] PROGMEM = "Error details: MCUCSR.WDRF = 1\r\n";
-const char msg_separator_start[] PROGMEM = "\r\n------------------------------------------------------------------------------------------------------\r\n";
-const char msg_separator_end[] PROGMEM = "------------------------------------------------------------------------------------------------------\r\n\r\n";
-const char bod_reset_msg_l1[] PROGMEM = "The system has been reset by brown-out detector.\r\n";
-const char bod_reset_msg_l2[] PROGMEM = "This is usually caused by an unstable power supply.\r\n";
-const char bod_reset_msg_l3[] PROGMEM = "Please, check power supply wire connections and circuitry as soon as possible.\r\n";
-const char bod_reset_msg_l4[] PROGMEM = "Error details: MCUCSR.BORF = 1\r\n";
-
 void idle(); //System idle task, MUST me declared in tasks.c
 void init(); //System init task, MUST me declared in tasks.c
+void initTaskManager(); //Task manager init task, MUST me declared in tasks.c
 
 inline uint8_t kernel_addCall(task t_ptr){
 	if(debug == 1 && VERBOSE){
@@ -123,12 +113,15 @@ inline uint8_t kernel_addCall(task t_ptr){
 	}
 	else {
 		hal_enableInterrupts();
-		debug_logMessage((char *)PSTR("Kernel: call queue overflow\r\n"), 3, 1);
+		kernel_displayError(ERR_QUEUE_OVERFLOW);
+		kernel_clearCallQueue();
+		kernel_clearTaskQueue();
+		initTaskManager();
 		return ERR_QUEUE_OVERFLOW;
 	}
 }
 
-uint8_t kernel_addTask(task t_ptr, uint8_t t_period){
+uint8_t kernel_addTask(task t_ptr, uint16_t t_period){
 	if(debug == 1 && VERBOSE){
 		debug_logMessage((char *)PSTR("Kernel: added timed task to queue\r\n"), 1, 1);
 	}
@@ -144,7 +137,10 @@ uint8_t kernel_addTask(task t_ptr, uint8_t t_period){
 	}
 	else {
 		hal_enableInterrupts();
-		debug_logMessage((char *)PSTR("Kernel: task queue overflow\r\n"), 3, 1);
+		kernel_displayError(ERR_QUEUE_OVERFLOW);
+		kernel_clearCallQueue();
+		kernel_clearTaskQueue();
+		initTaskManager();
 		return ERR_QUEUE_OVERFLOW;
 	}
 	hal_enableInterrupts();
@@ -175,8 +171,7 @@ inline uint8_t kernel_removeTask(uint8_t position){
 	taskQueue[position].pointer = idle;
 	taskQueue[position].period = 0;
 	for(int j = position; j < MAX_QUEUE_SIZE-1; j++){
-		taskQueue[j].pointer = taskQueue[j+1].pointer;
-		taskQueue[j].period = taskQueue[j+1].period;
+		taskQueue[j] = taskQueue[j+1];
 	}
 	taskQueue[MAX_QUEUE_SIZE-1].pointer = idle;
 	taskQueue[MAX_QUEUE_SIZE-1].period = 0;	
@@ -221,7 +216,7 @@ inline void kernel_timerService(){
 			}
 		}
 	}
-	e_time += 10;
+	e_time += 1;
 	hal_enableInterrupts();
 }
 
@@ -230,7 +225,7 @@ void kernel_setupTimer(){
 	hal_disableInterrupts();
 	TCCR1B |= (1 << WGM12)|(1 << CS11)|(1 << CS10); // prescaler 64
 	TCNT1 = 0; 
-	OCR1A = 1250;
+	OCR1A = 125;
 	hal_enableInterrupts();
 }
 
@@ -259,7 +254,7 @@ uint8_t kernel(){
 	while(1){
 		wdt_reset();
 		kernel_taskManager();
-		hal_switchBit(&LED_KRN_PORT, LED_KRN);
+		hal_switchBit(&PORTC, PC5);
 	}
 }
 
@@ -282,39 +277,45 @@ uint8_t kernelInit(){
 }
 
 void kernel_checkMCUCSR(){
-	char msg[128]; 
 	if(hal_checkBit_m(mcucsr_mirror, WDRF)){
-		sprintf_P(msg, PSTR("%S"), msg_separator_start);
-		debug_logMessage(msg, 0, 0);
-		sprintf_P(msg, PSTR("%S"), wdt_reset_msg_l1);
-		debug_logMessage(msg, 4, 0);
-		sprintf_P(msg, PSTR("%S"), wdt_reset_msg_l2);
-		debug_logMessage(msg, 4, 0);
-		sprintf_P(msg, PSTR("%S"), wdt_reset_msg_l3);
-		debug_logMessage(msg, 4, 0);
-		sprintf_P(msg, PSTR("%S"), wdt_reset_msg_l4);
-		debug_logMessage(msg, 4, 0);
-		sprintf_P(msg, PSTR("%S"), msg_separator_end);
-		debug_logMessage(msg, 0, 0);
+		kernel_displayError(ERR_WDT_RESET);
 		hal_setBit_m(kflags, WDRF);
 		return;
 	}
 	if(hal_checkBit_m(mcucsr_mirror, BORF)){
-		sprintf_P(msg, PSTR("%S"), msg_separator_start);
-		debug_logMessage(msg, 0, 0);
-		sprintf_P(msg, "%S", bod_reset_msg_l1);
-		debug_logMessage(msg, 4, 0);
-		sprintf_P(msg, "%S", bod_reset_msg_l2);
-		debug_logMessage(msg, 4, 0);
-		sprintf_P(msg, "%S", bod_reset_msg_l3);
-		debug_logMessage(msg, 4, 0);
-		sprintf_P(msg, "%S", bod_reset_msg_l4);
-		debug_logMessage(msg, 4, 0);
-		sprintf_P(msg, PSTR("%S"), msg_separator_end);
-		debug_logMessage(msg, 0, 0);
+		kernel_displayError(ERR_BOD_RESET);
 		hal_setBit_m(kflags, BORF);
 	}
 	return;
+}
+
+void kernel_displayError(uint8_t error){
+	switch(error){
+		case ERR_QUEUE_OVERFLOW:
+			debug_logMessage((char *)PSTR("\r\n--------------------------------------------------------------------------------------\r\n"), 0, 1);
+			debug_logMessage((char *)PSTR("A task/call queue overflow has occurred."), 4, 1);
+			debug_logMessage((char *)PSTR("This is a critical issue, and immediate action is required."), 4, 1);
+			debug_logMessage((char *)PSTR("Task manager will be reloaded and reset."), 4, 1);
+			debug_logMessage((char *)PSTR("Please, report this to the developer as soon as possible."), 4, 1);
+			debug_logMessage((char *)PSTR("--------------------------------------------------------------------------------------\r\n\r\n"), 0, 1);
+		break;
+		case ERR_WDT_RESET:
+			debug_logMessage((char *)PSTR("\r\n--------------------------------------------------------------------------------------\r\n"), 0, 1);
+			debug_logMessage((char *)PSTR("The system has been reset by watchdog.\r\n"), 4, 1);
+			debug_logMessage((char *)PSTR("This is usually caused by software issues or faulty device connections.\r\n"), 4, 1);
+			debug_logMessage((char *)PSTR("Please, report this to the developer as soon as possible.\r\n"), 4, 1);
+			debug_logMessage((char *)PSTR("Error details: MCUCSR.WDRF = 1\r\n"), 4, 1);
+			debug_logMessage((char *)PSTR("--------------------------------------------------------------------------------------\r\n\r\n"), 0, 1);
+		break;
+		case ERR_BOD_RESET:
+			debug_logMessage((char *)PSTR("\r\n--------------------------------------------------------------------------------------\r\n"), 0, 1);
+			debug_logMessage((char *)PSTR("The system has been reset by brown-out detector.\r\n"), 4, 1);
+			debug_logMessage((char *)PSTR("This is usually caused by an unstable power supply.\r\n"), 4, 1);
+			debug_logMessage((char *)PSTR("Please, check power supply wire connections and circuitry as soon as possible.\r\n"), 4, 1);
+			debug_logMessage((char *)PSTR("Error details: MCUCSR.BORF = 1\r\n"), 4, 1);
+			debug_logMessage((char *)PSTR("--------------------------------------------------------------------------------------\r\n\r\n"), 0, 1);
+		break;	
+	}
 }
 
 ISR(TIMER1_COMPA_vect){

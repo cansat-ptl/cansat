@@ -15,10 +15,12 @@
 #define SDCARD_MOD_TIMESTAMP __TIMESTAMP__
 
 #ifndef KERNELconfig
-#define MAX_QUEUE_SIZE 24
+#define MAX_QUEUE_SIZE 16
 #define ERR_QUEUE_OVERFLOW 1
 #define ERR_QUEUE_END 2
-#define TICKRATE 10 //in milliseconds
+#define ERR_WDT_RESET 3
+#define ERR_BOD_RESET 4
+#define TICKRATE 1 //in milliseconds
 //#define DEBUG 1
 #endif
 
@@ -38,11 +40,12 @@
 #include <stdio.h>
 
 uint8_t kernel_addCall(task t_ptr);
-uint8_t kernel_addTask(task t_ptr, uint8_t t_period);
+uint8_t kernel_addTask(task t_ptr, uint16_t t_period);
 uint8_t kernel_removeCall();
 uint8_t kernel_removeTask(uint8_t position);
 void kernel_clearTaskQueue();
 void kernel_clearCallQueue();
+void kernel_displayError(uint8_t error);
 void kernel_checkMCUCSR();
 uint8_t kernelInit();
 

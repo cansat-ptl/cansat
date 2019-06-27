@@ -61,7 +61,7 @@ void bmp280_test(){
 		wdt_reset();
 	}
 	
-	bmp280_printCalibrationData();
+	//bmp280_printCalibrationData();
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
 		hal_writePin(&PORTG, PG3, HIGH);
@@ -110,7 +110,7 @@ void imu_test(){
 	debug_logMessage((char *)PSTR("Testing LSM303...\r\n"), 1, 1);
 	imu_init();
 	
-	char msg[128];
+	char msg[64];
 	
 	int16_t gyrData_raw_x = 0, gyrData_raw_y = 0, gyrData_raw_z = 0;
 	int16_t accData_raw_x = 0, accData_raw_y = 0, accData_raw_z = 0;

@@ -56,7 +56,7 @@ void imu_filter(){
 	char msg[32];
 	sprintf(msg, "PR: %f %f\r\n", pitch, roll);
 	debug_logMessage(msg, 1, 0);
-	kernel_addTask(imu_filter, 5);
+	kernel_addTask(imu_filter, 50);
 }
 
 ISR(TIMER3_COMPA_vect){

@@ -22,5 +22,6 @@
 #include "../external/pololu-driver/imuv3.h"
 #include "../external/pff3a/pff.h"
 #include "../external/pff3a/diskio.h"
+#include "../external/nRF/nRF.h"
 
 #endif /* DRIVERS_H_ */

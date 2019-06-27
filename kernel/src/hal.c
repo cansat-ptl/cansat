@@ -8,11 +8,11 @@
 #include "../hal.h"
 
 void hal_setupPins(){
-	JUMPER_DDR |= (1<<JUMPER_OUT);
-	JUMPER_PORT |= (1<<JUMPER_OUT);
-	LED_KRN_DDR |= (1<<LED_KRN);
-	LED_WRK_DDR |= (1<<LED_WRK);
-	LED_DBG_DDR |= (1<<LED_DBG);
-	LED_TX_DDR |= (1<<LED_TX);
-	LED_BUILTIN_DDR |= (1<<LED_BUILTIN);
+	DDRG |= (1 << PG3);
+	hal_setPinMode(&JUMPER_DDR, JUMPER_OUT, OUTPUT);
+	hal_writePin(&JUMPER_PORT, JUMPER_OUT, HIGH);
+	DDRC |= (1 << PC4);
+	DDRC |= (1 << PC5);
+	DDRC |= (1 << PC6);
+	DDRC |= (1 << PC7);
 }

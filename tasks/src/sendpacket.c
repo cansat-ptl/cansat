@@ -47,9 +47,10 @@ struct packetGPS_t {
 uint32_t gpsn = 0, mainn = 0, orientn = 0;
 
 void sendGPS(){
+	hal_writePin(&PORTC, PC6, 1);
 	sprintf(packetGPS.marker, "YKTSAT5:GPS:");
 	sprintf(packetGPS.n, "N=%lu;", ++gpsn);
-	sprintf(packetGPS.et, "ET=%lld;", e_time/1000);
+	sprintf(packetGPS.et, "ET=%lu;", (uint32_t)e_time/1000);
 	sprintf(packetGPS.end, "\r\n");
 	debug_logMessage((char *)PSTR("GPS telemetry: "), 1, 1);
 	debug_logMessage(packetGPS.marker, 0, 0);
@@ -60,13 +61,15 @@ void sendGPS(){
 	debug_logMessage(packetGPS.lon, 0, 0);
 	debug_logMessage(packetGPS.alt, 0, 0);
 	debug_logMessage(packetGPS.end, 0, 0);
-	kernel_addTask(sendGPS, 25);
+	kernel_addTask(sendGPS, 250);
+	hal_writePin(&PORTC, PC6, 0);
 }
 
 void sendMain(){
+	hal_writePin(&PORTC, PC6, 1);
 	sprintf(packetMain.marker, "YKTSAT5:MAIN:");
 	sprintf(packetMain.n, "N=%lu;", ++mainn);
-	sprintf(packetMain.et, "ET=%lld;", e_time/1000);
+	sprintf(packetMain.et, "ET=%lu;", (uint32_t)e_time/1000);
 	sprintf(packetMain.end, "\r\n");
 	debug_logMessage((char *)PSTR("Main telemetry: "), 1, 1);
 	debug_logMessage(packetMain.marker, 0, 0);
@@ -78,5 +81,6 @@ void sendMain(){
 	debug_logMessage(packetMain.t1, 0, 0);
 	debug_logMessage(packetMain.t2, 0, 0);
 	debug_logMessage(packetMain.end, 0, 0);
-	kernel_addTask(sendMain, 75);
+	kernel_addTask(sendMain, 750);
+	hal_writePin(&PORTC, PC6, 0);
 }

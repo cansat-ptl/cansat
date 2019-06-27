@@ -71,6 +71,7 @@ inline void idle(){
 }
 
 void init();
+void initTaskManager();
 
 void adxl345_test();
 void bmp280_test();
