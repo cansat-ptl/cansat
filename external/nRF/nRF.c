@@ -20,15 +20,15 @@ static int nRF_stdw(char c, FILE *stream) //передача информаци�
 
 void nRF_write_multi(unsigned char a, unsigned char len)
 {
-	spi_cslow();
-	spi_busSetup(SPI_PRESCALER_4, MSBFIRST, SPI_MODE0, SPI_2X);
-	nRF_CSNLOW();
-	spi_simpleRead(a);
-	for(unsigned char i = 0; i < len; i++)
-		spi_simpleRead(nRF.buf[i]);
-	nRF_CSNHIGH();
-	spi_cshigh();
-	spi_busStop();
+	cslo();
+	SPCR = (1<<SPE) | (0<<CPOL) | (0<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
+	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
+	SPI_transmit_receive(a);
+	for(unsigned char i = 0; i < 32; i++)
+		SPI_transmit_receive(nRF.buf[i]);
+	nRF_CSN_port |= (1<<nRF_CSN_pin);
+	cshi();
+	SPCR = 0;
 	
 	for(unsigned char i = 0; i < 32; i++)
 		nRF.buf[i] = 0;
@@ -36,27 +36,27 @@ void nRF_write_multi(unsigned char a, unsigned char len)
 
 void nRF_write(unsigned char a, unsigned char b)
 {
-	spi_cslow();
-	spi_busSetup(SPI_PRESCALER_4, MSBFIRST, SPI_MODE0, SPI_2X);
-	nRF_CSNLOW();
-	spi_simpleRead(a);
-	spi_simpleRead(b);
-	nRF_CSNHIGH();
-	spi_cshigh();
-	spi_busStop();
+	cslo();
+	SPCR = (1<<SPE) | (0<<CPOL) | (0<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
+	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
+	SPI_transmit_receive(a);
+	SPI_transmit_receive(b);
+	nRF_CSN_port |= (1<<nRF_CSN_pin);
+	cshi();
+	SPCR = 0;
 }
 
 unsigned char nRF_readReg(unsigned char a)
 {
 	unsigned char c;
-	spi_cslow();
-	spi_busSetup(SPI_PRESCALER_4, MSBFIRST, SPI_MODE0, SPI_2X);
-	nRF_CSNLOW();
-	c = spi_simpleRead(a & 0x1F);
-	c = spi_simpleRead(0x00);
-	nRF_CSNHIGH();
-	spi_cshigh();
-	spi_busStop();
+	cslo();
+	SPCR = (1<<SPE) | (0<<CPOL) | (0<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
+	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
+	c = SPI_transmit_receive(a & 0x1F);
+	c = SPI_transmit_receive(0x00);
+	nRF_CSN_port |= (1<<nRF_CSN_pin);
+	cshi();
+	SPCR = 0;
 		
 	return c;
 }
@@ -64,15 +64,15 @@ unsigned char nRF_readReg(unsigned char a)
 unsigned char nRF_readReg_a(unsigned char a, int length)
 {
 	unsigned char c;
-	spi_cslow();	
-	spi_busSetup(SPI_PRESCALER_4, MSBFIRST, SPI_MODE0, SPI_2X);
-	nRF_CSNLOW();
-	c = spi_simpleRead(a & 0x1F);
+	cslo();	
+	SPCR = (1<<SPE) | (0<<CPOL) | (0<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
+	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
+	c = SPI_transmit_receive(a & 0x1F);
 	for(unsigned char i = 0; i < length; i++)
-		nRF.buf[i] = spi_simpleRead(0x00);
-	nRF_CSNHIGH();
-	spi_cshigh();
-	spi_busStop();
+		nRF.buf[i] = SPI_transmit_receive(0x00);
+	nRF_CSN_port |= (1<<nRF_CSN_pin);
+	cshi();
+	SPCR = 0;
 	return c;
 }
 
@@ -84,11 +84,13 @@ void nRF_stdef()
 // nRF_init(частота в МГц)
 void nRF_init(int freq)
 {
+	nRF.freq = freq;
+	
 	// Включение РМ
 	nRF_CE_ddr |= (1<<nRF_CE_pin);
 	nRF_CSN_ddr |= (1<<nRF_CSN_pin);
-	nRF_CSNHIGH();
-	nRF_CELOW();					
+	nRF_CSN_port |= (1<<nRF_CSN_pin);
+	nRF_CE_port &= ~(1<<nRF_CE_pin);					
 	
 	/* Настройка CONFIG: 
 	7: Резерв = 0 -> Допустим только 0,
@@ -124,7 +126,7 @@ void nRF_init(int freq)
 	nRF_write_reg(0x02, 0b00111111);			// Включить RX-адрес на pipe0-5
 	nRF_write_reg(0x03, 0b00000011);			// Ширина адреса - 5 байт
 	nRF_write_reg(0x04, 0b00011111);			// 500 мкс между повторными отправками и до 15 раз повтора
-	nRF_write_reg(0x05, 0x4C);	// Запись частотного канала
+	nRF_write_reg(0x05, freq - 2400);	// Запись частотного канала
 
 	// Запись адреса RX трубы 0
 	nRF.buf[0] = 0xE7;
@@ -167,7 +169,7 @@ void nRF_init(int freq)
 
 unsigned char nRF_send(int len)
 {
-	nRF_write_reg(0x05, 0x4C);	// Запись частотного канала для сброса количества потерянных пакетов
+	nRF_write_reg(0x05, nRF.freq - 2400);	// Запись частотного канала для сброса количества потерянных пакетов
 	uint8_t fifoReg = nRF_readReg(0x17);
 	
 	if(fifoReg & (1<<5))
@@ -184,17 +186,27 @@ unsigned char nRF_send(int len)
 	return 0;
 }
 
-unsigned char nRF_send_other(char * data)
+void nRF_send_other(char * data)
 {
-	int i, N = strlen(data);
+	int i, L, N = strlen(data);
 	
-	if(N > 32)
-		N = 32;
-
-	for(i = 0; i < N; i++)
-		nRF.buf[i] = (unsigned char) data[i];
-	
-	return nRF_send(N);
+	for (L = 0; L < N; L += 31)
+	{
+		if ((N - L) > 31)
+		{
+			for (i = 0; i < 31; i++)
+				nRF.buf[i] = data[L + i];
+			nRF.buf[31] = 0;
+		}
+		else
+		{
+			for (i = 0; i < (N - L); i++)
+				nRF.buf[i] = data[L + i];
+			for (i = (N - L); i < 32; i++)
+				nRF.buf[i] = 0;
+		}
+		nRF_send(32);
+	}
 }
 
 uint8_t nRF_TxComplete()
@@ -222,9 +234,9 @@ uint8_t nRF_TxComplete()
 			break;
 		}
 
-		nRF_CEHIGH();
+		nRF_CE_port |= (1<<nRF_CE_pin);
 		_delay_us(20);
-		nRF_CELOW();
+		nRF_CE_port &= ~(1<<nRF_CE_pin);
 		_delay_us(500);
 		
 		statusReg = nRF_readReg(0x07);
@@ -236,6 +248,7 @@ uint8_t nRF_TxComplete()
 		
 		else if (packetCouldNotBeSent)
 		{
+			printf("STAT NOT SEND SAD %x %x\r\n", fifoReg, statusReg);
 			nRF_write(0xE1, 0);							// Clear TX buffer.
 			nRF_write_reg(0x07, 0b00010000);          // Clear max retry flag.
 			break;
