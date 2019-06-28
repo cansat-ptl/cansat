@@ -26,11 +26,10 @@ void initTaskManager(){
 }
 
 void init(){
+	hal_setupPins();
 	uart0_init(12);
-	PORTA = 0;
 	hal_enableInterrupts();
 	//	getTestValues();
-	hal_setupPins();
 	delay(10);
 	if(hal_checkBit_m(JUMPER_PIN, JUMPER_IN)) debug = 0;
 	if(debug) hal_writePin(&LED_DBG_PORT, LED_DBG, 1);

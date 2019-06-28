@@ -21,7 +21,7 @@ void imu_setupTimer(){
 }
 
 void imu_filter(){
-	float pitchAcc, rollAcc;
+//	float pitchAcc, rollAcc;
 	int16_t gyrData_raw_x = 0, gyrData_raw_y = 0, gyrData_raw_z = 0;
 	int16_t accData_raw_x = 0, accData_raw_y = 0, accData_raw_z = 0;
 	

@@ -64,7 +64,7 @@ BYTE rcv_spi (void)				// Send 0xFF and receive a byte
 #define SELECT()	PORTC &= ~_BV(SD_CS)		// MMC CS = L 
 #define	DESELECT()	PORTC |=  _BV(SD_CS)		// MMC CS = H 
 #define	MMC_SEL		!(PORTC & _BV(SD_CS))	// MMC CS status (true:selected) 
-#define	INIT_SPI()	{  PORTC=_BV(SD_CS); DDRC=_BV(SD_CS)|_BV(SD_DI)|_BV(SD_CLK); }	
+#define	INIT_SPI()	{  PORTC|=_BV(SD_CS); DDRC|=_BV(SD_CS)|_BV(SD_DI)|_BV(SD_CLK); }	
 
 
 //-----------------------------------------------------------------------

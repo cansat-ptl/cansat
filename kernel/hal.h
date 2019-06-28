@@ -8,6 +8,10 @@
 #ifndef HAL_H_
 #define HAL_H_
 
+#ifndef F_CPU
+#define F_CPU 8000000L
+#endif
+
 #define HAL_MOD_VER "0.1.2-staging"
 #define HAL_MOD_TIMESTAMP __TIMESTAMP__
 
@@ -73,7 +77,7 @@ inline void hal_switchBit(volatile uint8_t *reg, uint8_t bit){
 }
 
 inline void hal_setBit(volatile uint8_t *reg, uint8_t bit){
-	*reg ^= (1 << bit);
+	*reg |= (1 << bit);
 }
 
 inline void hal_clearBit(volatile uint8_t *reg, uint8_t bit){

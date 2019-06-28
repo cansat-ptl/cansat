@@ -30,12 +30,14 @@ void adxl345_test(){
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
 		hal_writePin(&PORTG, PG3, HIGH);
+		hal_writePin(&PORTC, PC4, HIGH);
 		delay(250);
 		int16_t ax = adxl345_readX();
 		int16_t ay = adxl345_readY();
 		int16_t az = adxl345_readZ();
 		sprintf(msg, "ADXL data: %d %d %d\r\n", ax, ay, az);
 		debug_logMessage(msg, 1, 0);
+		hal_writePin(&PORTC, PC4, LOW);
 		hal_writePin(&PORTG, PG3, LOW);
 		delay(250);
 	}
@@ -65,12 +67,14 @@ void bmp280_test(){
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
 		hal_writePin(&PORTG, PG3, HIGH);
+		hal_writePin(&PORTC, PC4, HIGH);
 		delay(250);
 		double t = bmp280_readTemperature();
 		delay(100);
 		double p = bmp280_readPressure();
 		sprintf(msg, "BMP data: %f %f\r\n", t, p);
 		debug_logMessage(msg, 1, 0);
+		hal_writePin(&PORTC, PC4, LOW);
 		hal_writePin(&PORTG, PG3, LOW);
 		delay(250);
 	}
@@ -89,12 +93,14 @@ void ds18b20_test(){
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
 		hal_writePin(&PORTG, PG3, HIGH);
+		hal_writePin(&PORTC, PC4, HIGH);
 		delay(250);
 		ds18b20_requestTemperature();
 		delay(1000);
 		char * t = ds18b20_readTemperature();
 		sprintf(msg, "DS data: %s\r\n", t);
 		debug_logMessage(msg, 1, 0);
+		hal_writePin(&PORTC, PC4, LOW);
 		hal_writePin(&PORTG, PG3, LOW);
 		delay(250);
 	}
@@ -118,6 +124,7 @@ void imu_test(){
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
 		hal_writePin(&PORTG, PG3, HIGH);
+		hal_writePin(&PORTC, PC4, HIGH);
 		delay(250);
 		imu_read();
 		gyrData_raw_x = gyrData_raw_y = gyrData_raw_z = 0;
@@ -145,6 +152,7 @@ void imu_test(){
 			
 		sprintf(msg, "IMU data: %d %d %d %d %d %d %d %d %d\r\n", gyrData_raw_x, gyrData_raw_y, gyrData_raw_z, accData_raw_x, accData_raw_y, accData_raw_z, magData_raw_x, magData_raw_y, magData_raw_z);
 		debug_logMessage(msg, 1, 0);
+		hal_writePin(&PORTC, PC4, LOW);
 		hal_writePin(&PORTG, PG3, LOW);
 		delay(250);
 	}
@@ -163,11 +171,13 @@ void gps_test(){
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
 		hal_writePin(&PORTG, PG3, HIGH);
+		hal_writePin(&PORTC, PC4, HIGH);
 		delay(250);
 		float lat = convertToDecimal(GPS.latitude);
 		float lon = convertToDecimal(GPS.longitude);
 		sprintf(msg, "GPS: %d %d %d %f %f\r\n", GPS.day, GPS.month, GPS.year, lat, lon);
 		debug_logMessage(msg,1, 0);
+		hal_writePin(&PORTC, PC4, LOW);
 		hal_writePin(&PORTG, PG3, LOW);
 		delay(250);
 	}

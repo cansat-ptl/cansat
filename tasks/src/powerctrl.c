@@ -20,6 +20,7 @@ void powerCtrl(){
 		}
 		hal_setBit_m(tflags, PWSAVE);
 		hal_writePin(&PORTB, PB4, LOW);
+		hal_writePin(&PORTC, PC4, LOW);
 	}
 	else{
 		if(debug == 1){
@@ -27,6 +28,7 @@ void powerCtrl(){
 		}
 		if(hal_checkBit_m(tflags, CAM_ON)){
 			hal_writePin(&PORTB, PB4, HIGH);
+			hal_writePin(&PORTC, PC4, HIGH);
 			if(debug == 1){
 				debug_logMessage((char *)PSTR("Camera online\r\n"), 1, 1);
 			}
@@ -42,7 +44,10 @@ void checkDeployment(){
 		debug_logMessage((char *)PSTR("Reading light sensor\r\n"), 1, 1);
 	}
 	uint16_t light = adc_read(1);
-	if(light <= 20){
+	char buf[24];
+	sprintf(buf, "LIGHT = %d\r\n", light);
+	debug_logMessage(buf, 0, 0);
+	if(light <= 60){
 		hal_setBit_m(tflags, CAM_ON);
 		if(debug == 1){
 			debug_logMessage((char *)PSTR("Status: deployed, removing task\r\n"), 1, 1);

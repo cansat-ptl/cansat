@@ -4,6 +4,10 @@
  * Created: 08.06.2019 22:31:31
  *  Author: ThePetrovich
  */ 
+#ifndef F_CPU
+#define F_CPU 8000000L
+#endif
+
 #include "bmp280.h"
 #include <util/delay.h>
 #include <stdio.h>

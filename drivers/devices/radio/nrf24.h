@@ -9,6 +9,10 @@
 #ifndef NRF24_H_
 #define NRF24_H_
 
+#ifndef F_CPU
+#define F_CPU 8000000L
+#endif
+
 #include "../../spi.h"
 #include "../../driver_config.h"
 #include <util/delay.h>
