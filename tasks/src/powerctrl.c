@@ -42,7 +42,7 @@ void checkDeployment(){
 		debug_logMessage((char *)PSTR("Reading light sensor\r\n"), 1, 1);
 	}
 	uint16_t light = adc_read(1);
-	if(light <= 255){
+	if(light <= 20){
 		hal_setBit_m(tflags, CAM_ON);
 		if(debug == 1){
 			debug_logMessage((char *)PSTR("Status: deployed, removing task\r\n"), 1, 1);

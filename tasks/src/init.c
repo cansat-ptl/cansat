@@ -20,6 +20,7 @@ void initTaskManager(){
 	kernel_addTask(readGPS, 600);
 	kernel_addTask(sendGPS, 800);
 	kernel_addTask(sendMain, 1000);
+	kernel_addTask(sendOrient, 1200);
 	kernel_addTask(imu_filter, 1000);
 	kernel_addTask(requestDS18, 700);
 }
@@ -31,7 +32,7 @@ void init(){
 	//	getTestValues();
 	hal_setupPins();
 	delay(10);
-	if(hal_checkBit_m(JUMPER_PIN, JUMPER_IN)) debug = 1;
+	if(hal_checkBit_m(JUMPER_PIN, JUMPER_IN)) debug = 0;
 	if(debug) hal_writePin(&LED_DBG_PORT, LED_DBG, 1);
 	else hal_writePin(&LED_DBG_PORT, LED_DBG, 0);
 	
@@ -68,7 +69,7 @@ void init(){
 	debug_logMessage((char *)PSTR("[INIT]initd: BMP280 IO setup         [OK]\r\n"), 1, 1);
 	wdt_reset();
 	
-	nrf24_pinSetup();
+	nRF_init(0x4C + 2400);
 	debug_logMessage((char *)PSTR("[INIT]initd: NRF24 IO setup          [OK]\r\n"), 1, 1);
 	wdt_reset();
 	

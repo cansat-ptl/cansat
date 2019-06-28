@@ -9,6 +9,7 @@
 
 void hal_setupPins(){
 	DDRG |= (1 << PG3);
+	DDRB |= (1 << PD4);
 	hal_setPinMode(&JUMPER_DDR, JUMPER_OUT, OUTPUT);
 	hal_writePin(&JUMPER_PORT, JUMPER_OUT, HIGH);
 	DDRC |= (1 << PC4);

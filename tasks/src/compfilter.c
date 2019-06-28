@@ -53,10 +53,13 @@ void imu_filter(){
 		rollAcc = atan2f((float)accData_raw_x, (float)accData_raw_y*-1) * 180 / M_PI;
 		roll = roll * 0.98 + rollAcc * 0.02;
 	}*/
-	char msg[32];
+	/*char msg[32];
 	sprintf(msg, "PR: %f %f\r\n", pitch, roll);
 	debug_logMessage(msg, 1, 0);
-	kernel_addTask(imu_filter, 50);
+	kernel_addTask(imu_filter, 50);*/
+	sprintf(packetOrient.pitch, "PITCH=%d;", (int)(pitch*10));
+	sprintf(packetOrient.yaw, "YAW=%d;", 0);
+	sprintf(packetOrient.roll, "ROLL=%d;", (int)(roll*10));
 }
 
 ISR(TIMER3_COMPA_vect){

@@ -14,9 +14,9 @@
 #ifndef NRF_H    
 #define NRF_H
 
-#define nRF_CSN_port PORTB
-#define nRF_CSN_ddr DDRB
-#define nRF_CSN_pin PB6
+#define nRF_CSN_port PORTE
+#define nRF_CSN_ddr DDRE
+#define nRF_CSN_pin PE5
 
 #define nRF_CE_port PORTE
 #define nRF_CE_ddr DDRE
@@ -31,7 +31,7 @@
 #include <string.h>
 #include <avr/io.h>
 #include <util/delay.h>
-#include "spi.h"
+#include "../../drivers/spi.h"
 
 void nRF_write_multi(unsigned char a, unsigned char length);
 void nRF_write(unsigned char a, unsigned char b);

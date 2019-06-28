@@ -12,7 +12,7 @@
 
 extern uint8_t mcucsr_mirror;
 
-#define MAX_QUEUE_SIZE 16
+#define MAX_QUEUE_SIZE 32
 #define TICKRATE 1
 
 extern uint64_t e_time;

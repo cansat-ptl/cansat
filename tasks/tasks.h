@@ -92,6 +92,7 @@ void readGPS();
 
 void sendGPS();
 void sendMain();
+void sendOrient();
 
 void imu_setupTimer();
 void imu_filter();

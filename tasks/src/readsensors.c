@@ -58,8 +58,8 @@ void readDS18(){
 	}
 	char * t1 = ds18b20_readTemperature();
 	float t1_conv = atof(t1);
-	sprintf(packetMain.t1, "T1=%d;\r\n", (int)(t1_conv*10.0));
-	debug_logMessage(packetMain.t1, 1, 0);
+	sprintf(packetMain.t1, "T1=%d;", (int)(t1_conv*10.0));
+	//debug_logMessage(packetMain.t1, 1, 0);
 	wdt_reset();
 }
 //Holy shiet

@@ -20,14 +20,14 @@ static int nRF_stdw(char c, FILE *stream) //передача информаци�
 
 void nRF_write_multi(unsigned char a, unsigned char len)
 {
-	cslo();
-	SPCR = (1<<SPE) | (0<<CPOL) | (0<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
+	spi_cslow();
+	spi_busSetup(SPI_PRESCALER_4, MSBFIRST, SPI_MODE0, SPI_2X);
 	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
-	SPI_transmit_receive(a);
+	spi_simpleRead(a);
 	for(unsigned char i = 0; i < 32; i++)
-		SPI_transmit_receive(nRF.buf[i]);
+		spi_simpleRead(nRF.buf[i]);
 	nRF_CSN_port |= (1<<nRF_CSN_pin);
-	cshi();
+	spi_cshigh();
 	SPCR = 0;
 	
 	for(unsigned char i = 0; i < 32; i++)
@@ -36,26 +36,26 @@ void nRF_write_multi(unsigned char a, unsigned char len)
 
 void nRF_write(unsigned char a, unsigned char b)
 {
-	cslo();
-	SPCR = (1<<SPE) | (0<<CPOL) | (0<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
+	spi_cslow();
+	spi_busSetup(SPI_PRESCALER_4, MSBFIRST, SPI_MODE0, SPI_2X);
 	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
-	SPI_transmit_receive(a);
-	SPI_transmit_receive(b);
+	spi_simpleRead(a);
+	spi_simpleRead(b);
 	nRF_CSN_port |= (1<<nRF_CSN_pin);
-	cshi();
+	spi_cshigh();
 	SPCR = 0;
 }
 
 unsigned char nRF_readReg(unsigned char a)
 {
 	unsigned char c;
-	cslo();
-	SPCR = (1<<SPE) | (0<<CPOL) | (0<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
+	spi_cslow();
+	spi_busSetup(SPI_PRESCALER_4, MSBFIRST, SPI_MODE0, SPI_2X);
 	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
-	c = SPI_transmit_receive(a & 0x1F);
-	c = SPI_transmit_receive(0x00);
+	c = spi_simpleRead(a & 0x1F);
+	c = spi_simpleRead(0x00);
 	nRF_CSN_port |= (1<<nRF_CSN_pin);
-	cshi();
+	spi_cshigh();
 	SPCR = 0;
 		
 	return c;
@@ -64,14 +64,14 @@ unsigned char nRF_readReg(unsigned char a)
 unsigned char nRF_readReg_a(unsigned char a, int length)
 {
 	unsigned char c;
-	cslo();	
-	SPCR = (1<<SPE) | (0<<CPOL) | (0<<CPHA) | (0<<DORD) | (1<<MSTR); SPSR = (1<<SPI2X);
+	spi_cslow();	
+	spi_busSetup(SPI_PRESCALER_4, MSBFIRST, SPI_MODE0, SPI_2X);
 	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
-	c = SPI_transmit_receive(a & 0x1F);
+	c = spi_simpleRead(a & 0x1F);
 	for(unsigned char i = 0; i < length; i++)
-		nRF.buf[i] = SPI_transmit_receive(0x00);
+		nRF.buf[i] = spi_simpleRead(0x00);
 	nRF_CSN_port |= (1<<nRF_CSN_pin);
-	cshi();
+	spi_cshigh();
 	SPCR = 0;
 	return c;
 }

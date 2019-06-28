@@ -15,7 +15,7 @@
 #define SDCARD_MOD_TIMESTAMP __TIMESTAMP__
 
 #ifndef KERNELconfig
-#define MAX_QUEUE_SIZE 16
+#define MAX_QUEUE_SIZE 32
 #define ERR_QUEUE_OVERFLOW 1
 #define ERR_QUEUE_END 2
 #define ERR_WDT_RESET 3
