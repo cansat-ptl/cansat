@@ -64,5 +64,5 @@ void sd_flush(){
 		sd_buffer1[0] = 0;
 		sd_pointer += 512;
 	}
-	else debug_sendMessage_p(PSTR("sdcardd: could not open /debug.log, SD card failure\r\n"), 3);
+	//else debug_sendMessage_p(PSTR("sdcardd: could not open /debug.log, SD card failure\r\n"), 3);
 }

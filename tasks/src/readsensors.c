@@ -8,6 +8,9 @@
 #include "../tasks.h"
 #include "../../kernel/globals.h"
 
+uint16_t altitude_init;
+uint16_t altitude = 0;
+
 float convertToDecimal(float lat);
 
 void readBMP(){
@@ -19,6 +22,7 @@ void readBMP(){
 	t2 = bmp280_readTemperature();
 	prs = bmp280_readPressure();
 	alt = bmp280_calcAltitude(101325);
+	altitude = (uint16_t)alt;
 	sprintf(packetMain.t2, "T2=%d;", t2);
 	sprintf(packetMain.prs, "PRS=%ld;", prs);
 	sprintf(packetMain.alt, "ALT=%d;", alt);

@@ -11,7 +11,7 @@
 void sd_puts(char * data);
 void sd_flush();
 
-//#define SD_LOGGING 1
+#define SD_LOGGING 1
 #define UART_LOGGING_I 0
 
 char levels[5][16] = {

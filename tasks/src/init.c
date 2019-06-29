@@ -29,11 +29,11 @@ void init(){
 	hal_setupPins();
 	uart0_init(12);
 	hal_enableInterrupts();
-	//	getTestValues();
+	getTestValues();
 	delay(10);
-	if(hal_checkBit_m(JUMPER_PIN, JUMPER_IN)) debug = 0;
-	if(debug) hal_writePin(&LED_DBG_PORT, LED_DBG, 1);
-	else hal_writePin(&LED_DBG_PORT, LED_DBG, 0);
+	if(hal_checkBit_m(JUMPER_PIN, JUMPER_IN)) debug = 1;
+	if(debug) hal_writePin(&PORTC, PC7, 1);
+	else hal_writePin(&PORTC, PC7, 0);
 	
 	sd_init();
 	wdt_reset();
@@ -67,9 +67,14 @@ void init(){
 	bmp280_pinSetup();
 	debug_logMessage((char *)PSTR("[INIT]initd: BMP280 IO setup         [OK]\r\n"), 1, 1);
 	wdt_reset();
+	bmp280_readTemperature();
+	bmp280_readPressure();
+	altitude_init = (uint16_t)bmp280_calcAltitude(101325);
+	debug_logMessage((char *)PSTR("[INIT]initd: BMP280 alt calibration  [OK]\r\n"), 1, 1);
+	wdt_reset();
 	
 	nRF_init(0x4C + 2400);
-	debug_logMessage((char *)PSTR("[INIT]initd: NRF24 IO setup          [OK]\r\n"), 1, 1);
+	debug_logMessage((char *)PSTR("[INIT]initd: NRF24 setup             [OK]\r\n"), 1, 1);
 	wdt_reset();
 	
 	debug_logMessage((char *)PSTR("[INIT]initd: hardware autotest\r\n"), 1, 1);

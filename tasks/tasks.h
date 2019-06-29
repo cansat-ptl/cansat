@@ -19,6 +19,9 @@
 #define PWSAVE 1
 #define CAM_ON 0
 
+extern uint16_t altitude_init;
+extern uint16_t altitude;
+
 extern uint16_t tflags;
 extern uint16_t tests;
 
@@ -63,6 +66,7 @@ struct packetGPS_t {
 #define DS_TESTED 2
 #define GPS_TESTED 3
 #define IMU_TESTED 4
+#define ADC_TESTED 5
 
 inline void idle();
 
@@ -78,6 +82,7 @@ void bmp280_test();
 void ds18b20_test();
 void imu_test();
 void gps_test();
+void adc_test();
 void autotest();
 void getTestValues();
 

@@ -12,9 +12,9 @@ void powerCtrl(){
 	if(debug == 1){
 		debug_logMessage((char *)PSTR("Power check\r\n"), 1, 1);
 	}
-	uint16_t pwr = adc_read(0);
+	uint16_t pwr = (float)adc_read(0) * 0.98;
 	sprintf(packetMain.vbat, "VBAT=%d;", pwr);
-	if(pwr <=  255){
+	if(pwr <=  760){
 		if(debug == 1){
 			debug_logMessage((char *)PSTR("Status: powersave\r\n"), 2, 1);
 		}
@@ -47,7 +47,7 @@ void checkDeployment(){
 	char buf[24];
 	sprintf(buf, "LIGHT = %d\r\n", light);
 	debug_logMessage(buf, 0, 0);
-	if(light <= 60){
+	if(light <= 200 || (altitude - altitude_init) > 150){
 		hal_setBit_m(tflags, CAM_ON);
 		if(debug == 1){
 			debug_logMessage((char *)PSTR("Status: deployed, removing task\r\n"), 1, 1);
