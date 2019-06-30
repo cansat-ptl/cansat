@@ -69,7 +69,7 @@ void sendGPS(){
 	nRF_send_other(packetGPS.alt);
 	//debug_logMessage(packetGPS.end, 0, 0);
 	nRF_send_other(packetGPS.end);
-	kernel_addTask(sendGPS, 250);
+	kernel_addTask(sendGPS, 250, PRIORITY_LOW);
 	hal_writePin(&PORTC, PC6, 0);
 }
 
@@ -98,7 +98,7 @@ void sendMain(){
 	nRF_send_other(packetMain.t2);
 //	debug_logMessage(packetMain.end, 0, 0);
 	nRF_send_other(packetMain.end);
-	kernel_addTask(sendMain, 750);
+	kernel_addTask(sendMain, 750, PRIORITY_LOW);
 	hal_writePin(&PORTC, PC6, 0);
 }
 
@@ -128,6 +128,6 @@ void sendOrient(){
 	//	debug_logMessage(packetMain.end, 0, 0);
 	nRF_send_other(packetOrient.roll);
 	nRF_send_other(packetOrient.end);
-	kernel_addTask(sendOrient, 250);
+	kernel_addTask(sendOrient, 250, PRIORITY_LOW);
 	hal_writePin(&PORTC, PC6, 0);
 }

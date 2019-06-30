@@ -35,7 +35,7 @@ void powerCtrl(){
 		}
 		hal_clearBit_m(tflags, PWSAVE);
 	}
-	kernel_addTask(powerCtrl, 50);
+	kernel_addTask(powerCtrl, 50, PRIORITY_HIGH);
 	wdt_reset();
 }
 
@@ -52,14 +52,14 @@ void checkDeployment(){
 		if(debug == 1){
 			debug_logMessage((char *)PSTR("Status: deployed, removing task\r\n"), 1, 1);
 		}
-		kernel_addTask(powerCtrl, 50);
+		kernel_addTask(powerCtrl, 50, PRIORITY_HIGH);
 	}
 	else {
 		hal_clearBit_m(tflags, CAM_ON);
 		if(debug == 1){
 			debug_logMessage((char *)PSTR("Status: stowed\r\n"), 1, 1);
 		}
-		kernel_addTask(checkDeployment, 50);
+		kernel_addTask(checkDeployment, 50, PRIORITY_HIGH);
 	}	
 	wdt_reset();
 }

@@ -7,22 +7,21 @@
 
 #include "../tasks.h"
 #include "../../kernel/kernel.h"
-#include "../../kernel/utils.h"
 #include "../../kernel/globals.h"
 
 uint16_t tflags = 0;
 void w2_init();
 
 void initTaskManager(){
-	kernel_addTask(checkDeployment, 100);
-	kernel_addTask(readADXL, 200);
-	kernel_addTask(readBMP, 400);
-	kernel_addTask(readGPS, 600);
-	kernel_addTask(sendGPS, 800);
-	kernel_addTask(sendMain, 1000);
-	kernel_addTask(sendOrient, 1200);
-	kernel_addTask(imu_filter, 1000);
-	kernel_addTask(requestDS18, 700);
+	kernel_addTask(checkDeployment, 100, PRIORITY_HIGH);
+	kernel_addTask(readADXL, 200, PRIORITY_MID);
+	kernel_addTask(readBMP, 400, PRIORITY_MID);
+	kernel_addTask(readGPS, 600, PRIORITY_MID);
+	kernel_addTask(sendGPS, 800, PRIORITY_LOW);
+	kernel_addTask(sendMain, 1000, PRIORITY_LOW);
+	kernel_addTask(sendOrient, 1200, PRIORITY_LOW);
+	kernel_addTask(imu_filter, 1000, PRIORITY_HIGH);
+	kernel_addTask(requestDS18, 700, PRIORITY_MID);
 }
 
 void init(){

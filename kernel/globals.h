@@ -18,60 +18,10 @@ extern uint8_t mcucsr_mirror;
 extern uint64_t e_time;
 extern uint8_t debug;
 
-extern uint8_t callIndex;
+extern uint8_t callIndex[3];
 extern volatile uint16_t kflags; 
 extern volatile uint8_t taskIndex;
-extern volatile task callQueue[MAX_QUEUE_SIZE];
-struct taskStruct {
-	task pointer;
-	uint16_t period;
-};
-
-struct GPS_t
-{
-	unsigned char valid;
-	unsigned char hour;
-	unsigned char minute;
-	unsigned char second;
-	unsigned char day;
-	unsigned char month;
-	unsigned char year;
-	unsigned int  millisecond;
-	unsigned int cource;
-	float latitude;
-	unsigned char P;
-	float longitude;
-	float speed;
-	float vspeed;
-	unsigned char J;
-	unsigned char Sats;
-};
-
-struct LSM_t
-{
-	unsigned char XH_A;
-	unsigned char XL_A;
-	unsigned char YH_A;
-	unsigned char YL_A;
-	unsigned char ZH_A;
-	unsigned char ZL_A;
-	unsigned char XH_M;
-	unsigned char XL_M;
-	unsigned char YH_M;
-	unsigned char YL_M;
-	unsigned char ZH_M;
-	unsigned char ZL_M;
-};
-
-struct L3GD_t
-{
-	unsigned char XH;
-	unsigned char XL;
-	unsigned char YH;
-	unsigned char YL;
-	unsigned char ZH;
-	unsigned char ZL;
-};
+extern volatile task callQueue[MAX_QUEUE_SIZE][3];
 
 extern volatile struct GPS_t GPS;
 extern volatile struct taskStruct taskQueue[MAX_QUEUE_SIZE];

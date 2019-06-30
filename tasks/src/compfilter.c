@@ -56,10 +56,10 @@ void imu_filter(){
 	}
 	/*char msg[32];
 	sprintf(msg, "PR: %f %f\r\n", pitch, roll);
-	debug_logMessage(msg, 1, 0);
-	kernel_addTask(imu_filter, 50);*/
+	debug_logMessage(msg, 1, 0);*/
+	kernel_addTask(imu_filter, 50, PRIORITY_HIGH);
 	sprintf(packetOrient.pitch, "PITCH=%d;", (int)(pitch*10));
-	sprintf(packetOrient.yaw, "YAW=%d;", 0);
+	sprintf(packetOrient.yaw, "YAW=%d;", (int)(yaw*10));
 	sprintf(packetOrient.roll, "ROLL=%d;", (int)(roll*10));
 }
 

@@ -5,7 +5,7 @@
  *  Author: ThePetrovich
  */ 
 
-#include "../watchdog.h"
+#include "../kernel.h"
 
 uint8_t mcucsr_mirror __attribute__ ((section (".noinit")));
 

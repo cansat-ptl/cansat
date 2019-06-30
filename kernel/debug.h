@@ -16,7 +16,7 @@
 #include <stdint.h>
 #include <avr/pgmspace.h>
 #include <stdio.h>
-#include "drivers.h"
+#include "kernel.h"
 
 void debug_sendMessage(char* msg, uint8_t level);
 void debug_sendMessage_i(char* msg, uint8_t level);
@@ -25,8 +25,5 @@ void debug_sendMessage_p(const char * msg, uint8_t level);
 void debug_sendMessage_pi(const char * msg, uint8_t level);
 void debug_sendMessageSD_p(const char * msg, uint8_t level);
 void debug_logMessage(char* msg, uint8_t level, uint8_t pgm);
-
-FATFS fs;
-WORD logfile;
 
 #endif /* DEBUG_H_ */

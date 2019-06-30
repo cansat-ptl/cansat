@@ -5,7 +5,6 @@
  *  Author: WorldSkills-2019
  */ 
 #include "../kernel.h"
-#include "../utils.h"
 #include "../globals.h"
 
 void util_printVersion(){
@@ -19,12 +18,6 @@ void util_printVersion(){
 	debug_logMessage((char *)msg, 1, 0);
 	wdt_reset();
 	sprintf_P(msg, PSTR("[INIT]Kernel: using HAL module version %s built %s\r\n"), HAL_MOD_VER, HAL_MOD_TIMESTAMP);
-	debug_logMessage((char *)msg, 1, 0);
-	wdt_reset();
-	sprintf_P(msg, PSTR("[INIT]Kernel: using utils module version %s built %s\r\n"), UTIL_MOD_VER, UTIL_MOD_TIMESTAMP);
-	debug_logMessage((char *)msg, 1, 0);
-	wdt_reset();
-	sprintf_P(msg, PSTR("[INIT]Kernel: using FATFS module version %s built %s\r\n"), SDCARD_DRV_VER, SDCARD_MOD_TIMESTAMP);
 	debug_logMessage((char *)msg, 1, 0);
 	wdt_reset();
 	sprintf_P(msg, PSTR("[INIT]Kernel: using UART interface driver version %s built %s\r\n"), UARTDRV_VER, UARTDRV_TIMESTAMP);

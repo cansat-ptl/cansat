@@ -21,7 +21,6 @@
 #include "tasks/tasks.h"
 #include "kernel/debug.h"
 #include "drivers/driver_config.h"
-#include "kernel/drivers.h"
 //----------------------------------------------------------------
 
 //-----------------------Kernel-settings--------------------------
