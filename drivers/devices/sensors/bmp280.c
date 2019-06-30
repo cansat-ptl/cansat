@@ -122,6 +122,7 @@ void bmp280_readCalibrationValues(){
 	dig_P8 = (int16_t)bmp280_readRegister2(BMP280_REG_DIG_P8);
 	dig_P9 = (int16_t)bmp280_readRegister2(BMP280_REG_DIG_P9);
 }
+
 double bmp280_readTemperature(){
 	double var1, var2, t;
 	int32_t adc_T = (int32_t)bmp280_readRegister3(BMP280_REG_TEMPDATA);
@@ -195,11 +196,16 @@ void bmp280_printCalibrationData(){
 }
 
 uint8_t bmp280_init(){
-	uint8_t chipid = bmp280_readRegister1(0x00);
-	if(0)
-		return ERR_BMP_DEVID_MISMATCH;
+	uint8_t devid = bmp280_readRegister1(0x00);
 	bmp280_writeRegister(BMP280_REG_CONTROL, 0x3F);
 	bmp280_readCalibrationValues();
-	return 0;
+	return devid;
+}
+
+uint8_t bmp280_checkDevId(uint8_t devid){
+	if(devid != BMP280_CHIPID)
+		return ERR_BMP_DEVID_MISMATCH;
+	else
+		return 0;
 }
 

@@ -254,7 +254,7 @@ uint8_t kernel(){
 	while(1){
 		wdt_reset();
 		kernel_taskManager();
-		hal_switchBit(&PORTC, PC5);
+		hal_switchBit(&LED_KRN_PORT, LED_KRN);
 	}
 }
 

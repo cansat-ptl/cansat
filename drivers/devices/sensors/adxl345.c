@@ -19,18 +19,19 @@ uint8_t adxl345_init(){
 	cli();
 	ADXL345_PORT &= ~(1<<ADXL345_CS);
 	uint8_t devid = spi_readRegister(ADXL345_REG_DEVID, 1, 0x80, 0);
-	if(0){
-		ADXL345_PORT |= (1<<ADXL345_CS);
-		spi_busStop();
-		sei();
-		return ERR_ADXL_DEVID_MISMATCH;
-	}
 	spi_writeRegister(ADXL345_REG_POWERCTL, ADXL345_VALUE_POWERCTL, 0x80, 1);
 	spi_writeRegister(ADXL345_REG_FORMAT, ADXL345_VALUE_FORMAT, 0x80, 1);
 	sei();
 	ADXL345_PORT |= (1<<ADXL345_CS);
 	spi_busStop();
-	return 0;
+	return devid;
+}
+
+uint8_t adxl345_checkDevId(uint8_t devid){
+	if(devid != ADXL345_DEFAULT_DEVID)
+		return ERR_ADXL_DEVID_MISMATCH;
+	else
+		return 0;
 }
 
 int16_t adxl345_readX(){

@@ -14,13 +14,13 @@ void powerCtrl(){
 	}
 	uint16_t pwr = (float)adc_read(0) * 0.98;
 	sprintf(packetMain.vbat, "VBAT=%d;", pwr);
-	if(pwr <=  760){
+	if(pwr <=  780){
 		if(debug == 1){
 			debug_logMessage((char *)PSTR("Status: powersave\r\n"), 2, 1);
 		}
 		hal_setBit_m(tflags, PWSAVE);
 		hal_writePin(&PORTB, PB4, LOW);
-		hal_writePin(&PORTC, PC4, LOW);
+		hal_writePin(&LED_WRK_PORT, LED_WRK, LOW);
 	}
 	else{
 		if(debug == 1){
@@ -28,7 +28,7 @@ void powerCtrl(){
 		}
 		if(hal_checkBit_m(tflags, CAM_ON)){
 			hal_writePin(&PORTB, PB4, HIGH);
-			hal_writePin(&PORTC, PC4, HIGH);
+			hal_writePin(&LED_WRK_PORT, LED_WRK, HIGH);
 			if(debug == 1){
 				debug_logMessage((char *)PSTR("Camera online\r\n"), 1, 1);
 			}

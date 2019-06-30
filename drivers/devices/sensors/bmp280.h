@@ -52,6 +52,7 @@
 
 void bmp280_pinSetup();
 uint8_t bmp280_init();
+uint8_t bmp280_checkDevId(uint8_t devid);
 double bmp280_readTemperature();
 double bmp280_readPressure();
 int16_t bmp280_calcAltitude(float sea_prs);

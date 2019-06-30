@@ -37,6 +37,7 @@
 
 void adxl345_pinSetup();
 uint8_t	adxl345_init();
+uint8_t adxl345_checkDevId(uint8_t devid);
 int16_t adxl345_readX();
 int16_t adxl345_readY();
 int16_t adxl345_readZ();

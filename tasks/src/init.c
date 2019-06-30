@@ -32,8 +32,8 @@ void init(){
 	getTestValues();
 	delay(10);
 	if(hal_checkBit_m(JUMPER_PIN, JUMPER_IN)) debug = 1;
-	if(debug) hal_writePin(&PORTC, PC7, 1);
-	else hal_writePin(&PORTC, PC7, 0);
+	if(debug) hal_writePin(&LED_DBG_PORT, LED_DBG, HIGH);
+	else hal_writePin(&LED_DBG_PORT, LED_DBG, LOW);
 	
 	sd_init();
 	wdt_reset();

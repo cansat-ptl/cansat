@@ -21,7 +21,7 @@ void imu_setupTimer(){
 }
 
 void imu_filter(){
-//	float pitchAcc, rollAcc;
+	float pitchAcc, rollAcc;
 	int16_t gyrData_raw_x = 0, gyrData_raw_y = 0, gyrData_raw_z = 0;
 	int16_t accData_raw_x = 0, accData_raw_y = 0, accData_raw_z = 0;
 	
@@ -43,16 +43,17 @@ void imu_filter(){
 	
 	pitch += (((float)gyrData_raw_x / 16.384) * 0.07);
 	roll -= (((float)gyrData_raw_z / 16.384) * 0.07);
+	yaw -= (((float)gyrData_raw_y / 16.384) * 0.07);
 	
-/*	int forceMagnitudeApprox = abs(accData_raw_x) + abs(accData_raw_y) + abs(accData_raw_z);
+	int forceMagnitudeApprox = abs(accData_raw_x) + abs(accData_raw_y) + abs(accData_raw_z);
 	if (forceMagnitudeApprox > 1024 && forceMagnitudeApprox < 32768)
 	{
-		pitchAcc = atan2f((float)accData_raw_z, (float)accData_raw_y*-1) * 180 / M_PI;
+		pitchAcc = atan2f((float)accData_raw_y, (float)accData_raw_z) * 180 / M_PI;
 		pitch = pitch * 0.98 + pitchAcc * 0.02;
 		
 		rollAcc = atan2f((float)accData_raw_x, (float)accData_raw_y*-1) * 180 / M_PI;
 		roll = roll * 0.98 + rollAcc * 0.02;
-	}*/
+	}
 	/*char msg[32];
 	sprintf(msg, "PR: %f %f\r\n", pitch, roll);
 	debug_logMessage(msg, 1, 0);
