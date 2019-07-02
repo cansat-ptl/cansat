@@ -62,10 +62,14 @@ void init(){
 	
 	adxl345_pinSetup();
 	debug_logMessage((char *)PSTR("[INIT]initd: ADXL345 IO setup        [OK]\r\n"), 1, 1);
+	adxl345_init();
+	debug_logMessage((char *)PSTR("[INIT]initd: ADXL345 init            [OK]\r\n"), 1, 1);
 	wdt_reset();
 	
 	bmp280_pinSetup();
 	debug_logMessage((char *)PSTR("[INIT]initd: BMP280 IO setup         [OK]\r\n"), 1, 1);
+	bmp280_init();
+	debug_logMessage((char *)PSTR("[INIT]initd: BMP280 init             [OK]\r\n"), 1, 1);
 	wdt_reset();
 	bmp280_readTemperature();
 	bmp280_readPressure();
@@ -76,6 +80,9 @@ void init(){
 	nRF_init(0x4C + 2400);
 	debug_logMessage((char *)PSTR("[INIT]initd: NRF24 setup             [OK]\r\n"), 1, 1);
 	wdt_reset();
+	
+	imu_init();
+	debug_logMessage((char *)PSTR("[INIT]initd: Pololu init             [OK]\r\n"), 1, 1);
 	
 	debug_logMessage((char *)PSTR("[INIT]initd: hardware autotest\r\n"), 1, 1);
 	autotest();

@@ -47,7 +47,7 @@ struct packetGPS_t {
 uint32_t gpsn = 0, mainn = 0, orientn = 0;
 
 void sendGPS(){
-	hal_writePin(&PORTC, PC6, 1);
+	hal_writePin(&LED_TX_PORT, LED_TX, HIGH);
 	sprintf(packetGPS.marker, "YKTSAT5:GPS:");
 	sprintf(packetGPS.n, "N=%lu;", ++gpsn);
 	sprintf(packetGPS.et, "ET=%lu;", (uint32_t)e_time/1000);
@@ -70,11 +70,11 @@ void sendGPS(){
 	debug_logMessage(packetGPS.end, 0, 0);
 	nRF_send_other(packetGPS.end);
 	kernel_addTask(sendGPS, 250);
-	hal_writePin(&PORTC, PC6, 0);
+	hal_writePin(&LED_TX_PORT, LED_TX, LOW);
 }
 
 void sendMain(){
-	hal_writePin(&PORTC, PC6, 1);
+	hal_writePin(&LED_TX_PORT, LED_TX, HIGH);
 	sprintf(packetMain.marker, "YKTSAT5:MAIN:");
 	sprintf(packetMain.n, "N=%lu;", ++mainn);
 	sprintf(packetMain.et, "ET=%lu;", (uint32_t)e_time/1000);
@@ -99,11 +99,11 @@ void sendMain(){
 	debug_logMessage(packetMain.end, 0, 0);
 	nRF_send_other(packetMain.end);
 	kernel_addTask(sendMain, 750);
-	hal_writePin(&PORTC, PC6, 0);
+	hal_writePin(&LED_TX_PORT, LED_TX, LOW);
 }
 
 void sendOrient(){
-	hal_writePin(&PORTC, PC6, 1);
+	hal_writePin(&LED_TX_PORT, LED_TX, HIGH);
 	sprintf(packetOrient.marker, "YKTSAT5:ORIENT:");
 	sprintf(packetOrient.n, "N=%lu;", ++orientn);
 	sprintf(packetOrient.et, "ET=%lu;", (uint32_t)e_time/1000);
@@ -130,5 +130,5 @@ void sendOrient(){
 		debug_logMessage(packetOrient.end, 0, 0);
 	nRF_send_other(packetOrient.end);
 	kernel_addTask(sendOrient, 250);
-	hal_writePin(&PORTC, PC6, 0);
+	hal_writePin(&LED_TX_PORT, LED_TX, LOW);
 }

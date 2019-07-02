@@ -23,9 +23,9 @@ void readBMP(){
 	prs = bmp280_readPressure();
 	alt = bmp280_calcAltitude(101325);
 	altitude = (uint16_t)alt;
-	sprintf(packetMain.t2, "T2=%d;", t2);
-	sprintf(packetMain.prs, "PRS=%ld;", prs);
-	sprintf(packetMain.alt, "ALT=%d;", alt);
+	sprintf(packetMain.t2, "T2=%d;", t2*10);
+	sprintf(packetMain.prs, "PRS=%ld;", prs*10);
+	sprintf(packetMain.alt, "ALT=%d;", alt*10);
 	sprintf(packetGPS.alt, "ALT=%d;", alt);
 	kernel_addTask(readBMP, 200);
 	wdt_reset();

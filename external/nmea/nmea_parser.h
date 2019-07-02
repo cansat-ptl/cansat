@@ -57,10 +57,10 @@ ret=1;
         switch(field_index)
         { 
          case 0:  //NMEA Header
-             if (compare(rmc_str,"GPRMC",5)==1)
+             if (compare(rmc_str,"GPRMC",5)==1 || compare(rmc_str,"GNRMC",5)==1 || compare(rmc_str,"GBRMC",5)==1 || compare(rmc_str,"GLRMC",5)==1 || compare(rmc_str,"GARMC",5)==1)
              {
              packet_type=1;
-             }else if (compare(rmc_str,"GPGSV",5)==1)
+             }else if (compare(rmc_str,"GPGSV",5)==1 || compare(rmc_str,"GNGSV",5)==1 || compare(rmc_str,"GBGSV",5)==1 || compare(rmc_str,"GLGSV",5)==1 || compare(rmc_str,"GAGSV",5)==1)
              {
              packet_type=2;             
              }else{
