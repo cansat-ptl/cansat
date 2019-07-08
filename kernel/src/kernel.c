@@ -85,21 +85,33 @@
 
 #define VERBOSE 0
 
-uint64_t e_time = 0;
-uint8_t debug = 0;
-uint8_t callIndex[3] = {0, 0, 0};
-volatile uint16_t kflags = 0; 
-uint16_t kflags_mirror __attribute__ ((section (".noinit")));
-volatile uint8_t taskIndex = 0; //Index of the last task in queue
-volatile task callQueue[MAX_QUEUE_SIZE][3];
-volatile struct taskStruct taskQueue[MAX_QUEUE_SIZE];
+static uint64_t e_time = 0;
+static uint8_t callIndex[3] = {0, 0, 0};
+static volatile uint16_t kflags = 0; 
+static uint16_t kflags_mirror __attribute__ ((section (".noinit")));
+static volatile uint8_t taskIndex = 0; //Index of the last task in queue
+static volatile task callQueue[MAX_QUEUE_SIZE][3];
+static volatile struct taskStruct taskQueue[MAX_QUEUE_SIZE];
 
 void idle(); //System idle task, MUST me declared in tasks.c
 void init(); //System init task, MUST me declared in tasks.c
 void initTaskManager(); //Task manager init task, MUST me declared in tasks.c
 
+void kernel_setFlag(uint8_t flag, uint8_t value){
+	uint8_t nvalue = !!value;
+	kflags ^= (-1 * nvalue ^ kflags) & (1 << flag);
+}
+
+uint8_t kernel_checkFlag(uint8_t flag){
+	return hal_checkBit_m(kflags, flag);
+}
+
+uint64_t kernel_getUptime(){
+	return e_time;
+}
+
 inline uint8_t kernel_addCall(task t_ptr, uint8_t t_priority){
-	if(debug == 1 && VERBOSE){
+	if(kernel_checkFlag(KFLAG_DEBUG) && VERBOSE){
 		debug_logMessage((char *)PSTR("Kernel: added call to queue\r\n"), 1, 1);
 	}
 	if(hal_statusReg & (1 << 7)){
@@ -124,7 +136,7 @@ inline uint8_t kernel_addCall(task t_ptr, uint8_t t_priority){
 }
 
 uint8_t kernel_addTask(task t_ptr, uint16_t t_period, uint8_t t_priority){
-	if(debug == 1 && VERBOSE){
+	if(kernel_checkFlag(KFLAG_DEBUG) && VERBOSE){
 		debug_logMessage((char *)PSTR("Kernel: added timed task to queue\r\n"), 1, 1);
 	}
 	if(hal_statusReg & (1 << 7)){
@@ -210,7 +222,7 @@ void kernel_clearTaskQueue(){
 	hal_enableInterrupts();
 }
 
-inline void kernel_timerService(){
+inline static void kernel_timerService(){
 	if(hal_statusReg & (1 << 7))
 		hal_disableInterrupts();
 	for(int i = 0; i < MAX_QUEUE_SIZE; i++){
@@ -249,7 +261,7 @@ void kernel_stopTimer(){
 	hal_enableInterrupts();
 }
 
-inline uint8_t kernel_taskManager(){
+inline static uint8_t kernel_taskManager(){
 	if(callIndex[0] > 0){
 		(callQueue[0][0])();
 		uint8_t code = kernel_removeCall(0);
@@ -271,7 +283,7 @@ inline uint8_t kernel_taskManager(){
 	return 1;
 }
 
-uint8_t kernel(){
+uint8_t static kernel(){
 	debug_logMessage((char *)PSTR("DONE!\r\n"), 0, 1);
 	debug_logMessage((char *)PSTR("Kernel: starting task manager...DONE!\r\n"), 1, 1);
 	while(1){
@@ -279,6 +291,7 @@ uint8_t kernel(){
 		kernel_taskManager();
 		hal_switchBit(&LED_KRN_PORT, LED_KRN);
 	}
+	return ERR_KRN_RETURN;
 }
 
 uint8_t kernelInit(){
@@ -319,28 +332,29 @@ void kernel_checkMCUCSR(){
 void kernel_displayError(uint8_t error){
 	switch(error){
 		case ERR_QUEUE_OVERFLOW:
-			debug_logMessage((char *)PSTR("\r\n--------------------------------------------------------------------------------------\r\n"), 0, 1);
-			debug_logMessage((char *)PSTR("A task/call queue overflow has occurred."), 4, 1);
-			debug_logMessage((char *)PSTR("This is a critical issue, and immediate action is required."), 4, 1);
-			debug_logMessage((char *)PSTR("Task manager will be reloaded and reset."), 4, 1);
-			debug_logMessage((char *)PSTR("Please, report this to the developer as soon as possible."), 4, 1);
-			debug_logMessage((char *)PSTR("--------------------------------------------------------------------------------------\r\n\r\n"), 0, 1);
+			debug_logMessage((char *)PSTR("\r\n--------------------------------------------------------------------------------\r\n"), 0, 1);
+			debug_logMessage((char *)PSTR("A task/call queue overflow has occurred.\r\n"), 4, 1);
+			debug_logMessage((char *)PSTR("This is a critical issue, and immediate action is required.\r\n"), 4, 1);
+			debug_logMessage((char *)PSTR("Task manager will be reloaded and reset.\r\n"), 4, 1);
+			debug_logMessage((char *)PSTR("Please, report this to the developer as soon as possible.\r\n"), 4, 1);
+			debug_logMessage((char *)PSTR("Error details: MAX_QUEUE_SIZE >= callIndex/taskIndex\r\n"), 4, 1);
+			debug_logMessage((char *)PSTR("--------------------------------------------------------------------------------\r\n\r\n"), 0, 1);
 		break;
 		case ERR_WDT_RESET:
-			debug_logMessage((char *)PSTR("\r\n--------------------------------------------------------------------------------------\r\n"), 0, 1);
+			debug_logMessage((char *)PSTR("\r\n--------------------------------------------------------------------------------\r\n"), 0, 1);
 			debug_logMessage((char *)PSTR("The system has been reset by watchdog.\r\n"), 4, 1);
 			debug_logMessage((char *)PSTR("This is usually caused by software issues or faulty device connections.\r\n"), 4, 1);
 			debug_logMessage((char *)PSTR("Please, report this to the developer as soon as possible.\r\n"), 4, 1);
 			debug_logMessage((char *)PSTR("Error details: MCUCSR.WDRF = 1\r\n"), 4, 1);
-			debug_logMessage((char *)PSTR("--------------------------------------------------------------------------------------\r\n\r\n"), 0, 1);
+			debug_logMessage((char *)PSTR("--------------------------------------------------------------------------------\r\n\r\n"), 0, 1);
 		break;
 		case ERR_BOD_RESET:
-			debug_logMessage((char *)PSTR("\r\n--------------------------------------------------------------------------------------\r\n"), 0, 1);
+			debug_logMessage((char *)PSTR("\r\n--------------------------------------------------------------------------------\r\n"), 0, 1);
 			debug_logMessage((char *)PSTR("The system has been reset by brown-out detector.\r\n"), 4, 1);
 			debug_logMessage((char *)PSTR("This is usually caused by an unstable power supply.\r\n"), 4, 1);
 			debug_logMessage((char *)PSTR("Please, check power supply wire connections and circuitry as soon as possible.\r\n"), 4, 1);
 			debug_logMessage((char *)PSTR("Error details: MCUCSR.BORF = 1\r\n"), 4, 1);
-			debug_logMessage((char *)PSTR("--------------------------------------------------------------------------------------\r\n\r\n"), 0, 1);
+			debug_logMessage((char *)PSTR("--------------------------------------------------------------------------------\r\n\r\n"), 0, 1);
 		break;	
 	}
 }

@@ -5,7 +5,7 @@
  *  Author: ThePetrovich
  */ 
 
-#include "../debug.h"
+#include "../kernel.h"
 #include "../globals.h"
 
 void sd_puts(char * data);

@@ -9,13 +9,13 @@
 #include "../../kernel/globals.h"
 
 void powerCtrl(){
-	if(debug == 1){
+	if(kernel_checkFlag(KFLAG_DEBUG)){
 		debug_logMessage((char *)PSTR("Power check\r\n"), 1, 1);
 	}
 	uint16_t pwr = (float)adc_read(0) * 0.98;
 	sprintf(packetMain.vbat, "VBAT=%d;", pwr);
 	if(pwr <=  780){
-		if(debug == 1){
+		if(kernel_checkFlag(KFLAG_DEBUG)){
 			debug_logMessage((char *)PSTR("Status: powersave\r\n"), 2, 1);
 		}
 		hal_setBit_m(tflags, PWSAVE);
@@ -23,13 +23,13 @@ void powerCtrl(){
 		hal_writePin(&LED_WRK_PORT, LED_WRK, LOW);
 	}
 	else{
-		if(debug == 1){
+		if(kernel_checkFlag(KFLAG_DEBUG)){
 			debug_logMessage((char *)PSTR("Status: OK\r\n"), 1, 1);
 		}
 		if(hal_checkBit_m(tflags, CAM_ON)){
 			hal_writePin(&PORTB, PB4, HIGH);
 			hal_writePin(&LED_WRK_PORT, LED_WRK, HIGH);
-			if(debug == 1){
+			if(kernel_checkFlag(KFLAG_DEBUG)){
 				debug_logMessage((char *)PSTR("Camera online\r\n"), 1, 1);
 			}
 		}
@@ -40,7 +40,7 @@ void powerCtrl(){
 }
 
 void checkDeployment(){
-	if(debug == 1){
+	if(kernel_checkFlag(KFLAG_DEBUG)){
 		debug_logMessage((char *)PSTR("Reading light sensor\r\n"), 1, 1);
 	}
 	uint16_t light = adc_read(1);
@@ -49,14 +49,14 @@ void checkDeployment(){
 	debug_logMessage(buf, 0, 0);
 	if(light <= 200 || (altitude - altitude_init) > 150){
 		hal_setBit_m(tflags, CAM_ON);
-		if(debug == 1){
+		if(kernel_checkFlag(KFLAG_DEBUG)){
 			debug_logMessage((char *)PSTR("Status: deployed, removing task\r\n"), 1, 1);
 		}
 		kernel_addTask(powerCtrl, 50, PRIORITY_HIGH);
 	}
 	else {
 		hal_clearBit_m(tflags, CAM_ON);
-		if(debug == 1){
+		if(kernel_checkFlag(KFLAG_DEBUG)){
 			debug_logMessage((char *)PSTR("Status: stowed\r\n"), 1, 1);
 		}
 		kernel_addTask(checkDeployment, 50, PRIORITY_HIGH);

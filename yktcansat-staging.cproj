@@ -145,79 +145,82 @@
     <Compile Include="config.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\adc.c">
+    <Compile Include="drivers\devices\radio\nRF.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\adc.h">
+    <Compile Include="drivers\devices\radio\src\nRF.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\devices\radio\nrf24.c">
+    <Compile Include="drivers\devices\sensors\adxl345\adxl345.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\devices\radio\nrf24.h">
+    <Compile Include="drivers\devices\sensors\adxl345\src\adxl345.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\devices\sensors\adxl345.c">
+    <Compile Include="drivers\devices\sensors\bmp280\bmp280.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\devices\sensors\adxl345.h">
+    <Compile Include="drivers\devices\sensors\bmp280\src\bmp280.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\devices\sensors\bmp280.c">
+    <Compile Include="drivers\devices\sensors\ds18b20\ds18b20.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\devices\sensors\bmp280.h">
+    <Compile Include="drivers\devices\sensors\ds18b20\src\ds18b20.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\devices\sensors\ds18b20.c">
+    <Compile Include="drivers\devices\sensors\nmea\nmea_parser.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\devices\sensors\ds18b20.h">
+    <Compile Include="drivers\devices\sensors\pololu\imuv3.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\devices\sensors\pololu\imuv3.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\devices\sensors\pololu\w2.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\devices\system\pff3a\diskio.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\devices\system\pff3a\diskio.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\devices\system\pff3a\integer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\devices\system\pff3a\pff.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\devices\system\pff3a\pff.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\driver_config.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\twi.c">
+    <Compile Include="drivers\interfaces\adc.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\twi.h">
+    <Compile Include="drivers\interfaces\spi.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="external\nmea\nmea_parser.h">
+    <Compile Include="drivers\interfaces\src\adc.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="external\nRF\nRF.c">
+    <Compile Include="drivers\interfaces\src\spi.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="external\nRF\nRF.h">
+    <Compile Include="drivers\interfaces\src\twi.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="external\pff3a\diskio.c">
+    <Compile Include="drivers\interfaces\src\uart.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="external\pff3a\diskio.h">
+    <Compile Include="drivers\interfaces\twi.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="external\pff3a\integer.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="external\pff3a\pff.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="external\pff3a\pff.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="external\pololu-driver\imuv3.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="external\pololu-driver\imuv3.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="external\pololu-driver\w2.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="kernel\debug.h">
+    <Compile Include="drivers\interfaces\uart.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="kernel\globals.h">
@@ -253,18 +256,6 @@
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\spi.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="drivers\spi.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="drivers\uart.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="drivers\uart.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="tasks\src\autotest.c">
       <SubType>compile</SubType>
     </Compile>
@@ -293,12 +284,21 @@
   <ItemGroup>
     <Folder Include="drivers" />
     <Folder Include="drivers\devices" />
+    <Folder Include="drivers\devices\radio\src" />
+    <Folder Include="drivers\devices\sensors\adxl345" />
+    <Folder Include="drivers\devices\sensors\adxl345\src" />
+    <Folder Include="drivers\devices\sensors\bmp280" />
+    <Folder Include="drivers\devices\sensors\bmp280\src" />
+    <Folder Include="drivers\devices\sensors\ds18b20" />
+    <Folder Include="drivers\devices\sensors\ds18b20\src" />
+    <Folder Include="drivers\devices\sensors\nmea\" />
+    <Folder Include="drivers\devices\system" />
     <Folder Include="drivers\devices\sensors" />
     <Folder Include="drivers\devices\radio" />
-    <Folder Include="external\nRF" />
-    <Folder Include="external\pff3a\" />
-    <Folder Include="external\pololu-driver" />
-    <Folder Include="external\nmea" />
+    <Folder Include="drivers\devices\sensors\pololu" />
+    <Folder Include="drivers\devices\system\pff3a\" />
+    <Folder Include="drivers\interfaces" />
+    <Folder Include="drivers\interfaces\src" />
     <Folder Include="kernel" />
     <Folder Include="external" />
     <Folder Include="kernel\src" />

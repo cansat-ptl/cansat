@@ -16,23 +16,29 @@
 
 #ifndef KERNELconfig
 	#define MAX_QUEUE_SIZE 32
+	#define TICKRATE 1 //in milliseconds
+	
 	#define ERR_QUEUE_OVERFLOW 1
 	#define ERR_QUEUE_END 2
 	#define ERR_WDT_RESET 3
 	#define ERR_BOD_RESET 4
+	#define ERR_KRN_RETURN 5
+	
 	#define PRIORITY_HIGH 0
 	#define PRIORITY_MID 1
 	#define PRIORITY_LOW 2
-	#define TICKRATE 1 //in milliseconds
+	
+	#define KFLAG_INIT 0
+	#define KFLAG_DEBUG 15
 	
 	#define KERNEL_SD_MODULE 1
 	#define KERNEL_WDT_MODULE 1
 	#define KERNEL_UTIL_MODULE 1
+	#define KERNEL_DEBUG_MODULE 1
 #endif
 
 #include "types.h"
 #include "hal.h"
-#include "debug.h"
 #include "../tasks/tasks.h"
 #include <avr/common.h>
 #include <avr/interrupt.h>
@@ -44,21 +50,24 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "../drivers/uart.h"
-#include "../drivers/spi.h"
-#include "../drivers/twi.h"
-#include "../drivers/adc.h"
-#include "../drivers/devices/sensors/adxl345.h"
-#include "../drivers/devices/sensors/bmp280.h"
-#include "../drivers/devices/sensors/ds18b20.h"
-#include "../drivers/devices/radio/nrf24.h"
-#include "../external/pololu-driver/imuv3.h"
-#include "../external/pff3a/pff.h"
-#include "../external/pff3a/diskio.h"
-#include "../external/nRF/nRF.h"
+#include "../drivers/interfaces/uart.h"
+#include "../drivers/interfaces/spi.h"
+#include "../drivers/interfaces/twi.h"
+#include "../drivers/interfaces/adc.h"
+#include "../drivers/devices/sensors/adxl345/adxl345.h"
+#include "../drivers/devices/sensors/bmp280/bmp280.h"
+#include "../drivers/devices/sensors/ds18b20/ds18b20.h"
+#include "../drivers/devices/sensors/pololu/imuv3.h"
+#include "../drivers/devices/radio/nRF.h"
+#include "../drivers/devices/system/pff3a/pff.h"
+#include "../drivers/devices/system/pff3a/diskio.h"
 
 FATFS fs;
 WORD logfile;
+
+void kernel_setFlag(uint8_t flag, uint8_t value);
+uint8_t kernel_checkFlag(uint8_t flag);
+uint64_t kernel_getUptime();
 
 uint8_t kernel_addCall(task t_ptr, uint8_t t_priority);
 uint8_t kernel_addTask(task t_ptr, uint16_t t_period, uint8_t t_priority);
@@ -88,6 +97,19 @@ void kernel_startTimer();
 
 #if KERNEL_UTIL_MODULE == 1
 	void util_printVersion();
+#endif
+
+#if KERNEL_DEBUG_MODULE == 1
+	#define DBG_MOD_VER "0.9.1-staging"
+	#define DBG_MOD_TIMESTAMP __TIMESTAMP__
+	#define UART_LOGGING 1
+	void debug_sendMessage(char* msg, uint8_t level);
+	void debug_sendMessage_i(char* msg, uint8_t level);
+	void debug_sendMessageSD(char* msg, uint8_t level);
+	void debug_sendMessage_p(const char * msg, uint8_t level);
+	void debug_sendMessage_pi(const char * msg, uint8_t level);
+	void debug_sendMessageSD_p(const char * msg, uint8_t level);
+	void debug_logMessage(char* msg, uint8_t level, uint8_t pgm);
 #endif
 
 #endif /* KERNEL_H_ */

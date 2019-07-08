@@ -14,7 +14,7 @@ uint16_t altitude = 0;
 float convertToDecimal(float lat);
 
 void readBMP(){
-	if(debug == 1){
+	if(kernel_checkFlag(KFLAG_DEBUG)){
 		debug_logMessage((char *)PSTR("Reading BMP280\r\n"), 1, 1);
 	}
 	int16_t t2, alt;
@@ -32,7 +32,7 @@ void readBMP(){
 }
 
 void readADXL(){
-	if(debug == 1){
+	if(kernel_checkFlag(KFLAG_DEBUG)){
 		debug_logMessage((char *)PSTR("Reading ADXL345\r\n"), 1, 1);
 	}
 	int16_t ax, ay, az;
@@ -47,7 +47,7 @@ void readADXL(){
 }
 
 void requestDS18(){
-	if(debug == 1){
+	if(kernel_checkFlag(KFLAG_DEBUG)){
 		debug_logMessage((char *)PSTR("Requesting temperature from DS18B20\r\n"), 1, 1);
 	}
 	ds18b20_requestTemperature();
@@ -57,7 +57,7 @@ void requestDS18(){
 }
 
 void readDS18(){
-	if(debug == 1){
+	if(kernel_checkFlag(KFLAG_DEBUG)){
 		debug_logMessage((char *)PSTR("Reading DS18B20\r\n"), 1, 1);
 	}
 	char * t1 = ds18b20_readTemperature();
@@ -72,7 +72,7 @@ void readIMU(){
 }
 
 void readGPS(){
-	if(debug == 1){
+	if(kernel_checkFlag(KFLAG_DEBUG)){
 		debug_logMessage((char *)PSTR("Reading GPS data\r\n"), 1, 1);
 	}
 	sprintf(packetGPS.sat, "SAT=%d;", GPS.Sats);

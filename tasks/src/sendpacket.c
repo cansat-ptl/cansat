@@ -50,7 +50,7 @@ void sendGPS(){
 	hal_writePin(&PORTC, PC6, 1);
 	sprintf(packetGPS.marker, "YKTSAT5:GPS:");
 	sprintf(packetGPS.n, "N=%lu;", ++gpsn);
-	sprintf(packetGPS.et, "ET=%lu;", (uint32_t)e_time/1000);
+	sprintf(packetGPS.et, "ET=%lu;", (uint32_t)kernel_getUptime()/1000);
 	sprintf(packetGPS.end, "\r\n");
 	debug_logMessage((char *)PSTR("Sent GPS packet\r\n"), 1, 1);
 	//debug_logMessage(packetGPS.marker, 0, 0);
@@ -77,7 +77,7 @@ void sendMain(){
 	hal_writePin(&PORTC, PC6, 1);
 	sprintf(packetMain.marker, "YKTSAT5:MAIN:");
 	sprintf(packetMain.n, "N=%lu;", ++mainn);
-	sprintf(packetMain.et, "ET=%lu;", (uint32_t)e_time/1000);
+	sprintf(packetMain.et, "ET=%lu;", (uint32_t)kernel_getUptime()/1000);
 	sprintf(packetMain.end, "\r\n");
 	debug_logMessage((char *)PSTR("Sent main packet\r\n"), 1, 1);
 //	debug_logMessage(packetMain.marker, 0, 0);
@@ -106,7 +106,7 @@ void sendOrient(){
 	hal_writePin(&PORTC, PC6, 1);
 	sprintf(packetOrient.marker, "YKTSAT5:ORIENT:");
 	sprintf(packetOrient.n, "N=%lu;", ++orientn);
-	sprintf(packetOrient.et, "ET=%lu;", (uint32_t)e_time/1000);
+	sprintf(packetOrient.et, "ET=%lu;", (uint32_t)kernel_getUptime()/1000);
 	sprintf(packetOrient.end, "\r\n");
 	debug_logMessage((char *)PSTR("Sent orientation packet\r\n"), 1, 1);
 	//	debug_logMessage(packetMain.marker, 0, 0);

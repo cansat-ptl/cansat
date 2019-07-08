@@ -19,6 +19,10 @@
 #define PWSAVE 1
 #define CAM_ON 0
 
+extern volatile struct GPS_t GPS;
+extern volatile struct LSM_t LSM;
+extern volatile struct L3GD_t L3GD;
+
 extern uint16_t altitude_init;
 extern uint16_t altitude;
 

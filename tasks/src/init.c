@@ -27,14 +27,18 @@ void initTaskManager(){
 void init(){
 	hal_setupPins();
 	uart0_init(12);
-	hal_enableInterrupts();
+	sd_init();
 	getTestValues();
+	
+	hal_enableInterrupts();
 	delay(10);
-	if(hal_checkBit_m(JUMPER_PIN, JUMPER_IN)) debug = 1;
-	if(debug) hal_writePin(&LED_DBG_PORT, LED_DBG, HIGH);
+	
+	if(hal_checkBit_m(JUMPER_PIN, JUMPER_IN)){
+		kernel_setFlag(KFLAG_DEBUG, 1);
+		hal_writePin(&LED_DBG_PORT, LED_DBG, HIGH);
+	}
 	else hal_writePin(&LED_DBG_PORT, LED_DBG, LOW);
 	
-	sd_init();
 	wdt_reset();
 	kernel_checkMCUCSR();
 	

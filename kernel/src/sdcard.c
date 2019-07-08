@@ -10,11 +10,11 @@
 
 void sd_flush();
 
-char sd_buffer0[512];
-char sd_buffer1[256];
-uint16_t sd_index = 0;
-uint64_t sd_pointer = 0;
-uint64_t sd_ptr_e EEMEM;
+static char sd_buffer0[512];
+static char sd_buffer1[256];
+static uint16_t sd_index = 0;
+static uint64_t sd_pointer = 0;
+static uint64_t sd_ptr_e EEMEM;
 
 void sd_init(){
 	FRESULT res;

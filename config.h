@@ -19,7 +19,6 @@
 #include <util/delay.h>
 #include "kernel/kernel.h"
 #include "tasks/tasks.h"
-#include "kernel/debug.h"
 #include "drivers/driver_config.h"
 //----------------------------------------------------------------
 
