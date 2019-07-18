@@ -103,13 +103,18 @@ void kernel_startTimer();
 	#define DBG_MOD_VER "0.9.1-staging"
 	#define DBG_MOD_TIMESTAMP __TIMESTAMP__
 	#define UART_LOGGING 1
-	void debug_sendMessage(char* msg, uint8_t level);
-	void debug_sendMessage_i(char* msg, uint8_t level);
-	void debug_sendMessageSD(char* msg, uint8_t level);
-	void debug_sendMessage_p(const char * msg, uint8_t level);
-	void debug_sendMessage_pi(const char * msg, uint8_t level);
-	void debug_sendMessageSD_p(const char * msg, uint8_t level);
-	void debug_logMessage(char* msg, uint8_t level, uint8_t pgm);
+	#define PGM_ON 1
+	#define PGM_OFF 0
+	#define L_NONE 0
+	#define L_INFO 1
+	#define L_WARN 2
+	#define L_ERROR 3
+	#define L_FATAL 4
+	void debug_sendMessage(uint8_t level, const char * format, va_list args);
+	void debug_sendMessageSD(uint8_t level, const char * format, va_list args);
+	void debug_sendMessage_p(uint8_t level, const char * format, va_list args);
+	void debug_sendMessageSD_p(uint8_t level, const char * format, va_list args);
+	void debug_logMessage(uint8_t pgm, uint8_t level, const char * format, ...);
 #endif
 
 #endif /* KERNEL_H_ */

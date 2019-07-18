@@ -6,7 +6,6 @@
  */ 
 
 #include "config.h"
-#include "kernel/globals.h"
 
 int main(void){
 	hal_enableInterrupts();

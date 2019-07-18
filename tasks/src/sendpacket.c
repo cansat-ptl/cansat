@@ -6,7 +6,6 @@
  */ 
 
 #include "../tasks.h"
-#include "../../kernel/globals.h"
 /*
 struct packetMain_t {
 	char marker[31];
@@ -52,8 +51,8 @@ void sendGPS(){
 	sprintf(packetGPS.n, "N=%lu;", ++gpsn);
 	sprintf(packetGPS.et, "ET=%lu;", (uint32_t)kernel_getUptime()/1000);
 	sprintf(packetGPS.end, "\r\n");
-	debug_logMessage((char *)PSTR("Sent GPS packet\r\n"), 1, 1);
-	//debug_logMessage(packetGPS.marker, 0, 0);
+	debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Sent GPS packet\r\n"));
+	/*//debug_logMessage(packetGPS.marker, 0, 0);
 	nRF_send_other(packetGPS.marker);
 	//debug_logMessage(packetGPS.n, 0, 0);
 	nRF_send_other(packetGPS.n);
@@ -68,7 +67,7 @@ void sendGPS(){
 	//debug_logMessage(packetGPS.alt, 0, 0);
 	nRF_send_other(packetGPS.alt);
 	//debug_logMessage(packetGPS.end, 0, 0);
-	nRF_send_other(packetGPS.end);
+	nRF_send_other(packetGPS.end);*/
 	kernel_addTask(sendGPS, 250, PRIORITY_LOW);
 	hal_writePin(&PORTC, PC6, 0);
 }
@@ -79,9 +78,9 @@ void sendMain(){
 	sprintf(packetMain.n, "N=%lu;", ++mainn);
 	sprintf(packetMain.et, "ET=%lu;", (uint32_t)kernel_getUptime()/1000);
 	sprintf(packetMain.end, "\r\n");
-	debug_logMessage((char *)PSTR("Sent main packet\r\n"), 1, 1);
+	debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Sent main packet\r\n"));
 //	debug_logMessage(packetMain.marker, 0, 0);
-	nRF_send_other(packetMain.marker);
+	/*nRF_send_other(packetMain.marker);
 //	debug_logMessage(packetMain.n, 0, 0);
 	nRF_send_other(packetMain.n);
 //	debug_logMessage(packetMain.et, 0, 0);
@@ -97,7 +96,7 @@ void sendMain(){
 //	debug_logMessage(packetMain.t2, 0, 0);
 	nRF_send_other(packetMain.t2);
 //	debug_logMessage(packetMain.end, 0, 0);
-	nRF_send_other(packetMain.end);
+	nRF_send_other(packetMain.end);*/
 	kernel_addTask(sendMain, 750, PRIORITY_LOW);
 	hal_writePin(&PORTC, PC6, 0);
 }
@@ -108,9 +107,9 @@ void sendOrient(){
 	sprintf(packetOrient.n, "N=%lu;", ++orientn);
 	sprintf(packetOrient.et, "ET=%lu;", (uint32_t)kernel_getUptime()/1000);
 	sprintf(packetOrient.end, "\r\n");
-	debug_logMessage((char *)PSTR("Sent orientation packet\r\n"), 1, 1);
+	debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Sent orientation packet\r\n"));
 	//	debug_logMessage(packetMain.marker, 0, 0);
-	nRF_send_other(packetOrient.marker);
+	/*nRF_send_other(packetOrient.marker);
 	//	debug_logMessage(packetMain.n, 0, 0);
 	nRF_send_other(packetOrient.n);
 	//	debug_logMessage(packetMain.et, 0, 0);
@@ -127,7 +126,7 @@ void sendOrient(){
 	nRF_send_other(packetOrient.yaw);
 	//	debug_logMessage(packetMain.end, 0, 0);
 	nRF_send_other(packetOrient.roll);
-	nRF_send_other(packetOrient.end);
+	nRF_send_other(packetOrient.end);*/
 	kernel_addTask(sendOrient, 250, PRIORITY_LOW);
 	hal_writePin(&PORTC, PC6, 0);
 }

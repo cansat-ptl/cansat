@@ -6,7 +6,6 @@
  */ 
 
 #include "../tasks.h"
-#include "../../kernel/globals.h"
 
 float convertToDecimal(float lat);
 uint16_t tests EEMEM;
@@ -14,12 +13,10 @@ uint16_t tests_r = 0;
 
 void adxl345_test(){
 	kernel_stopTimer();
-	char msg[64];
 	
-	debug_logMessage((char *)PSTR("Testing ADXL345...\r\n"), 1, 1);
+	debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Testing ADXL345...\r\n"));
 	uint8_t devid = adxl345_init();
-	sprintf(msg, "ADXL device ID: %d\r\n", devid);
-	debug_logMessage(msg, 1, 0);
+	debug_logMessage(PGM_OFF, L_INFO, "ADXL device ID: %d\r\n", devid);
 	
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
@@ -29,8 +26,7 @@ void adxl345_test(){
 		int16_t ax = adxl345_readX();
 		int16_t ay = adxl345_readY();
 		int16_t az = adxl345_readZ();
-		sprintf(msg, "ADXL data: %d %d %d\r\n", ax, ay, az);
-		debug_logMessage(msg, 1, 0);
+		debug_logMessage(PGM_OFF, L_INFO, "ADXL data: %d %d %d\r\n", ax, ay, az);
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, LOW);
 		hal_writePin(&LED_WRK_PORT, LED_WRK, LOW);
 		delay(100);
@@ -44,12 +40,10 @@ void adxl345_test(){
 
 void bmp280_test(){
 	kernel_stopTimer();
-	char msg[64];
 	
-	debug_logMessage((char *)PSTR("Testing BMP280...\r\n"), 1, 1);
+	debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Testing BMP280...\r\n"));
 	uint8_t devid = bmp280_init();
-	sprintf(msg, "BMP device ID: %d\r\n", devid);
-	debug_logMessage(msg, 1, 0);
+	debug_logMessage(PGM_OFF, L_INFO, "BMP device ID: %d\r\n", devid);
 	
 	//bmp280_printCalibrationData();
 	for(int i = 0; i < 10; i++){
@@ -60,8 +54,7 @@ void bmp280_test(){
 		double t = bmp280_readTemperature();
 		delay(100);
 		double p = bmp280_readPressure();
-		sprintf(msg, "BMP data: %f %f\r\n", t, p);
-		debug_logMessage(msg, 1, 0);
+		debug_logMessage(PGM_OFF, L_INFO, "BMP data: %f %f\r\n", t, p); 
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, LOW);
 		hal_writePin(&LED_WRK_PORT, LED_WRK, LOW);
 		delay(100);
@@ -75,9 +68,8 @@ void bmp280_test(){
 
 void ds18b20_test(){
 	kernel_stopTimer();
-	char msg[64];
 	
-	debug_logMessage((char *)PSTR("Testing DS18B20...\r\n"), 1, 1);
+	debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Testing DS18B20...\r\n"));
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, HIGH);
@@ -86,8 +78,7 @@ void ds18b20_test(){
 		ds18b20_requestTemperature();
 		delay(1000);
 		char * t = ds18b20_readTemperature();
-		sprintf(msg, "DS data: %s\r\n", t);
-		debug_logMessage(msg, 1, 0);
+		debug_logMessage(PGM_OFF, L_INFO, "DS data: %s\r\n", t);
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, LOW);
 		hal_writePin(&LED_WRK_PORT, LED_WRK, LOW);
 		delay(100);
@@ -101,10 +92,8 @@ void ds18b20_test(){
 
 void imu_test(){
 	kernel_stopTimer();
-	debug_logMessage((char *)PSTR("Testing LSM303...\r\n"), 1, 1);
+	debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Testing LSM303...\r\n"));
 	imu_init();
-	
-	char msg[64];
 	
 	int16_t gyrData_raw_x = 0, gyrData_raw_y = 0, gyrData_raw_z = 0;
 	int16_t accData_raw_x = 0, accData_raw_y = 0, accData_raw_z = 0;
@@ -138,9 +127,8 @@ void imu_test(){
 		magData_raw_y |= LSM.YL_M;
 		magData_raw_z |= (LSM.ZH_M << 8);
 		magData_raw_z |= LSM.ZL_M;
-			
-		sprintf(msg, "IMU data: %d %d %d %d %d %d %d %d %d\r\n", gyrData_raw_x, gyrData_raw_y, gyrData_raw_z, accData_raw_x, accData_raw_y, accData_raw_z, magData_raw_x, magData_raw_y, magData_raw_z);
-		debug_logMessage(msg, 1, 0);
+
+		debug_logMessage(PGM_OFF, L_INFO, "IMU data: %d %d %d %d %d %d %d %d %d\r\n", gyrData_raw_x, gyrData_raw_y, gyrData_raw_z, accData_raw_x, accData_raw_y, accData_raw_z, magData_raw_x, magData_raw_y, magData_raw_z);
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, LOW);
 		hal_writePin(&LED_WRK_PORT, LED_WRK, LOW);
 		delay(100);
@@ -154,9 +142,8 @@ void imu_test(){
 
 void gps_test(){
 	kernel_stopTimer();
-	char msg[64];
 	
-	debug_logMessage((char *)PSTR("Testing GPS...\r\n"), 1, 1);
+	debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Testing GPS...\r\n"));
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, HIGH);
@@ -164,8 +151,7 @@ void gps_test(){
 		delay(100);
 		float lat = convertToDecimal(GPS.latitude);
 		float lon = convertToDecimal(GPS.longitude);
-		sprintf(msg, "GPS: %d %d %d %f %f\r\n", GPS.day, GPS.month, GPS.year, lat, lon);
-		debug_logMessage(msg,1, 0);
+		debug_logMessage(PGM_OFF, L_INFO, "GPS: %d %d %d %f %f\r\n", GPS.day, GPS.month, GPS.year, lat, lon);
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, LOW);
 		hal_writePin(&LED_WRK_PORT, LED_WRK, LOW);
 		delay(100);
@@ -179,9 +165,8 @@ void gps_test(){
 
 void adc_test(){
 	kernel_stopTimer();
-	char msg[64];
 	
-	debug_logMessage((char *)PSTR("Testing ADC...\r\n"), 1, 1);
+	debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Testing ADC...\r\n"));
 	for(int i = 0; i < 10; i++){
 		wdt_reset();
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, HIGH);
@@ -189,8 +174,7 @@ void adc_test(){
 		delay(100);
 		int16_t adc0 = adc_read(0);
 		int16_t adc1 = adc_read(1);
-		sprintf(msg, "ADC: %d %d\r\n", adc0, adc1);
-		debug_logMessage(msg, 1, 0);
+		debug_logMessage(PGM_OFF, L_INFO, "ADC: %d %d\r\n", adc0, adc1);
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, LOW);
 		hal_writePin(&LED_WRK_PORT, LED_WRK, LOW);
 		delay(100);

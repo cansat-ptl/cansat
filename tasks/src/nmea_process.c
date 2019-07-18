@@ -6,7 +6,6 @@
  */ 
 
 #include "../tasks.h"
-#include "../../kernel/globals.h"
 #include "../../drivers/devices/sensors/nmea/nmea_parser.h"
 
 /*void nmea_process(){

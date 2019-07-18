@@ -19,26 +19,6 @@ struct taskStruct {
 	uint8_t priority;
 };
 
-struct GPS_t
-{
-	unsigned char valid;
-	unsigned char hour;
-	unsigned char minute;
-	unsigned char second;
-	unsigned char day;
-	unsigned char month;
-	unsigned char year;
-	unsigned int  millisecond;
-	unsigned int cource;
-	float latitude;
-	unsigned char P;
-	float longitude;
-	float speed;
-	float vspeed;
-	unsigned char J;
-	unsigned char Sats;
-};
-
 struct LSM_t
 {
 	unsigned char XH_A;

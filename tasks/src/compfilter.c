@@ -6,7 +6,6 @@
  */
 
 #include "../tasks.h" 
-#include "../../kernel/globals.h" 
 
 int16_t ax_g = 0, ay_g = 0, az_g = 0;
 float pitch = 0, yaw = 0, roll = 0;
@@ -54,13 +53,12 @@ void imu_filter(){
 		rollAcc = atan2f((float)accData_raw_x, (float)accData_raw_y*-1) * 180 / M_PI;
 		roll = roll * 0.98 + rollAcc * 0.02;
 	}
-	/*char msg[32];
-	sprintf(msg, "PR: %f %f\r\n", pitch, roll);
-	debug_logMessage(msg, 1, 0);*/
-	kernel_addTask(imu_filter, 50, PRIORITY_HIGH);
+	
+	debug_logMessage(PGM_OFF, L_INFO, "PR: %f %f\r\n", pitch, roll);
 	sprintf(packetOrient.pitch, "PITCH=%d;", (int)(pitch*10));
 	sprintf(packetOrient.yaw, "YAW=%d;", (int)(yaw*10));
 	sprintf(packetOrient.roll, "ROLL=%d;", (int)(roll*10));
+	kernel_addTask(imu_filter, 37, PRIORITY_HIGH);
 }
 
 ISR(TIMER3_COMPA_vect){

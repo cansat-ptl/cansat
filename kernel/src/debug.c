@@ -5,8 +5,13 @@
  *  Author: ThePetrovich
  */ 
 
+#include <stdarg.h>
 #include "../kernel.h"
-#include "../globals.h"
+#include "../../drivers/interfaces/uart.h"
+
+
+extern uint8_t creg0;
+extern volatile char tx0_buffer[128];
 
 void sd_puts(char * data);
 void sd_flush();
@@ -22,80 +27,70 @@ char levels[5][16] = {
 	"[FATAL]"
 };
 
-inline void debug_sendMessage(char* msg, uint8_t level) {
-	if(level != 0){
-		char buffer[32];
-		sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
-		uart0_puts(buffer);
-	}
-	uart0_puts(levels[level]);
-	uart0_puts(msg);
-}
-
-inline void debug_sendMessage_p(const char * msg, uint8_t level) {
+inline void debug_sendMessage(uint8_t level, const char * format, va_list args) {
 	char buffer[128];
 	if(level != 0){
-		sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
+		//sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
+		sprintf(buffer, "%d ", (int32_t)kernel_getUptime());
 		uart0_puts(buffer);
 	}
-	sprintf_P(buffer, PSTR("%S"), msg);
 	uart0_puts(levels[level]);
+	vsprintf(buffer, format, args);
 	uart0_puts(buffer);
 }
 
-inline void debug_sendMessage_i(char* msg, uint8_t level) {
-	sprintf((char*)&tx0_buffer, "%s%s", levels[level], msg);
-	uart0_transmit();
-	while(creg0 & (1<<TX0BUSY));
+inline void debug_sendMessage_p(uint8_t level, const char * format, va_list args) {
+	char buffer[128];
+	if(level != 0){
+		//sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
+		sprintf(buffer, "%d ", (int32_t)kernel_getUptime());
+		uart0_puts(buffer);
+	}
+	uart0_puts(levels[level]);
+	vsprintf_P(buffer, format, args);
+	uart0_puts(buffer);
 }
 
-inline void debug_sendMessage_pi(const char * msg, uint8_t level) {
-	sprintf((char*)&tx0_buffer, "%s%s", levels[level], msg);
-	uart0_transmit();
-	while(creg0 & (1<<TX0BUSY));
-}
-
-void debug_sendMessageSD(char* msg, uint8_t level){
+void debug_sendMessageSD(uint8_t level, const char * format, va_list args){
 	char buffer[128];
 	if(level != 0){
 		sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
 		sd_puts(buffer);
 	}
 	sd_puts(levels[level]);
-	sprintf(buffer, "%s", msg);
+	vsprintf(buffer, format, args);
 	sd_puts(buffer);
 }
 
-void debug_sendMessageSD_p(const char * msg, uint8_t level){
+void debug_sendMessageSD_p(uint8_t level, const char * format, va_list args){
 	char buffer[128];
 	if(level != 0){
 		sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
 		sd_puts(buffer);
 	}
 	sd_puts(levels[level]);
-	sprintf_P(buffer, PSTR("%S"), msg);
+	vsprintf_P(buffer, format, args);
 	sd_puts(buffer);
 }
 
-inline void debug_logMessage(char* msg, uint8_t level, uint8_t pgm){
+inline void debug_logMessage(uint8_t pgm, uint8_t level, const char * format, ...){
+	va_list args;
+	va_start(args, format);
 	if(!pgm){
 		#if UART_LOGGING_I == 0
-			debug_sendMessage(msg, level);
-		#else
-			debug_sendMessage_i(msg, level);
+			debug_sendMessage(level, format, args);
 		#endif
 		#ifdef SD_LOGGING
-			debug_sendMessageSD(msg, level);
+			debug_sendMessageSD(level, format, args);
 		#endif
 	}
 	else {
 		#if UART_LOGGING_I == 0
-			debug_sendMessage_p(msg, level);
-		#else
-			debug_sendMessage_pi(msg, level);
+			debug_sendMessage_p(level, format, args);
 		#endif
 		#ifdef SD_LOGGING
-			debug_sendMessageSD_p(msg, level);
+			debug_sendMessageSD_p(level, format, args);
 		#endif
 	}
+	va_end(args);
 }

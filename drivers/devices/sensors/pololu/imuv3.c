@@ -14,7 +14,6 @@
 volatile struct LSM_t LSM;
 volatile struct L3GD_t L3GD;
 
-
 void reg_write(unsigned char dev, unsigned char adr, unsigned char data)
 {
 	w2_start;

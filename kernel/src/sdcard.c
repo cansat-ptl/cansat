@@ -6,7 +6,6 @@
  */ 
 
 #include "../kernel.h"
-#include "../globals.h"
 
 void sd_flush();
 
@@ -20,10 +19,10 @@ void sd_init(){
 	FRESULT res;
 	res = pf_mount(&fs);
 	if(res == FR_OK){
-		debug_logMessage((char *)PSTR("[INIT]initd: logging system init complete\r\n"), 1, 1);
+		debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("[INIT]initd: logging system init complete\r\n"));
 		pf_lseek(0);
 	}
-	else debug_logMessage((char *)PSTR("[INIT]initd: logging system init failed\r\n"), 1, 1);
+	else debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("[INIT]initd: logging system init failed\r\n"));
 }
 
 void sd_readPtr(){
