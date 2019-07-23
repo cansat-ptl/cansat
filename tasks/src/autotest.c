@@ -11,14 +11,14 @@ float convertToDecimal(float lat);
 uint16_t tests EEMEM;
 uint16_t tests_r = 0;
 
-void adxl345_test(){
+int adxl345_test(){
 	kernel_stopTimer();
 	
-	debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Testing ADXL345...\r\n"));
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]initd: Testing ADXL345...\r\n"));
 	uint8_t devid = adxl345_init();
-	debug_logMessage(PGM_OFF, L_INFO, "ADXL device ID: %d\r\n", devid);
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]initd: ADXL device ID: %d\r\n"), devid);
 	
-	for(int i = 0; i < 10; i++){
+	for(int i = 0; i < 2; i++){
 		wdt_reset();
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, HIGH);
 		hal_writePin(&LED_WRK_PORT, LED_WRK, HIGH);
@@ -26,7 +26,7 @@ void adxl345_test(){
 		int16_t ax = adxl345_readX();
 		int16_t ay = adxl345_readY();
 		int16_t az = adxl345_readZ();
-		debug_logMessage(PGM_OFF, L_INFO, "ADXL data: %d %d %d\r\n", ax, ay, az);
+		debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]initd: ADXL data: %d %d %d\r\n"), ax, ay, az);
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, LOW);
 		hal_writePin(&LED_WRK_PORT, LED_WRK, LOW);
 		delay(100);
@@ -36,17 +36,18 @@ void adxl345_test(){
 	eeprom_write_word(&tests, tests_r);
 	kernel_startTimer();
 	wdt_reset();
+	return 0;
 }
 
-void bmp280_test(){
+int bmp280_test(){
 	kernel_stopTimer();
 	
-	debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Testing BMP280...\r\n"));
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]initd: Testing BMP280...\r\n"));
 	uint8_t devid = bmp280_init();
-	debug_logMessage(PGM_OFF, L_INFO, "BMP device ID: %d\r\n", devid);
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]initd: BMP device ID: %d\r\n"), devid);
 	
 	//bmp280_printCalibrationData();
-	for(int i = 0; i < 10; i++){
+	for(int i = 0; i < 2; i++){
 		wdt_reset();
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, HIGH);
 		hal_writePin(&LED_WRK_PORT, LED_WRK, HIGH);
@@ -54,7 +55,7 @@ void bmp280_test(){
 		double t = bmp280_readTemperature();
 		delay(100);
 		double p = bmp280_readPressure();
-		debug_logMessage(PGM_OFF, L_INFO, "BMP data: %f %f\r\n", t, p); 
+		debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]initd: BMP data: %f %f\r\n"), t, p); 
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, LOW);
 		hal_writePin(&LED_WRK_PORT, LED_WRK, LOW);
 		delay(100);
@@ -64,13 +65,14 @@ void bmp280_test(){
 	eeprom_write_word(&tests, tests_r);
 	kernel_startTimer();
 	wdt_reset();
+	return 0;
 }
 
-void ds18b20_test(){
+int ds18b20_test(){
 	kernel_stopTimer();
 	
-	debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Testing DS18B20...\r\n"));
-	for(int i = 0; i < 10; i++){
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]initd: Testing DS18B20...\r\n"));
+	for(int i = 0; i < 2; i++){
 		wdt_reset();
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, HIGH);
 		hal_writePin(&LED_WRK_PORT, LED_WRK, HIGH);
@@ -78,7 +80,7 @@ void ds18b20_test(){
 		ds18b20_requestTemperature();
 		delay(1000);
 		char * t = ds18b20_readTemperature();
-		debug_logMessage(PGM_OFF, L_INFO, "DS data: %s\r\n", t);
+		debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]initd: DS data: %s\r\n"), t);
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, LOW);
 		hal_writePin(&LED_WRK_PORT, LED_WRK, LOW);
 		delay(100);
@@ -88,17 +90,18 @@ void ds18b20_test(){
 	eeprom_write_word(&tests, tests_r);
 	kernel_startTimer();
 	wdt_reset();
+	return 0;
 }
 
-void imu_test(){
+int imu_test(){
 	kernel_stopTimer();
-	debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Testing LSM303...\r\n"));
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]initd: Testing LSM303...\r\n"));
 	imu_init();
 	
 	int16_t gyrData_raw_x = 0, gyrData_raw_y = 0, gyrData_raw_z = 0;
 	int16_t accData_raw_x = 0, accData_raw_y = 0, accData_raw_z = 0;
 	int16_t magData_raw_x = 0, magData_raw_y = 0, magData_raw_z = 0;
-	for(int i = 0; i < 10; i++){
+	for(int i = 0; i < 2; i++){
 		wdt_reset();
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, HIGH);
 		hal_writePin(&LED_WRK_PORT, LED_WRK, HIGH);
@@ -128,7 +131,7 @@ void imu_test(){
 		magData_raw_z |= (LSM.ZH_M << 8);
 		magData_raw_z |= LSM.ZL_M;
 
-		debug_logMessage(PGM_OFF, L_INFO, "IMU data: %d %d %d %d %d %d %d %d %d\r\n", gyrData_raw_x, gyrData_raw_y, gyrData_raw_z, accData_raw_x, accData_raw_y, accData_raw_z, magData_raw_x, magData_raw_y, magData_raw_z);
+		debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]initd: IMU data: %d %d %d %d %d %d %d %d %d\r\n"), gyrData_raw_x, gyrData_raw_y, gyrData_raw_z, accData_raw_x, accData_raw_y, accData_raw_z, magData_raw_x, magData_raw_y, magData_raw_z);
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, LOW);
 		hal_writePin(&LED_WRK_PORT, LED_WRK, LOW);
 		delay(100);
@@ -138,20 +141,21 @@ void imu_test(){
 	eeprom_write_word(&tests, tests_r);
 	kernel_startTimer();
 	wdt_reset();
+	return 0;
 }
 
-void gps_test(){
+int gps_test(){
 	kernel_stopTimer();
 	
-	debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Testing GPS...\r\n"));
-	for(int i = 0; i < 10; i++){
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]initd: Testing GPS...\r\n"));
+	for(int i = 0; i < 2; i++){
 		wdt_reset();
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, HIGH);
 		hal_writePin(&LED_WRK_PORT, LED_WRK, HIGH);
 		delay(100);
 		float lat = convertToDecimal(GPS.latitude);
 		float lon = convertToDecimal(GPS.longitude);
-		debug_logMessage(PGM_OFF, L_INFO, "GPS: %d %d %d %f %f\r\n", GPS.day, GPS.month, GPS.year, lat, lon);
+		debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]initd: GPS: %d %d %d %f %f\r\n"), GPS.day, GPS.month, GPS.year, lat, lon);
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, LOW);
 		hal_writePin(&LED_WRK_PORT, LED_WRK, LOW);
 		delay(100);
@@ -161,20 +165,21 @@ void gps_test(){
 	eeprom_write_word(&tests, tests_r);
 	kernel_startTimer();
 	wdt_reset();
+	return 0;
 }
 
-void adc_test(){
+int adc_test(){
 	kernel_stopTimer();
 	
-	debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Testing ADC...\r\n"));
-	for(int i = 0; i < 10; i++){
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]initd: Testing ADC...\r\n"));
+	for(int i = 0; i < 2; i++){
 		wdt_reset();
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, HIGH);
 		hal_writePin(&LED_WRK_PORT, LED_WRK, HIGH);
 		delay(100);
 		int16_t adc0 = adc_read(0);
 		int16_t adc1 = adc_read(1);
-		debug_logMessage(PGM_OFF, L_INFO, "ADC: %d %d\r\n", adc0, adc1);
+		debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]initd: ADC: %d %d\r\n"), adc0, adc1);
 		hal_writePin(&LED_BUILTIN_PORT, LED_BUILTIN, LOW);
 		hal_writePin(&LED_WRK_PORT, LED_WRK, LOW);
 		delay(100);
@@ -184,9 +189,10 @@ void adc_test(){
 	eeprom_write_word(&tests, tests_r);
 	kernel_startTimer();
 	wdt_reset();
+	return 0;
 }
 
-void autotest(){
+int autotest(){
 	if(!hal_checkBit_m(tests_r, ADXL_TESTED))
 		adxl345_test();
 	if(!hal_checkBit_m(tests_r, BMP_TESTED))
@@ -199,6 +205,7 @@ void autotest(){
 		gps_test();
 	if(!hal_checkBit_m(tests_r, ADC_TESTED))
 		adc_test();
+	return 0;	
 }
 
 void getTestValues(){

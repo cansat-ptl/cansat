@@ -12,10 +12,17 @@ uint16_t altitude = 0;
 
 float convertToDecimal(float lat);
 
-void readBMP(){
+int readBMP()
+{
 	if(kernel_checkFlag(KFLAG_DEBUG)){
-		debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Reading BMP280\r\n"));
+		debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("sensord: Reading BMP280\r\n"));
 	}
+	
+	uint8_t devid = spi_readRegister(BMP280_REG_CHIPID, 1, 0x80, 0);
+	if(devid == 0){
+		return ERR_DEVICE_FAIL;
+	}
+	
 	int16_t t2, alt;
 	int32_t prs;
 	t2 = bmp280_readTemperature();
@@ -26,14 +33,23 @@ void readBMP(){
 	sprintf(packetMain.prs, "PRS=%ld;", prs);
 	sprintf(packetMain.alt, "ALT=%d;", alt);
 	sprintf(packetGPS.alt, "ALT=%d;", alt);
-	kernel_addTask(readBMP, 200, PRIORITY_MID);
+	kernel_addTask(readBMP, 200, PRIORITY_MID, KSTATE_ACTIVE);
 	wdt_reset();
+	
+	return 0;
 }
 
-void readADXL(){
+int readADXL()
+{
 	if(kernel_checkFlag(KFLAG_DEBUG)){
-		debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Reading ADXL345\r\n"));
+		debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("sensord: Reading ADXL345\r\n"));
 	}
+	
+	uint8_t devid = spi_readRegister(ADXL345_REG_DEVID, 1, 0x80, 0);
+	if(devid == 0){
+		return ERR_DEVICE_FAIL;
+	}
+	
 	int16_t ax, ay, az;
 	ax = adxl345_readX();
 	ay = adxl345_readY();
@@ -41,41 +57,56 @@ void readADXL(){
 	sprintf(packetOrient.ax, "AX=%d;", ax*10);
 	sprintf(packetOrient.ay, "AY=%d;", ay*10);
 	sprintf(packetOrient.az, "AZ=%d;", az*10);
-	kernel_addTask(readADXL, 100, PRIORITY_MID);
+	kernel_addTask(readADXL, 100, PRIORITY_MID, KSTATE_ACTIVE);
 	wdt_reset();
+	
+	return 0;
 }
 
-void requestDS18(){
+int requestDS18()
+{
 	if(kernel_checkFlag(KFLAG_DEBUG)){
-		debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Requesting temperature from DS18B20\r\n"));
+		debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("sensord: Requesting temperature from DS18B20\r\n"));
 	}
+	
 	ds18b20_requestTemperature();
-	kernel_addTask(readDS18, 750, PRIORITY_MID);
-	kernel_addTask(requestDS18, 760, PRIORITY_MID);
+	kernel_addTask(readDS18, 750, PRIORITY_MID, KSTATE_ACTIVE);
+	kernel_addTask(requestDS18, 760, PRIORITY_MID, KSTATE_ACTIVE);
 	wdt_reset();
+	
+	return 0;
 }
 
-void readDS18(){
+int readDS18()
+{
 	if(kernel_checkFlag(KFLAG_DEBUG)){
-		debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Reading DS18B20\r\n"));
+		debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("sensord: Reading DS18B20\r\n"));
 	}
+	
 	char * t1 = ds18b20_readTemperature();
 	float t1_conv = atof(t1);
 	sprintf(packetMain.t1, "T1=%d;", (int)(t1_conv*10.0));
 	//debug_logMessage(packetMain.t1, 1, 0);
 	wdt_reset();
+	
+	return 0;
 }
 //Holy shiet
-void readIMU(){
-	
+int readIMU()
+{
+	return 0;
 }
 
-void readGPS(){
+int readGPS()
+{
 	if(kernel_checkFlag(KFLAG_DEBUG)){
-		debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("Reading GPS data\r\n"));
+		debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("sensord: Reading GPS data\r\n"));
 	}
+	
 	sprintf(packetGPS.sat, "SAT=%d;", GPS.Sats);
 	sprintf(packetGPS.lat, "LAT=%.6f;", convertToDecimal(GPS.latitude));
 	sprintf(packetGPS.lon, "LON=%.6f;", convertToDecimal(GPS.longitude));
-	kernel_addTask(readGPS, 500, PRIORITY_MID);
+	kernel_addTask(readGPS, 500, PRIORITY_MID, KSTATE_ACTIVE);
+	
+	return 0;
 }

@@ -14,29 +14,6 @@
 #define SDCARD_MOD_VER "0.0.4-bleeding"
 #define SDCARD_MOD_TIMESTAMP __TIMESTAMP__
 
-#ifndef KERNELconfig
-	#define MAX_QUEUE_SIZE 32
-	#define TICKRATE 1 //in milliseconds
-	
-	#define ERR_QUEUE_OVERFLOW 1
-	#define ERR_QUEUE_END 2
-	#define ERR_WDT_RESET 3
-	#define ERR_BOD_RESET 4
-	#define ERR_KRN_RETURN 5
-	
-	#define PRIORITY_HIGH 0
-	#define PRIORITY_MID 1
-	#define PRIORITY_LOW 2
-	
-	#define KFLAG_INIT 0
-	#define KFLAG_DEBUG 15
-	
-	#define KERNEL_SD_MODULE 1
-	#define KERNEL_WDT_MODULE 1
-	#define KERNEL_UTIL_MODULE 1
-	#define KERNEL_DEBUG_MODULE 1
-#endif
-
 #include "types.h"
 #include "hal.h"
 #include "../tasks/tasks.h"
@@ -50,37 +27,63 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "../drivers/interfaces/uart.h"
-#include "../drivers/interfaces/spi.h"
-#include "../drivers/interfaces/twi.h"
-#include "../drivers/interfaces/adc.h"
-#include "../drivers/devices/sensors/adxl345/adxl345.h"
-#include "../drivers/devices/sensors/bmp280/bmp280.h"
-#include "../drivers/devices/sensors/ds18b20/ds18b20.h"
-#include "../drivers/devices/sensors/pololu/imuv3.h"
-#include "../drivers/devices/radio/nRF.h"
-#include "../drivers/devices/system/pff3a/pff.h"
-#include "../drivers/devices/system/pff3a/diskio.h"
-
-FATFS fs;
-WORD logfile;
+#ifndef KERNELconfig
+	#define KERNELconfig
+	#define MAX_TIMER_COUNT 5
+	#define MAX_QUEUE_SIZE 32
+	#define TICKRATE 1 //in milliseconds
+	
+	#define ERR_QUEUE_OVERFLOW 1
+	#define ERR_QUEUE_END 2
+	#define ERR_WDT_RESET 3
+	#define ERR_BOD_RESET 4
+	#define ERR_KRN_RETURN 5
+	#define ERR_DEVICE_FAIL 6
+	
+	#define PRIORITY_HIGH 0
+	#define PRIORITY_MID 1
+	#define PRIORITY_LOW 2
+	#define FORCE_LOWERPRIO_THRESHOLD 10
+	
+	#define KFLAG_INIT 0
+	#define KFLAG_TIMER_SET 1
+	#define KFLAG_TIMER_EN 2
+	#define KFLAG_TIMER_ISR 3
+	#define KFLAG_LOG_SD 13
+	#define KFLAG_LOG_UART 14
+ 	#define KFLAG_DEBUG 15
+	
+	#define KERNEL_SD_MODULE 1
+	#define KERNEL_WDT_MODULE 1
+	#define KERNEL_UTIL_MODULE 1
+	#define KERNEL_DEBUG_MODULE 1
+	
+	#define KSTATE_ACTIVE 1
+	#define KSTATE_SUSPENDED 0
+	
+	#define VERBOSE 0
+	//#define PROFILING 0
+#endif
 
 void kernel_setFlag(uint8_t flag, uint8_t value);
 uint8_t kernel_checkFlag(uint8_t flag);
 uint64_t kernel_getUptime();
 
 uint8_t kernel_addCall(task t_ptr, uint8_t t_priority);
-uint8_t kernel_addTask(task t_ptr, uint16_t t_period, uint8_t t_priority);
+uint8_t kernel_addTask(task t_ptr, uint16_t t_period, uint8_t t_priority, uint8_t startupState);
 uint8_t kernel_removeCall(uint8_t t_priority);
 uint8_t kernel_removeTask(uint8_t position);
+uint8_t kernel_setTaskState(task t_pointer, uint8_t state);
 void kernel_clearTaskQueue();
 void kernel_clearCallQueue(uint8_t t_priority);
-void kernel_displayError(uint8_t error);
 void kernel_checkMCUCSR();
 uint8_t kernelInit();
 
 void kernel_stopTimer();
 void kernel_startTimer();
+uint8_t kernel_setTimer(timerISR t_pointer, uint32_t t_period);
+uint8_t kernel_removeTimer(timerISR t_pointer);
+void kernel_timerService();
 
 #if KERNEL_SD_MODULE == 1
 	void sd_puts(char * data);

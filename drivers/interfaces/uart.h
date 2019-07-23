@@ -67,16 +67,6 @@ Returns: nothing
 void uart0_puts(char * msg);
 
 /*------------------------------------------------------------
-UART0 custom printf - uart0_printf(char * format, ...)
-prints a formatted string to uart0 without stdio.
-Arguments: char * format - same as printf's format, but does
-			not support floats.
-		   arg1, arg2, ... - values, as specified in format.
-Returns: nothing
-------------------------------------------------------------*/
-void uart0_printf(char * format, ...); //Величайший велосипед человечества
-
-/*------------------------------------------------------------
 UART0 receive buffer flush - rx0_buffer_flush()
 Clears the uart0 receive buffer (rx0_buffer).
 Arguments: none

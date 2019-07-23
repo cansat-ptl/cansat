@@ -5,6 +5,7 @@
  *  Author: WorldSkills-2019
  */ 
 #include "../kernel.h"
+#include "../drivers.h"
 
 void util_printVersion(){
 	char msg[128];

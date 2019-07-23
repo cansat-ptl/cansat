@@ -41,14 +41,14 @@ uint8_t bmp280_readRegister1(uint8_t address){
 	uint8_t response;
 	
 	spi_busSetup(SPI_PRESCALER_16, MSBFIRST, SPI_MODE3, SPI_1X);
-	SPI_PORT &= ~(1<<SPI_SS);
+	spi_cslow();
 	bmp280_select();
 	
 	spi_simpleWrite(address | 0x80);
 	response = spi_simpleRead(0x00);
 	
 	bmp280_deselect();
-	SPI_PORT |= (1<<SPI_SS);
+	spi_cshigh();
 	spi_busStop();
 	
 	return response;
@@ -58,7 +58,7 @@ uint16_t bmp280_readRegister2(uint8_t address){
 	uint16_t response;
 	
 	spi_busSetup(SPI_PRESCALER_16, MSBFIRST, SPI_MODE3, SPI_1X);
-	SPI_PORT &= ~(1<<SPI_SS);
+	spi_cslow();
 	bmp280_select();
 	
 	spi_simpleWrite(address | 0x80);
@@ -66,7 +66,7 @@ uint16_t bmp280_readRegister2(uint8_t address){
 	response |= spi_simpleRead(0x00)<<8;
 	
 	bmp280_deselect();
-	SPI_PORT |= (1<<SPI_SS);
+	spi_cshigh();
 	spi_busStop();
 	
 	return response;
@@ -76,8 +76,8 @@ uint32_t bmp280_readRegister3(uint8_t address){
 	uint32_t response;
 	
 	spi_busSetup(SPI_PRESCALER_16, MSBFIRST, SPI_MODE3, SPI_1X);
-	SPI_PORT &= ~(1<<SPI_SS);
-	BMP280_PORT &= ~(1<<BMP280_CS);
+	spi_cslow();
+	bmp280_select();
 	
 	spi_simpleWrite(address | 0x80);
 	response = spi_simpleRead(0x00);
@@ -87,7 +87,7 @@ uint32_t bmp280_readRegister3(uint8_t address){
 	response |= spi_simpleRead(0x00);
 	
 	bmp280_deselect();
-	SPI_PORT |= (1<<SPI_SS);
+	spi_cshigh();
 	spi_busStop();
 	
 	return response;
@@ -96,14 +96,14 @@ uint32_t bmp280_readRegister3(uint8_t address){
 void bmp280_writeRegister(uint8_t address, uint8_t data){
 	
 	spi_busSetup(SPI_PRESCALER_16, MSBFIRST, SPI_MODE3, SPI_1X);
-	SPI_PORT &= ~(1<<SPI_SS);
+	spi_cslow();
 	BMP280_PORT &= ~(1<<BMP280_CS);
 	
 	spi_simpleWrite(address & ~0x80);
 	spi_simpleWrite(data & ~0x80);
 	
 	bmp280_deselect();
-	SPI_PORT |= (1<<SPI_SS);
+	spi_cshigh();
 	spi_busStop();
 }
 
@@ -168,30 +168,31 @@ int16_t bmp280_calcAltitude(float sea_prs){
 
 void bmp280_printCalibrationData(){
 	char msg[64];
-	sprintf(msg, "[DEBUG]BMP280: dig_T1=%d\r\n", dig_T1);
-	uart0_puts(msg);
-	sprintf(msg, "[DEBUG]BMP280: dig_T2=%d\r\n", dig_T2);
-	uart0_puts(msg);
-	sprintf(msg, "[DEBUG]BMP280: dig_T3=%d\r\n", dig_T3);
-	uart0_puts(msg);
-	sprintf(msg, "[DEBUG]BMP280: dig_P1=%d\r\n", dig_P1);
-	uart0_puts(msg);
-	sprintf(msg, "[DEBUG]BMP280: dig_P2=%d\r\n", dig_P2);
-	uart0_puts(msg);
-	sprintf(msg, "[DEBUG]BMP280: dig_P3=%d\r\n", dig_P3);
-	uart0_puts(msg);
-	sprintf(msg, "[DEBUG]BMP280: dig_P4=%d\r\n", dig_P4);
-	uart0_puts(msg);
-	sprintf(msg, "[DEBUG]BMP280: dig_P5=%d\r\n", dig_P5);
-	uart0_puts(msg);
-	sprintf(msg, "[DEBUG]BMP280: dig_P6=%d\r\n", dig_P6);
-	uart0_puts(msg);
-	sprintf(msg, "[DEBUG]BMP280: dig_P7=%d\r\n", dig_P7);
-	uart0_puts(msg);
-	sprintf(msg, "[DEBUG]BMP280: dig_P8=%d\r\n", dig_P8);
-	uart0_puts(msg);
-	sprintf(msg, "[DEBUG]BMP280: dig_P9=%d\r\n", dig_P9);
-	uart0_puts(msg);
+	sprintf(msg, "%d\r\n", dig_T1);
+	debug_logMessage(PGM_ON, L_INFO, PSTR("[DEBUG]BMP280: dig_T1="));
+	debug_logMessage(PGM_OFF, L_NONE, "%d\r\n", dig_T1);
+	debug_logMessage(PGM_ON, L_INFO, PSTR("[DEBUG]BMP280: dig_T2="));
+	debug_logMessage(PGM_OFF, L_NONE, "%d\r\n", dig_T2);
+	debug_logMessage(PGM_ON, L_INFO, PSTR("[DEBUG]BMP280: dig_T3="));
+	debug_logMessage(PGM_OFF, L_NONE, "%d\r\n", dig_T3);
+	debug_logMessage(PGM_ON, L_INFO, PSTR("[DEBUG]BMP280: dig_P1="));
+	debug_logMessage(PGM_OFF, L_NONE, "%d\r\n", dig_P1);
+	debug_logMessage(PGM_ON, L_INFO, PSTR("[DEBUG]BMP280: dig_P2="));
+	debug_logMessage(PGM_OFF, L_NONE, "%d\r\n", dig_P2);
+	debug_logMessage(PGM_ON, L_INFO, PSTR("[DEBUG]BMP280: dig_P3="));
+	debug_logMessage(PGM_OFF, L_NONE, "%d\r\n", dig_P3);
+	debug_logMessage(PGM_ON, L_INFO, PSTR("[DEBUG]BMP280: dig_P4="));
+	debug_logMessage(PGM_OFF, L_NONE, "%d\r\n", dig_P4);
+	debug_logMessage(PGM_ON, L_INFO, PSTR("[DEBUG]BMP280: dig_P5="));
+	debug_logMessage(PGM_OFF, L_NONE, "%d\r\n", dig_P5);
+	debug_logMessage(PGM_ON, L_INFO, PSTR("[DEBUG]BMP280: dig_P6="));
+	debug_logMessage(PGM_OFF, L_NONE, "%d\r\n", dig_P6);
+	debug_logMessage(PGM_ON, L_INFO, PSTR("[DEBUG]BMP280: dig_P7="));
+	debug_logMessage(PGM_OFF, L_NONE, "%d\r\n", dig_P7);
+	debug_logMessage(PGM_ON, L_INFO, PSTR("[DEBUG]BMP280: dig_P8="));
+	debug_logMessage(PGM_OFF, L_NONE, "%d\r\n", dig_P8);
+	debug_logMessage(PGM_ON, L_INFO, PSTR("[DEBUG]BMP280: dig_P9="));
+	debug_logMessage(PGM_OFF, L_NONE, "%d\r\n", dig_P9);
 	return;
 }
 

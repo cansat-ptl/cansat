@@ -10,16 +10,17 @@
 int16_t ax_g = 0, ay_g = 0, az_g = 0;
 float pitch = 0, yaw = 0, roll = 0;
 
-void imu_setupTimer(){
+int imu_setupTimer(){
 	hal_disableInterrupts();
 	TCCR3B |= (1 << WGM12)|(1 << CS11)|(1 << CS10); //prescaler 64
 	TCNT3 = 0;
 	OCR3A = 31250;
 	TIMSK |= (1 << OCIE3A);
 	hal_enableInterrupts();
+	return 0;
 }
 
-void imu_filter(){
+int imu_filter(){
 	float pitchAcc, rollAcc;
 	int16_t gyrData_raw_x = 0, gyrData_raw_y = 0, gyrData_raw_z = 0;
 	int16_t accData_raw_x = 0, accData_raw_y = 0, accData_raw_z = 0;
@@ -53,12 +54,15 @@ void imu_filter(){
 		rollAcc = atan2f((float)accData_raw_x, (float)accData_raw_y*-1) * 180 / M_PI;
 		roll = roll * 0.98 + rollAcc * 0.02;
 	}
-	
-	debug_logMessage(PGM_OFF, L_INFO, "PR: %f %f\r\n", pitch, roll);
+	if(kernel_checkFlag(KFLAG_DEBUG)){
+		debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("PR: %f %f\r\n"), pitch, roll);
+	}
 	sprintf(packetOrient.pitch, "PITCH=%d;", (int)(pitch*10));
 	sprintf(packetOrient.yaw, "YAW=%d;", (int)(yaw*10));
 	sprintf(packetOrient.roll, "ROLL=%d;", (int)(roll*10));
-	kernel_addTask(imu_filter, 37, PRIORITY_HIGH);
+	kernel_addTask(imu_filter, 37, PRIORITY_HIGH, KSTATE_ACTIVE);
+	hal_enableInterrupts();
+	return 0;
 }
 
 ISR(TIMER3_COMPA_vect){

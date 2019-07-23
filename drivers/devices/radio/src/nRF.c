@@ -23,9 +23,9 @@ void nRF_write_multi(unsigned char a, unsigned char len)
 	spi_cslow();
 	spi_busSetup(SPI_PRESCALER_4, MSBFIRST, SPI_MODE0, SPI_2X);
 	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
-	spi_simpleRead(a);
+	spi_simpleWrite(a);
 	for(unsigned char i = 0; i < 32; i++)
-		spi_simpleRead(nRF.buf[i]);
+		spi_simpleWrite(nRF.buf[i]);
 	nRF_CSN_port |= (1<<nRF_CSN_pin);
 	spi_cshigh();
 	SPCR = 0;
@@ -39,8 +39,8 @@ void nRF_write(unsigned char a, unsigned char b)
 	spi_cslow();
 	spi_busSetup(SPI_PRESCALER_4, MSBFIRST, SPI_MODE0, SPI_2X);
 	nRF_CSN_port &= ~(1<<nRF_CSN_pin);
-	spi_simpleRead(a);
-	spi_simpleRead(b);
+	spi_simpleWrite(a);
+	spi_simpleWrite(b);
 	nRF_CSN_port |= (1<<nRF_CSN_pin);
 	spi_cshigh();
 	SPCR = 0;

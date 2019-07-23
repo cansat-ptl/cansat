@@ -6,6 +6,7 @@
  */ 
 
 #include "../kernel.h"
+#include "../drivers.h"
 
 uint8_t mcucsr_mirror __attribute__ ((section (".noinit")));
 

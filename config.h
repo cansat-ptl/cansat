@@ -24,8 +24,6 @@
 
 //-----------------------Kernel-settings--------------------------
 #define MAX_QUEUE_SIZE 32
-#define ERR_QUEUE_OVERFLOW 1
-#define ERR_QUEUE_END 2
 //----------------------------------------------------------------
 
 #endif /* CONFIG_H_ */

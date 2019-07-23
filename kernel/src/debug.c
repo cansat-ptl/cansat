@@ -7,7 +7,7 @@
 
 #include <stdarg.h>
 #include "../kernel.h"
-#include "../../drivers/interfaces/uart.h"
+#include "../drivers.h"
 
 
 extern uint8_t creg0;
@@ -16,7 +16,7 @@ extern volatile char tx0_buffer[128];
 void sd_puts(char * data);
 void sd_flush();
 
-#define SD_LOGGING 1
+#define SD_LOGGING 0
 #define UART_LOGGING_I 0
 
 char levels[5][16] = {
@@ -29,9 +29,9 @@ char levels[5][16] = {
 
 inline void debug_sendMessage(uint8_t level, const char * format, va_list args) {
 	char buffer[128];
-	if(level != 0){
+	if(level != 0 && !kernel_checkFlag(KFLAG_INIT)){
 		//sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
-		sprintf(buffer, "%d ", (int32_t)kernel_getUptime());
+		sprintf(buffer, "%ld ", (int32_t)kernel_getUptime());
 		uart0_puts(buffer);
 	}
 	uart0_puts(levels[level]);
@@ -41,9 +41,9 @@ inline void debug_sendMessage(uint8_t level, const char * format, va_list args) 
 
 inline void debug_sendMessage_p(uint8_t level, const char * format, va_list args) {
 	char buffer[128];
-	if(level != 0){
+	if(level != 0 && !kernel_checkFlag(KFLAG_INIT)){
 		//sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
-		sprintf(buffer, "%d ", (int32_t)kernel_getUptime());
+		sprintf(buffer, "%ld ", (int32_t)kernel_getUptime());
 		uart0_puts(buffer);
 	}
 	uart0_puts(levels[level]);
@@ -53,7 +53,7 @@ inline void debug_sendMessage_p(uint8_t level, const char * format, va_list args
 
 void debug_sendMessageSD(uint8_t level, const char * format, va_list args){
 	char buffer[128];
-	if(level != 0){
+	if(level != 0 && !kernel_checkFlag(KFLAG_INIT)){
 		sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
 		sd_puts(buffer);
 	}
@@ -64,7 +64,7 @@ void debug_sendMessageSD(uint8_t level, const char * format, va_list args){
 
 void debug_sendMessageSD_p(uint8_t level, const char * format, va_list args){
 	char buffer[128];
-	if(level != 0){
+	if(level != 0 && !kernel_checkFlag(KFLAG_INIT)){
 		sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
 		sd_puts(buffer);
 	}
