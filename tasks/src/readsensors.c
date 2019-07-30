@@ -33,7 +33,7 @@ int readBMP()
 	sprintf(packetMain.prs, "PRS=%ld;", prs);
 	sprintf(packetMain.alt, "ALT=%d;", alt);
 	sprintf(packetGPS.alt, "ALT=%d;", alt);
-	kernel_addTask(readBMP, 200, PRIORITY_MID, KSTATE_ACTIVE);
+	kernel_addTask(readBMP, 200, PRIORITY_NORM, KSTATE_ACTIVE);
 	wdt_reset();
 	
 	return 0;
@@ -57,7 +57,7 @@ int readADXL()
 	sprintf(packetOrient.ax, "AX=%d;", ax*10);
 	sprintf(packetOrient.ay, "AY=%d;", ay*10);
 	sprintf(packetOrient.az, "AZ=%d;", az*10);
-	kernel_addTask(readADXL, 100, PRIORITY_MID, KSTATE_ACTIVE);
+	kernel_addTask(readADXL, 100, PRIORITY_NORM, KSTATE_ACTIVE);
 	wdt_reset();
 	
 	return 0;
@@ -70,8 +70,8 @@ int requestDS18()
 	}
 	
 	ds18b20_requestTemperature();
-	kernel_addTask(readDS18, 750, PRIORITY_MID, KSTATE_ACTIVE);
-	kernel_addTask(requestDS18, 760, PRIORITY_MID, KSTATE_ACTIVE);
+	kernel_addTask(readDS18, 750, PRIORITY_NORM, KSTATE_ACTIVE);
+	kernel_addTask(requestDS18, 760, PRIORITY_NORM, KSTATE_ACTIVE);
 	wdt_reset();
 	
 	return 0;
@@ -106,7 +106,7 @@ int readGPS()
 	sprintf(packetGPS.sat, "SAT=%d;", GPS.Sats);
 	sprintf(packetGPS.lat, "LAT=%.6f;", convertToDecimal(GPS.latitude));
 	sprintf(packetGPS.lon, "LON=%.6f;", convertToDecimal(GPS.longitude));
-	kernel_addTask(readGPS, 500, PRIORITY_MID, KSTATE_ACTIVE);
+	kernel_addTask(readGPS, 500, PRIORITY_NORM, KSTATE_ACTIVE);
 	
 	return 0;
 }

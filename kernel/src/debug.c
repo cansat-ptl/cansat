@@ -30,8 +30,11 @@ char levels[5][16] = {
 inline void debug_sendMessage(uint8_t level, const char * format, va_list args) {
 	char buffer[128];
 	if(level != 0 && !kernel_checkFlag(KFLAG_INIT)){
-		//sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
-		sprintf(buffer, "%ld ", (int32_t)kernel_getUptime());
+		#if PROFILING == 0
+			sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
+		#else
+			sprintf(buffer, "%ld ", (int32_t)kernel_getUptime());
+		#endif
 		uart0_puts(buffer);
 	}
 	uart0_puts(levels[level]);
@@ -42,8 +45,11 @@ inline void debug_sendMessage(uint8_t level, const char * format, va_list args) 
 inline void debug_sendMessage_p(uint8_t level, const char * format, va_list args) {
 	char buffer[128];
 	if(level != 0 && !kernel_checkFlag(KFLAG_INIT)){
-		//sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
-		sprintf(buffer, "%ld ", (int32_t)kernel_getUptime());
+		#if PROFILING == 0
+			sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
+		#else
+			sprintf(buffer, "%ld ", (int32_t)kernel_getUptime());
+		#endif
 		uart0_puts(buffer);
 	}
 	uart0_puts(levels[level]);
