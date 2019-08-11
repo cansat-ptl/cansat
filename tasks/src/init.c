@@ -27,6 +27,7 @@ void initTaskManager()
 
 int systemInit()
 {
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("\r\n[INIT]initd: initializing CanSat peripherals\r\n\r\n"));
 	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]initd: uart1 interface init"));
 	uart1_init(51);
 	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("                    [OK]\r\n"));

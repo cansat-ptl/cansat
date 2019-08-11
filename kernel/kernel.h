@@ -17,6 +17,7 @@
 #include "types.h"
 #include "hal.h"
 #include "../tasks/tasks.h"
+#include "kernel_config.h"
 #include <avr/common.h>
 #include <avr/interrupt.h>
 #include <avr/iom128.h>
@@ -27,47 +28,28 @@
 #include <string.h>
 #include <stdio.h>
 
-#ifndef KERNELconfig
-	#define KERNELconfig
-	#define MAX_TIMER_COUNT 5
-	#define MAX_TASK_QUEUE_SIZE 32
-	#define MAX_HIGHPRIO_CALL_QUEUE_SIZE 32
-	#define MAX_NORMPRIO_CALL_QUEUE_SIZE 32
-	#define MAX_LOWPRIO_CALL_QUEUE_SIZE 32
-	#define TICKRATE 1 //in milliseconds
+#define ERR_QUEUE_OVERFLOW 1
+#define ERR_QUEUE_END 2
+#define ERR_WDT_RESET 3
+#define ERR_BOD_RESET 4
+#define ERR_KRN_RETURN 5
+#define ERR_DEVICE_FAIL 6
 	
-	#define ERR_QUEUE_OVERFLOW 1
-	#define ERR_QUEUE_END 2
-	#define ERR_WDT_RESET 3
-	#define ERR_BOD_RESET 4
-	#define ERR_KRN_RETURN 5
-	#define ERR_DEVICE_FAIL 6
+#define PRIORITY_HIGH 0
+#define PRIORITY_NORM 1
+#define PRIORITY_LOW 2
 	
-	#define PRIORITY_HIGH 0
-	#define PRIORITY_NORM 1
-	#define PRIORITY_LOW 2
-	#define FORCE_LOWERPRIO_THRESHOLD 10
+#define KFLAG_INIT 0
+#define KFLAG_TIMER_SET 1
+#define KFLAG_TIMER_EN 2
+#define KFLAG_TIMER_ISR 3
+#define KFLAG_SD_INIT 4
+#define KFLAG_LOG_SD 13
+#define KFLAG_LOG_UART 14
+#define KFLAG_DEBUG 15
 	
-	#define KFLAG_INIT 0
-	#define KFLAG_TIMER_SET 1
-	#define KFLAG_TIMER_EN 2
-	#define KFLAG_TIMER_ISR 3
-	#define KFLAG_SD_INIT 4
-	#define KFLAG_LOG_SD 13
-	#define KFLAG_LOG_UART 14
- 	#define KFLAG_DEBUG 15
-	
-	#define KERNEL_SD_MODULE 1
-	#define KERNEL_WDT_MODULE 1
-	#define KERNEL_UTIL_MODULE 1
-	#define KERNEL_DEBUG_MODULE 1
-	
-	#define KSTATE_ACTIVE 1
-	#define KSTATE_SUSPENDED 0
-	
-	#define VERBOSE 0
-	//#define PROFILING 0
-#endif
+#define KSTATE_ACTIVE 1
+#define KSTATE_SUSPENDED 0
 
 void kernel_setFlag(uint8_t flag, uint8_t value);
 uint8_t kernel_checkFlag(uint8_t flag);

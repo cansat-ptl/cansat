@@ -55,6 +55,7 @@
 
 #define hal_disableInterrupts() cli()
 #define hal_enableInterrupts() sei()
+
 #define hal_statusReg SREG
 #define hal_nop() asm volatile ("NOP")
 #define delay(x) _delay_ms(x);

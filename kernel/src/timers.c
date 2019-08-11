@@ -78,7 +78,7 @@ void kernel_timerService()
 			if(timerQueue[i].period != 0)
 				timerQueue[i].period--;
 			else {
-				(timerQueue[i].tsrPointer)();
+				if(timerQueue[i].tsrPointer != NULL) (timerQueue[i].tsrPointer)(); //Additional NULLPTR protection
 				timerQueue[i].period = timerQueue[i].savePeriod;
 			}
 		}
