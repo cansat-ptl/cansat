@@ -7,32 +7,14 @@
 #include "../kernel.h"
 
 #ifndef CMD_COMMAND_AMOUNT
-#define CMD_COMMAND_AMOUNT 6
+#define CMD_COMMAND_AMOUNT 8
 #endif
 
 volatile static char recvBuffer[RX0_BUFFER_SIZE];
 volatile static uint8_t recvBuffer_i = 0;
 static struct commandStruct commands[CMD_COMMAND_AMOUNT];
 static uint8_t registeredCmds = 0;
-/*char cmdKeywords[][MAX_CMD_WORD_SIZE] = {
-	"",
-	"config",
-	"reboot",
-	"showinfo",
-	"errno",
-	"nodebug"
-};*/
 
-/*
-uint8_t number_code(char chr)
-{
-	if ((chr>=0x30)&&(chr<=0x39))
-	{
-		return chr-0x30;
-	}
-	return 0xFF;
-}
-*/
 static void kernel_clearRecvBuffer(){
 	for(int i = 0; i < RX0_BUFFER_SIZE; i++) recvBuffer[i] = 0;
 	recvBuffer_i = 0;
@@ -87,31 +69,37 @@ void kernel_registerCommand(const char * c_keyword, cmdHandler c_ptr)
 	}
 }
 
+char kernel_parseCmdArgs(char * token, char * arglist, uint8_t arglist_len){
+	for(int i = 0; i < arglist_len; i++){
+		if(token[1] == arglist[i]){
+			return arglist[i];
+			//debug_logMessage(PGM_ON, L_INFO, PSTR("cli: Parsed argument %c\r\n"), arglist[i]);
+		}
+		else if(i == arglist_len-1){
+			return '\0';
+		}
+	}
+	return '\0';
+}
+
 static void config()
 {
 	char * token = (char *)recvBuffer;
 	char arglist[] = "abcdef";
 	char activeArgument = '\0';
 	uint8_t arglist_len = strlen(arglist);
-	
-	debug_logMessage(PGM_ON, L_NONE, PSTR("cli: Enabling configuration tool\r\n"));
+
 	while(token != NULL){
 		token = strtok(NULL, " ");
+		
 		if(token[0] == '-'){
-			for(int i = 0; i < arglist_len; i++){
-				if(token[1] == arglist[i]){
-					activeArgument = arglist[i];
-					//debug_logMessage(PGM_ON, L_INFO, PSTR("cli: Parsed argument %c\r\n"), arglist[i]);
-					break;
-				}
-				else if(i == arglist_len-1){
-					activeArgument = '\0';
-					debug_logMessage(PGM_ON, L_NONE, PSTR("cli: Unknown argument: %s\r\n"), token);
-					return;
-				}
-			}
+			activeArgument = kernel_parseCmdArgs(token, arglist, arglist_len);
 			uint8_t a = 0;
 			switch(activeArgument){
+				case '\0':
+					debug_logMessage(PGM_ON, L_NONE, PSTR("cli: Unknown argument: %s\r\n"), token);
+					return;
+				break;
 				case 'a':
 					debug_logMessage(PGM_ON, L_NONE, PSTR("cli: '-a' specified, changing variable A\r\n"));
 					token = strtok(NULL, " ");
@@ -131,6 +119,59 @@ static void config()
 				case 'c':
 					debug_logMessage(PGM_ON, L_NONE, PSTR("cli: '-c' specified, executing C subroutine\r\n"));
 					debug_logMessage(PGM_ON, L_NONE, PSTR("cli: success\r\n"));
+				break;
+				default:
+					debug_logMessage(PGM_ON, L_NONE, PSTR("cli: Mishandled argument\r\n"));
+				break;
+			}
+		}
+	}
+}
+
+static void debug()
+{
+	char * token = (char *)recvBuffer;
+	char arglist[] = "dv";
+	char activeArgument = '\0';
+	uint8_t arglist_len = strlen(arglist);
+	
+	while(token != NULL){
+		token = strtok(NULL, " ");
+		if(token[0] == '-'){
+			activeArgument = kernel_parseCmdArgs(token, arglist, arglist_len);
+			char ds[5];
+			switch(activeArgument){
+				case '\0':
+					debug_logMessage(PGM_ON, L_NONE, PSTR("cli: Unknown argument: %s\r\n"), token);
+					return;
+				break;
+				case 'd':
+					token = strtok(NULL, " ");
+					if(sscanf(token, "%s", ds) != 0){
+						if(strcmp(ds, "on") == 0){
+							debug_logMessage(PGM_ON, L_NONE, PSTR("cli: Enabling debug output\r\n"));
+							kernel_setFlag(KFLAG_DEBUG, 1);
+						} 
+						else if(strcmp(ds, "off") == 0){
+							debug_logMessage(PGM_ON, L_NONE, PSTR("cli: Disabling debug output\r\n"));
+							kernel_setFlag(KFLAG_DEBUG, 0);
+						}
+						else {
+							debug_logMessage(PGM_ON, L_NONE, PSTR("cli: Unknown argument value, should be either 'on' or 'off'\r\n"));
+						}
+			
+					}
+					else debug_logMessage(PGM_ON, L_NONE, PSTR("cli: Error: no argument value specified\r\n"));
+				break;
+				case 'v':
+					if(strcmp(ds, "on") == 0){
+						debug_logMessage(PGM_ON, L_NONE, PSTR("cli: Enabling verbose output\r\n"));
+						//kernel_setFlag(KFLAG_DEBUG, 1);
+					}
+					if(strcmp(ds, "off") == 0){
+						debug_logMessage(PGM_ON, L_NONE, PSTR("cli: Disabling debug output\r\n"));
+						//kernel_setFlag(KFLAG_DEBUG, 0);
+					}
 				break;
 				default:
 					debug_logMessage(PGM_ON, L_NONE, PSTR("cli: Mishandled argument\r\n"));
@@ -188,6 +229,7 @@ void kernel_initCLI()
 	debug_logMessage(PGM_ON, L_NONE, PSTR("\x0C"));
 	debug_logMessage(PGM_ON, L_NONE, PSTR("Initializing shell...\r\n\r\n"));
 	kernel_registerCommand("config", config);	
+	kernel_registerCommand("debug", debug);
 	kernel_registerCommand("reboot", reboot);
 	kernel_registerCommand("datetime", datetime);
 	kernel_registerCommand("clear", clear);

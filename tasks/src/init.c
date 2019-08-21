@@ -14,7 +14,7 @@ void w2_init();
 void initTaskManager()
 {
 	kernel_addTask(systemInit, 0, PRIORITY_HIGH, KSTATE_ACTIVE);
-	/*kernel_addTask(imu_filter, 50, PRIORITY_HIGH, KSTATE_ACTIVE);
+	kernel_addTask(imu_filter, 50, PRIORITY_HIGH, KSTATE_ACTIVE);
 	kernel_addTask(checkDeployment, 100, PRIORITY_LOW, KSTATE_ACTIVE);
 	kernel_addTask(readADXL, 200, PRIORITY_NORM, KSTATE_ACTIVE);
 	kernel_addTask(readBMP, 400, PRIORITY_NORM, KSTATE_ACTIVE);
@@ -22,7 +22,7 @@ void initTaskManager()
 	kernel_addTask(sendGPS, 800, PRIORITY_LOW, KSTATE_ACTIVE);
 	kernel_addTask(sendMain, 1000, PRIORITY_LOW, KSTATE_ACTIVE);
 	kernel_addTask(sendOrient, 1200, PRIORITY_LOW, KSTATE_ACTIVE);
-	kernel_addTask(requestDS18, 700, PRIORITY_NORM, KSTATE_ACTIVE);*/
+	kernel_addTask(requestDS18, 700, PRIORITY_NORM, KSTATE_ACTIVE);
 }
 
 int systemInit()

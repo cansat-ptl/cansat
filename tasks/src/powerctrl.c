@@ -44,7 +44,9 @@ int checkDeployment(){
 		debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("powerd: Reading light sensor\r\n"));
 	}
 	uint16_t light = adc_read(1);
-	debug_logMessage(PGM_OFF, L_INFO, "powerd: LIGHT = %d\r\n", light);
+	if(kernel_checkFlag(KFLAG_DEBUG)){
+		debug_logMessage(PGM_ON, L_INFO, "powerd: LIGHT = %d\r\n", light);
+	}
 	if(light <= 200 || (altitude - altitude_init) > 150){
 		hal_setBit_m(tflags, CAM_ON);
 		if(kernel_checkFlag(KFLAG_DEBUG)){

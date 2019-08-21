@@ -37,7 +37,7 @@ uint8_t spi_write(uint8_t data){
 	while(!(SPSR & (1<<SPIF)) && !spi_interruptFlag);
 	kernel_removeTimer(spi_timerISR);
 	if(spi_interruptFlag){
-		 debug_logMessage(PGM_ON, L_ERROR, PSTR("spid: operation timeout\r\n"));
+		 if(kernel_checkFlag(KFLAG_DEBUG)) debug_logMessage(PGM_ON, L_ERROR, PSTR("spid: operation timeout\r\n"));
 		 return 0;
 	}
 	
@@ -67,7 +67,7 @@ void spi_writeRegister(uint8_t address, uint8_t data, uint8_t mask, uint8_t isIn
 	while(!(SPSR & (1<<SPIF)) && !spi_interruptFlag);
 	kernel_setTimer(spi_timerISR, 250);
 	if(spi_interruptFlag){
-		debug_logMessage(PGM_ON, L_ERROR, PSTR("spid: operation timeout\r\n"));
+		if(kernel_checkFlag(KFLAG_DEBUG)) debug_logMessage(PGM_ON, L_ERROR, PSTR("spid: operation timeout\r\n"));
 		return;
 	}
 	
@@ -75,7 +75,7 @@ void spi_writeRegister(uint8_t address, uint8_t data, uint8_t mask, uint8_t isIn
 	while(!(SPSR & (1<<SPIF)) && !spi_interruptFlag);
 	kernel_removeTimer(spi_timerISR);
 	if(spi_interruptFlag){
-		debug_logMessage(PGM_ON, L_ERROR, PSTR("spid: operation timeout\r\n"));
+		if(kernel_checkFlag(KFLAG_DEBUG)) debug_logMessage(PGM_ON, L_ERROR, PSTR("spid: operation timeout\r\n"));
 		return;
 	}
 	spi_cshigh();
@@ -103,7 +103,7 @@ uint8_t spi_readRegister(uint8_t address, uint8_t isDelayed, uint8_t mask, uint8
 		
 	while(!(SPSR & (1<<SPIF)) && !spi_interruptFlag);
 	if(spi_interruptFlag){
-		debug_logMessage(PGM_ON, L_ERROR, PSTR("spid: operation timeout\r\n"));
+		if(kernel_checkFlag(KFLAG_DEBUG)) debug_logMessage(PGM_ON, L_ERROR, PSTR("spid: operation timeout\r\n"));
 		return 0;
 	}
 	
@@ -114,7 +114,7 @@ uint8_t spi_readRegister(uint8_t address, uint8_t isDelayed, uint8_t mask, uint8
 	}
 	kernel_removeTimer(spi_timerISR);
 	if(spi_interruptFlag){
-		debug_logMessage(PGM_ON, L_ERROR, PSTR("spid: operation timeout\r\n"));
+		if(kernel_checkFlag(KFLAG_DEBUG)) debug_logMessage(PGM_ON, L_ERROR, PSTR("spid: operation timeout\r\n"));
 		return 0;
 	}
 	
@@ -148,7 +148,7 @@ void spi_transfer(uint8_t type, uint8_t address, uint8_t * data, uint8_t size, u
 		while(!(SPSR & (1<<SPIF)) && !spi_interruptFlag);
 		kernel_setTimer(spi_timerISR, 250);
 		if(spi_interruptFlag){
-			debug_logMessage(PGM_ON, L_ERROR, PSTR("spid: operation timeout\r\n"));
+			if(kernel_checkFlag(KFLAG_DEBUG)) debug_logMessage(PGM_ON, L_ERROR, PSTR("spid: operation timeout\r\n"));
 			return;
 		}
 		if(type == SPI_READ)
@@ -159,7 +159,7 @@ void spi_transfer(uint8_t type, uint8_t address, uint8_t * data, uint8_t size, u
 	while(!(SPSR & (1<<SPIF)) && !spi_interruptFlag);
 	kernel_removeTimer(spi_timerISR);
 	if(spi_interruptFlag){
-		debug_logMessage(PGM_ON, L_ERROR, PSTR("spid: operation timeout\r\n"));
+		if(kernel_checkFlag(KFLAG_DEBUG)) debug_logMessage(PGM_ON, L_ERROR, PSTR("spid: operation timeout\r\n"));
 		return;
 	}
 	
@@ -199,7 +199,7 @@ void spi_simpleWrite(uint8_t data){
 	SPDR = data;
 	while(!(SPSR & (1<<SPIF)) && !spi_interruptFlag);
 	if(spi_interruptFlag){
-		debug_logMessage(PGM_ON, L_ERROR, PSTR("spid: operation timeout\r\n"));
+		if(kernel_checkFlag(KFLAG_DEBUG)) debug_logMessage(PGM_ON, L_ERROR, PSTR("spid: operation timeout\r\n"));
 		SPDR = 0x00;
 		return;
 	}
@@ -221,7 +221,7 @@ uint8_t spi_simpleRead(uint8_t filler){
 	while(!(SPSR & (1<<SPIF)) && !spi_interruptFlag);
 	kernel_removeTimer(spi_timerISR);
 	if(spi_interruptFlag){
-		debug_logMessage(PGM_ON, L_ERROR, PSTR("spid: operation timeout\r\n"));
+		if(kernel_checkFlag(KFLAG_DEBUG)) debug_logMessage(PGM_ON, L_ERROR, PSTR("spid: operation timeout\r\n"));
 		return 0;
 	}
 	

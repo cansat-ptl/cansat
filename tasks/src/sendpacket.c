@@ -51,8 +51,8 @@ int sendGPS(){
 	sprintf(packetGPS.n, "N=%lu;", ++gpsn);
 	sprintf(packetGPS.et, "ET=%lu;", (uint32_t)kernel_getUptime()/1000);
 	sprintf(packetGPS.end, "\r\n");
-	debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("sensord: Sent GPS packet\r\n"));
-	debug_logMessage(PGM_ON, L_NONE, PSTR("%s%s%s%s%s%s%s%s"), packetGPS.marker, packetGPS.n, packetGPS.et, packetGPS.sat, packetGPS.lat, packetGPS.lon, packetGPS.alt, packetGPS.end);
+	//debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("sensord: Sent GPS packet\r\n"));
+	//debug_logMessage(PGM_ON, L_NONE, PSTR("%s%s%s%s%s%s%s%s"), packetGPS.marker, packetGPS.n, packetGPS.et, packetGPS.sat, packetGPS.lat, packetGPS.lon, packetGPS.alt, packetGPS.end);
 	//nRF_send_other(packetGPS.marker);
 	//nRF_send_other(packetGPS.n);
 	//nRF_send_other(packetGPS.et);
@@ -72,8 +72,8 @@ int sendMain(){
 	sprintf(packetMain.n, "N=%lu;", ++mainn);
 	sprintf(packetMain.et, "ET=%lu;", (uint32_t)kernel_getUptime()/1000);
 	sprintf(packetMain.end, "\r\n");
-	debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("sensord: Sent main packet\r\n"));
-	debug_logMessage(PGM_ON, L_NONE, PSTR("%s%s%s%s%s%s%s%s%s"), packetMain.marker, packetMain.n, packetMain.et, packetMain.vbat, packetMain.alt, packetMain.prs, packetMain.t1, packetMain.t2, packetMain.end);
+	//debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("sensord: Sent main packet\r\n"));
+	//debug_logMessage(PGM_ON, L_NONE, PSTR("%s%s%s%s%s%s%s%s%s"), packetMain.marker, packetMain.n, packetMain.et, packetMain.vbat, packetMain.alt, packetMain.prs, packetMain.t1, packetMain.t2, packetMain.end);
 	/*nRF_send_other(packetMain.marker);
 	nRF_send_other(packetMain.n);
 	nRF_send_other(packetMain.et);
@@ -94,8 +94,8 @@ int sendOrient(){
 	sprintf(packetOrient.n, "N=%lu;", ++orientn);
 	sprintf(packetOrient.et, "ET=%lu;", (uint32_t)kernel_getUptime()/1000);
 	sprintf(packetOrient.end, "\r\n");
-	debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("sensord: Sent orientation packet\r\n"));
-	debug_logMessage(PGM_ON, L_NONE, PSTR("%s%s%s%s%s%s%s%s%s\r\n"), packetOrient.marker, packetOrient.n, packetOrient.et, packetOrient.ax, packetOrient.ay, packetOrient.az, packetOrient.pitch, packetOrient.yaw, packetOrient.roll);
+	//debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("sensord: Sent orientation packet\r\n"));
+	//debug_logMessage(PGM_ON, L_NONE, PSTR("%s%s%s%s%s%s%s%s%s\r\n"), packetOrient.marker, packetOrient.n, packetOrient.et, packetOrient.ax, packetOrient.ay, packetOrient.az, packetOrient.pitch, packetOrient.yaw, packetOrient.roll);
 	/*nRF_send_other(packetOrient.marker);
 	nRF_send_other(packetOrient.n);
 	nRF_send_other(packetOrient.et);
