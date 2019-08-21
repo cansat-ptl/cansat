@@ -10,21 +10,29 @@
 #include <string.h>
 #include "../uart.h"
 
-volatile char rx0_buffer[32] = "";
-volatile char tx0_buffer[128] = "";
-volatile int rx0_pointer = 0;
+#if UART0_USE_EXT_RX_ISR == 0
+	volatile char rx0_buffer[32] = "";
+	volatile int rx0_pointer = 0;
+#endif
+//#if UART0_USE_EXT_TX_ISR == 1
+	volatile char tx0_buffer[128] = "";
+	volatile int tx0_pointer = 0;
+//#endif
 volatile char *tx0_data;
-volatile int tx0_pointer = 0;
 volatile int tx0_size = 0;
 
 volatile unsigned char creg0 = 0;
 volatile unsigned char creg1 = 0;
-	
-volatile char rx1_buffer[128] = "";
-volatile char tx1_buffer[128] = "";
-volatile int rx1_pointer = 0;
+
+#if UART1_USE_EXT_RX_ISR == 0
+	volatile char rx1_buffer[128] = "";
+	volatile int rx1_pointer = 0;
+#endif
+//#if UART1_USE_EXT_TX_ISR == 1
+	volatile char tx1_buffer[128] = "";
+	volatile int tx1_pointer = 0;
+//#ednif
 volatile char *tx1_data;
-volatile int tx1_pointer = 0;
 volatile int tx1_size = 0;
 
 /*------------------------------------------------------------
@@ -128,12 +136,33 @@ void tx0_buffer_flush(){
 	tx0_buffer[0] = '\x0';
 }
 
+void rx0_enableInterrupt(){
+	UCSR0B |= (1 << RXCIE);
+	creg0 |= ~(1 << RX0_IE);
+}
+
+void rx0_disableInterrupt(){
+	UCSR0B &= ~(1 << RXCIE);
+	creg0 &= ~(1 << RX0_IE);
+}
+
+void tx0_enableInterrupt(){
+	UCSR0B |= (1 << UDRIE);
+	creg0 |= ~(1 << TX0_IE);
+}
+
+void tx0_disableInterrupt(){
+	UCSR0B &= ~(1 << UDRIE);
+	creg0 &= ~(1 << TX0_IE);
+}
+
 /*------------------------------------------------------------
 UART0 receive interrupt service routine
 Puts received character into rx0_buffer.
 Arguments: none
 Returns: nothing
 ------------------------------------------------------------*/
+#if UART0_USE_EXT_RX_ISR == 0
 ISR(USART0_RX_vect){
 	char data = UDR0;
 	if(strlen((char*)&rx0_buffer) < 32){
@@ -141,6 +170,7 @@ ISR(USART0_RX_vect){
 		rx0_pointer++;
 	}
 }
+#endif
 
 /*------------------------------------------------------------
 UART0 transmit interrupt service routine
@@ -148,6 +178,7 @@ Pushes the next character in tx0_buffer to uart0 line
 Arguments: none
 Returns: nothing
 ------------------------------------------------------------*/
+#if UART0_USE_EXT_UDRE_ISR == 0
 ISR(USART0_UDRE_vect){
 	tx0_pointer+=1;
 	if(tx0_buffer[tx0_pointer] != '\x0'){
@@ -159,7 +190,7 @@ ISR(USART0_UDRE_vect){
 		tx0_buffer_flush();
 	}
 }
-
+#endif
 /*------------------------------------------------------------
 UART1 setup - uart1_init(unsigned int ubrr)
 Sets up UART1 registers
@@ -210,9 +241,27 @@ void tx1_buffer_flush(){
 	tx1_buffer[0] = '\x0';
 }
 
-/*
-#ifndef UART1_ISR - UNUSED
-#define UART1_ISR
+void rx1_enableInterrupt(){
+	UCSR1B |= (1 << RXCIE);
+	creg1 |= ~(1 << RX1_IE);
+}
+
+void rx1_disableInterrupt(){
+	UCSR1B &= ~(1 << RXCIE);
+	creg1 &= ~(1 << RX1_IE);
+}
+
+void tx1_enableInterrupt(){
+	UCSR1B |= (1 << UDRIE);
+	creg1 |= ~(1 << TX1_IE);
+}
+
+void tx1_disableInterrupt(){
+	UCSR1B &= ~(1 << UDRIE);
+	creg1 &= ~(1 << TX1_IE);
+}
+
+#if UART1_USE_EXT_RX_ISR == 0
 ISR(USART1_RX_vect){
 	char data = UDR1;
 	if(strlen((char*)&rx1_buffer) < 32){
@@ -221,7 +270,6 @@ ISR(USART1_RX_vect){
 	}
 }
 #endif
-*/
 
 /*------------------------------------------------------------
 UART1 transmit interrupt service routine
@@ -229,6 +277,7 @@ Pushes the next character in tx0_buffer to uart0 line
 Arguments: none
 Returns: nothing
 ------------------------------------------------------------*/
+#if UART1_USE_EXT_UDRE_ISR == 0
 ISR(USART1_UDRE_vect){
 	tx1_pointer+=1;
 	if(tx1_buffer[tx1_pointer] != '\x0'){
@@ -240,3 +289,4 @@ ISR(USART1_UDRE_vect){
 		tx1_buffer_flush();
 	}
 }
+#endif

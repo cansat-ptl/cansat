@@ -10,8 +10,12 @@
 
 #include <stdint.h>
 
+#define CMD_MAX_WORD_SIZE 16
+
+typedef char cmdWord[CMD_MAX_WORD_SIZE];
 typedef int (*task)(void);
 typedef void (*timerISR)(void);
+typedef void (*cmdHandler)();
 typedef uint8_t byte;
 
 struct taskStruct {
@@ -26,5 +30,12 @@ struct timerStruct {
 	uint32_t period;
 	uint32_t savePeriod;
 };
+
+struct commandStruct {
+	cmdWord keyword;
+	cmdHandler handler;
+	uint8_t length;
+};
+
 
 #endif /* TYPES_H_ */

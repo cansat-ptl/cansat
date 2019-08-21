@@ -7,7 +7,8 @@
 
 #include "../hal.h"
 
-void hal_setupPins(){
+void hal_setupPins()
+{
 	PORTA = 0;
 	DDRA = 0;
 	PORTB = 0;

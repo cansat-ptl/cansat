@@ -9,7 +9,7 @@
 #include "../drivers.h"
 
 static volatile uint16_t kflags = 0;
-static uint16_t kflags_mirror __attribute__ ((section (".noinit")));
+static volatile uint16_t kflags_mirror __attribute__ ((section (".noinit")));
 static uint64_t e_time = 0;
 extern uint8_t mcucsr_mirror;
 
@@ -17,7 +17,7 @@ static uint8_t callIndex[3] = {0, 0, 0};
 static volatile uint8_t taskIndex = 0; //Index of the last task in queue
 static volatile task callQueueP0[MAX_HIGHPRIO_CALL_QUEUE_SIZE];
 static volatile task callQueueP1[MAX_NORMPRIO_CALL_QUEUE_SIZE];
-static volatile task callQueueP2[MAX_LOWPRIO_CALL_QUEUE_SIZE];
+static volatile task callQueueP2[MAX_LOWPRIO_CALL_QUEUE_SIZE]; //TODO: variable number of priorities (might be hard to implement)
 static volatile struct taskStruct taskQueue[MAX_TASK_QUEUE_SIZE];
 
 static char const PROGMEM _MODULE_SIGNATURE[] = "Kernel";
@@ -66,7 +66,7 @@ static inline volatile task* kernel_getCallQueuePointer(uint8_t t_priority){
 	}
 }
 
-static inline volatile uint8_t kernel_getMaxQueueSize(uint8_t t_priority){
+static inline uint8_t kernel_getMaxQueueSize(uint8_t t_priority){
 	switch(t_priority){
 		case PRIORITY_HIGH:
 			return MAX_HIGHPRIO_CALL_QUEUE_SIZE;
@@ -103,6 +103,7 @@ inline uint8_t kernel_addCall(task t_ptr, uint8_t t_priority)
 		callIndex[t_priority]++;
 		volatile task* ptr = kernel_getCallQueuePointer(t_priority);
 		(ptr)[callIndex[t_priority]] = t_ptr;
+		
 		hal_enableInterrupts();
 		return 0;
 	}
@@ -114,6 +115,7 @@ inline uint8_t kernel_addCall(task t_ptr, uint8_t t_priority)
 		kernel_clearCallQueue(2);
 		kernel_clearTaskQueue();
 		initTaskManager();
+		
 		hal_enableInterrupts();
 		return ERR_QUEUE_OVERFLOW;
 	}
@@ -123,14 +125,15 @@ uint8_t kernel_addTask(task t_ptr, uint16_t t_period, uint8_t t_priority, uint8_
 {
 	if(kernel_checkFlag(KFLAG_DEBUG) && VERBOSE)
 		debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("kernel: Added timed task to queue\r\n"));
-	if(hal_statusReg & (1 << 7)){
+	if(hal_statusReg & (1 << 7))
 		hal_disableInterrupts();
-	}
+		
 	for(int i = 0; i <= taskIndex; i++){
 		if(taskQueue[i].pointer == t_ptr){
 			taskQueue[i].period = t_period;
 			taskQueue[i].priority = t_priority;
 			taskQueue[i].state = startupState;
+			
 			hal_enableInterrupts();
 			return 0;
 		}
@@ -141,6 +144,7 @@ uint8_t kernel_addTask(task t_ptr, uint16_t t_period, uint8_t t_priority, uint8_
 		taskQueue[taskIndex].period = t_period;
 		taskQueue[taskIndex].priority = t_priority;
 		taskQueue[taskIndex].state = startupState;
+		
 		hal_enableInterrupts();
 		return 0;
 	}
@@ -151,6 +155,7 @@ uint8_t kernel_addTask(task t_ptr, uint16_t t_period, uint8_t t_priority, uint8_
 		kernel_clearCallQueue(2);
 		kernel_clearTaskQueue();
 		initTaskManager();
+		
 		hal_enableInterrupts();
 		return ERR_QUEUE_OVERFLOW;
 	}
@@ -225,7 +230,6 @@ uint8_t kernel_removeTaskByPtr(task t_pointer)
 
 void kernel_clearCallQueue(uint8_t t_priority)
 {
-	
 	if(kernel_checkFlag(KFLAG_DEBUG) && VERBOSE)
 		debug_logMessage(PGM_ON, L_WARN, (char *)PSTR("kernel: Call queue cleared\r\n"));
 	if(hal_statusReg & (1 << 7))
@@ -300,7 +304,7 @@ void kernel_setupTimer()
 {
 	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("                         [DONE]\r\n"));
 	hal_disableInterrupts();
-	TCCR1B |= (1 << WGM12)|(1 << CS11)|(1 << CS10); // prescaler 64
+	TCCR1B |= (1 << WGM12)|(KERNEL_TIMER_PRESCALER << CS10); // prescaler 64 cs11 & cs10 = 1
 	TCNT1 = 0; 
 	OCR1A = 125;
 	hal_enableInterrupts();
@@ -388,7 +392,7 @@ inline static uint8_t kernel_taskManager()
 	return 0;
 }
 
-uint8_t static kernel()
+static uint8_t kernel()
 {
 	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("                        [DONE]\r\n"));
 	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: Starting task manager"));
@@ -409,26 +413,35 @@ uint8_t kernelInit()
 	kernel_setFlag(KFLAG_INIT, 1);
 	kernel_setFlag(KFLAG_TIMER_SET, 0);
 	kernel_setFlag(KFLAG_TIMER_EN, 0);
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("\r\n[INIT]kernel: Starting up CanSat kernel v%s\r\n\r\n"), KERNEL_VER);
+	
 	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: Setting up PRIORITY_HIGH queue"));
 	kernel_clearCallQueue(0);
 	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("         [DONE]\r\n"));
-	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: Queue size: %d\r\n"), MAX_HIGHPRIO_CALL_QUEUE_SIZE);
-	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: Memory usage: %d bytes\r\n"), MAX_HIGHPRIO_CALL_QUEUE_SIZE * sizeof(void*));
 	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: Setting up PRIORITY_NORM queue"));
 	kernel_clearCallQueue(1);
 	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("         [DONE]\r\n"));
-	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: Queue size: %d\r\n"), MAX_NORMPRIO_CALL_QUEUE_SIZE);
-	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: Memory usage: %d bytes\r\n"), MAX_NORMPRIO_CALL_QUEUE_SIZE * sizeof(void*));
 	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: Setting up PRIORITY_LOW queue"));
 	kernel_clearCallQueue(2);
 	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("          [DONE]\r\n"));
-	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: Queue size: %d\r\n"), MAX_LOWPRIO_CALL_QUEUE_SIZE);
-	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: Memory usage: %d bytes\r\n"), MAX_LOWPRIO_CALL_QUEUE_SIZE * sizeof(void*));
 	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: Setting up task queue"));
 	kernel_clearTaskQueue();
+	
 	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("                  [DONE]\r\n"));
-	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: Queue size: %d\r\n"), MAX_TASK_QUEUE_SIZE);
-	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: Memory usage: %d bytes\r\n"), MAX_TASK_QUEUE_SIZE * sizeof(taskQueue[0]));
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("\r\n----------------------Memory usage----------------------\r\n"));
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: HIGHPRIO queue size:             %d\r\n"), MAX_HIGHPRIO_CALL_QUEUE_SIZE);
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: NORMPRIO queue size:             %d\r\n"), MAX_NORMPRIO_CALL_QUEUE_SIZE);
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: LOWPRIO queue size:              %d\r\n"), MAX_LOWPRIO_CALL_QUEUE_SIZE);
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: Task queue size:                 %d\r\n"), MAX_TASK_QUEUE_SIZE);
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: HIGHPRIO queue memory usage:     %d bytes\r\n"), MAX_HIGHPRIO_CALL_QUEUE_SIZE * sizeof(void*));
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: NORMPRIO queue memory usage:     %d bytes\r\n"), MAX_NORMPRIO_CALL_QUEUE_SIZE * sizeof(void*));
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: LOWPRIO queue memory usage:      %d bytes\r\n"), MAX_LOWPRIO_CALL_QUEUE_SIZE * sizeof(void*));
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: Task queue memory usage:         %d bytes\r\n"), MAX_TASK_QUEUE_SIZE * sizeof(taskQueue[0]));
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: Total Task Manager memory usage: %d bytes\r\n"), MAX_TASK_QUEUE_SIZE * sizeof(taskQueue[0]) +\
+																												  MAX_HIGHPRIO_CALL_QUEUE_SIZE * sizeof(void*) +\
+																												  MAX_NORMPRIO_CALL_QUEUE_SIZE * sizeof(void*) +\
+																												  MAX_LOWPRIO_CALL_QUEUE_SIZE * sizeof(void*));
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("--------------------------------------------------------\r\n\r\n"));
 	
 	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]kernel: Starting timer"));
 	kernel_setupTimer();

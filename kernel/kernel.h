@@ -8,18 +8,21 @@
 #ifndef KERNEL_H_
 #define KERNEL_H_
 
-#define KERNEL_VER "0.3.0-rc2"
+#define KERNEL_VER "0.4.0-bleeding"
 #define KERNEL_TIMESTAMP __TIMESTAMP__
 
-#define SDCARD_MOD_VER "0.0.4-bleeding"
+#define SDCARD_MOD_VER "0.0.5-rc1"
 #define SDCARD_MOD_TIMESTAMP __TIMESTAMP__
+
+#define CMD_MOD_VER "0.0.0-bleeding"
+#define CMD_MOD_TIMESTAMP __TIMESTAMP__
 
 #include "types.h"
 #include "hal.h"
 #include "../tasks/tasks.h"
+#include "kernel_config.h"
 #include <avr/common.h>
 #include <avr/interrupt.h>
-#include <avr/iom128.h>
 #include <avr/pgmspace.h>
 #include <avr/eeprom.h>
 #include <avr/wdt.h>
@@ -27,47 +30,28 @@
 #include <string.h>
 #include <stdio.h>
 
-#ifndef KERNELconfig
-	#define KERNELconfig
-	#define MAX_TIMER_COUNT 5
-	#define MAX_TASK_QUEUE_SIZE 32
-	#define MAX_HIGHPRIO_CALL_QUEUE_SIZE 32
-	#define MAX_NORMPRIO_CALL_QUEUE_SIZE 32
-	#define MAX_LOWPRIO_CALL_QUEUE_SIZE 32
-	#define TICKRATE 1 //in milliseconds
+#define ERR_QUEUE_OVERFLOW 1
+#define ERR_QUEUE_END 2
+#define ERR_WDT_RESET 3
+#define ERR_BOD_RESET 4
+#define ERR_KRN_RETURN 5
+#define ERR_DEVICE_FAIL 6
 	
-	#define ERR_QUEUE_OVERFLOW 1
-	#define ERR_QUEUE_END 2
-	#define ERR_WDT_RESET 3
-	#define ERR_BOD_RESET 4
-	#define ERR_KRN_RETURN 5
-	#define ERR_DEVICE_FAIL 6
+#define PRIORITY_HIGH 0
+#define PRIORITY_NORM 1
+#define PRIORITY_LOW 2
 	
-	#define PRIORITY_HIGH 0
-	#define PRIORITY_NORM 1
-	#define PRIORITY_LOW 2
-	#define FORCE_LOWERPRIO_THRESHOLD 10
+#define KFLAG_INIT 0
+#define KFLAG_TIMER_SET 1
+#define KFLAG_TIMER_EN 2
+#define KFLAG_TIMER_ISR 3
+#define KFLAG_SD_INIT 4
+#define KFLAG_LOG_SD 13
+#define KFLAG_LOG_UART 14
+#define KFLAG_DEBUG 15
 	
-	#define KFLAG_INIT 0
-	#define KFLAG_TIMER_SET 1
-	#define KFLAG_TIMER_EN 2
-	#define KFLAG_TIMER_ISR 3
-	#define KFLAG_SD_INIT 4
-	#define KFLAG_LOG_SD 13
-	#define KFLAG_LOG_UART 14
- 	#define KFLAG_DEBUG 15
-	
-	#define KERNEL_SD_MODULE 1
-	#define KERNEL_WDT_MODULE 1
-	#define KERNEL_UTIL_MODULE 1
-	#define KERNEL_DEBUG_MODULE 1
-	
-	#define KSTATE_ACTIVE 1
-	#define KSTATE_SUSPENDED 0
-	
-	#define VERBOSE 0
-	//#define PROFILING 0
-#endif
+#define KSTATE_ACTIVE 1
+#define KSTATE_SUSPENDED 0
 
 void kernel_setFlag(uint8_t flag, uint8_t value);
 uint8_t kernel_checkFlag(uint8_t flag);
@@ -89,27 +73,36 @@ uint8_t kernel_setTimer(timerISR t_pointer, uint32_t t_period);
 uint8_t kernel_removeTimer(timerISR t_pointer);
 void kernel_timerService();
 
-#if KERNEL_SD_MODULE == 1
+#ifdef KERNEL_SD_MODULE
 	void sd_puts(char * data);
 	void sd_flush();
 	void sd_readPtr();
 	void sd_init();
 #endif
 
-#if KERNEL_WDT_MODULE == 1
+#ifdef KERNEL_WDT_MODULE
 	void wdt_saveMCUCSR(void) __attribute__((naked)) __attribute__((section(".init3")));
 	//void wdt_disableWatchdog();
 	void wdt_enableWatchdog();
 #endif
 
-#if KERNEL_UTIL_MODULE == 1
+#ifdef KERNEL_UTIL_MODULE
+	#define util_getArrayLength_m(arr) ((int)(sizeof(arr) / sizeof(arr)[0]))
 	void util_printVersion();
+	uint8_t util_strCompare(char * a, char * b, uint8_t len);
 #endif
 
-#if KERNEL_DEBUG_MODULE == 1
+#ifdef KERNEL_CLI_MODULE
+	#define ERR_EMPTY_STRING 20
+	#define ERR_COMMAND_NOT_FOUND 21
+	void kernel_initCLI();
+	void kernel_registerCommand(const char * c_keyword, cmdHandler c_ptr);
+#endif
+	
+
+#ifdef KERNEL_DEBUG_MODULE
 	#define DBG_MOD_VER "0.9.1-staging"
 	#define DBG_MOD_TIMESTAMP __TIMESTAMP__
-	#define UART_LOGGING 1
 	#define PGM_ON 1
 	#define PGM_OFF 0
 	#define L_NONE 0

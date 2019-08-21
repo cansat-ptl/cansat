@@ -19,6 +19,10 @@
 
 #define TX0BUSY 0
 #define TX1BUSY 0
+#define TX0_IE 1
+#define TX1_IE 1
+#define RX0_IE 2
+#define RX1_IE 2
 
 extern volatile char rx0_buffer[32];
 extern volatile int rx0_pointer;
@@ -82,6 +86,11 @@ Returns: nothing
 ------------------------------------------------------------*/
 void tx0_buffer_flush();
 
+void rx0_enableInterrupt();
+void rx0_disableInterrupt();
+void tx0_enableInterrupt();
+void tx0_disableInterrupt();
+
 /*------------------------------------------------------------
 UART1 setup - uart1_init(unsigned int ubrr)
 Sets up UART1 registers
@@ -115,5 +124,10 @@ Arguments: none
 Returns: nothing
 ------------------------------------------------------------*/
 void tx1_buffer_flush();
+
+void rx1_enableInterrupt();
+void rx1_disableInterrupt();
+void tx1_enableInterrupt();
+void tx1_disableInterrupt();
 
 #endif /* UART_H_ */

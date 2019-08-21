@@ -98,8 +98,8 @@ uint8_t spi_readRegister(uint8_t address, uint8_t isDelayed, uint8_t mask, uint8
 	spi_interruptFlag = 0;
 	spi_cslow();
 	
-	if(isInverted) SPDR = (address & ~0x80);
-	else SPDR = (address | 0x80);
+	if(isInverted) SPDR = (address & ~mask);
+	else SPDR = (address | mask);
 		
 	while(!(SPSR & (1<<SPIF)) && !spi_interruptFlag);
 	if(spi_interruptFlag){

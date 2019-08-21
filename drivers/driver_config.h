@@ -52,6 +52,11 @@
 #define TX1EN 1								//TX0 enable	
 #define RX1IE 1								//RX0 byte received interrupt enable	
 #define TX1IE 0								//TX0 byte transmit interrupt enable	
+
+#define UART0_USE_EXT_UDRE_ISR 0
+#define UART1_USE_EXT_UDRE_ISR 0
+#define UART0_USE_EXT_RX_ISR 1
+#define UART1_USE_EXT_RX_ISR 1
 #endif	
 //----------------------------------------------------------------//	
 
@@ -91,7 +96,7 @@
 #define NRF24_AA_EN 0x01	
 #define NRF24_RXADDR 0x01	
 
- #define NRF_CE_PORT PORTA	
+#define NRF_CE_PORT PORTA	
 #define NRF_CSN_PORT PORTA	
 #define NRF_CE_DDR DDRA	
 #define NRF_CSN_DDR DDRA	

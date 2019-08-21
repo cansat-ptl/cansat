@@ -14,7 +14,7 @@ void w2_init();
 void initTaskManager()
 {
 	kernel_addTask(systemInit, 0, PRIORITY_HIGH, KSTATE_ACTIVE);
-	kernel_addTask(imu_filter, 50, PRIORITY_HIGH, KSTATE_ACTIVE);
+	/*kernel_addTask(imu_filter, 50, PRIORITY_HIGH, KSTATE_ACTIVE);
 	kernel_addTask(checkDeployment, 100, PRIORITY_LOW, KSTATE_ACTIVE);
 	kernel_addTask(readADXL, 200, PRIORITY_NORM, KSTATE_ACTIVE);
 	kernel_addTask(readBMP, 400, PRIORITY_NORM, KSTATE_ACTIVE);
@@ -22,11 +22,12 @@ void initTaskManager()
 	kernel_addTask(sendGPS, 800, PRIORITY_LOW, KSTATE_ACTIVE);
 	kernel_addTask(sendMain, 1000, PRIORITY_LOW, KSTATE_ACTIVE);
 	kernel_addTask(sendOrient, 1200, PRIORITY_LOW, KSTATE_ACTIVE);
-	kernel_addTask(requestDS18, 700, PRIORITY_NORM, KSTATE_ACTIVE);
+	kernel_addTask(requestDS18, 700, PRIORITY_NORM, KSTATE_ACTIVE);*/
 }
 
 int systemInit()
 {
+	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("\r\n[INIT]initd: initializing CanSat peripherals\r\n\r\n"));
 	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("[INIT]initd: uart1 interface init"));
 	uart1_init(51);
 	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("                    [OK]\r\n"));
@@ -101,6 +102,8 @@ int systemInit()
 	
 	//util_printVersion();
 	//imu_setupTimer();
+	rx0_enableInterrupt();
+	kernel_initCLI();
 	kernel_setFlag(KFLAG_INIT, 0);
 	return 0;
 }
