@@ -1,14 +1,18 @@
 /*
- * main.c
+ * GccApplication1.c
  *
- * Created: 07.03.2019 17:56:34
- *  Author: ThePetrovich
+ * Created: 25.08.2019 17:34:53
+ * Author : WorldSkills-2019
  */ 
 
-#include "config.h"
+#include <avr/io.h>
 
-int main(void){
-	hal_enableInterrupts();
-	wdt_enable(WDTO_2S);	
-	kernelInit();
+
+int main(void)
+{
+    /* Replace with your application code */
+    while (1) 
+    {
+    }
 }
+

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Atmel Studio Solution File, Format Version 11.00
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "yktcansat-staging", "yktcansat-staging.cproj", "{1AF4ABF7-D6A0-4D1C-B10C-B027A14FD9CF}"
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "kernel-taskmgr-rework", "GccApplication1\kernel-taskmgr-rework.cproj", "{DCE6C7E3-EE26-4D79-826B-08594B9AD897}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|AVR = Release|AVR
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1AF4ABF7-D6A0-4D1C-B10C-B027A14FD9CF}.Debug|AVR.ActiveCfg = Debug|AVR
-		{1AF4ABF7-D6A0-4D1C-B10C-B027A14FD9CF}.Debug|AVR.Build.0 = Debug|AVR
-		{1AF4ABF7-D6A0-4D1C-B10C-B027A14FD9CF}.Release|AVR.ActiveCfg = Release|AVR
-		{1AF4ABF7-D6A0-4D1C-B10C-B027A14FD9CF}.Release|AVR.Build.0 = Release|AVR
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|AVR.ActiveCfg = Debug|AVR
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|AVR.Build.0 = Debug|AVR
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|AVR.ActiveCfg = Release|AVR
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

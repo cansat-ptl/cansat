@@ -8,7 +8,7 @@
 #ifndef UART_H_
 #define UART_H_
 
-#define UARTDRV_VER "1.1.3"
+#define UARTDRV_VER "1.1.9"
 #define UARTDRV_TIMESTAMP __TIMESTAMP__
 
 #include <avr/io.h>
