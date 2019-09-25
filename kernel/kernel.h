@@ -53,6 +53,10 @@
 #define KSTATE_ACTIVE 1
 #define KSTATE_SUSPENDED 0
 
+void init();
+int systemInit();
+void initTaskManager();
+
 void kernel_setFlag(uint8_t flag, uint8_t value);
 uint8_t kernel_checkFlag(uint8_t flag);
 uint64_t kernel_getUptime();

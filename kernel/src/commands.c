@@ -7,7 +7,7 @@
 #include "../kernel.h"
 
 #ifndef CMD_COMMAND_AMOUNT
-#define CMD_COMMAND_AMOUNT 8
+#define CMD_COMMAND_AMOUNT 9
 #endif
 
 volatile static char recvBuffer[RX0_BUFFER_SIZE];
@@ -222,6 +222,67 @@ static void sysinfo()
 	debug_logMessage(PGM_ON, L_NONE, PSTR("  FatFS: Petit FatFS version R0.02\r\n"), KERNEL_VER, KERNEL_TIMESTAMP);
 }
 
+void dickbutt()
+{
+	debug_logMessage(PGM_ON, L_NONE, PSTR("                                MMMMMM=\r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("                           .MMMMMMMMMMMMMM   \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("                         MMMMMM         MMMM   \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("                     MMMMM              MMMMM.  \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("               MMMMMMMM                  ?MMMM.  \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("            .MMMMMMMM7MM                  MMMMM   \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("           MMMMMMMMM MM                   MMMM     \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("           MMMMMMMMM .MM                   MMM     \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("           .MMMMMMM.   MM.M.   =MMMMMMMM.   MMM     \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("           MMMMMMMM.MMMMMM.  MMMMMMMM MMM  MMM     \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("           MMMMMMMMMMMM     MMMMMMMMM  MMM MMM       \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("         MMM    MMM:  MM   MMMMMMMMM  MMM MMM        \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("        8MM.    MMMMMMMM=  MMMMMMMM.  .M ,MM7        \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("       MMMMMMMM..          MMMMM.     M  MMM     \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("      .MMMMMMMMMMMMMMM       MMMMMMMMM.  MMM     \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("     .MMM        MMMMMMMMMMM.           MMMM     \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("     MMM                .~MMMMMMM.      MMM.     \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("    MMM.                               MMMM      \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("   .MMM                                MMMM      \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("   MMM                                DMMM        \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("  MMM                                 MMMM        \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("  MMM                                .MMM        \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR(" MMM                      MM        .MMM         \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR(" MMM                     .MM  MM.   MMM~         \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("  MMM                     MMM .MM.   MMM                         MMMMM     \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR(" MMM                     MM. MMM   MMM                        MMM   MMO   \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR(" MMM                     MM  MM   .MMM                      MMMM     MM   \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR(" MM~                    MM. MMM   MMM.                     MMM      IMM   \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR(" MM.                    MM  MM.  .MMM                    .MMM.      MM    \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR(" MM                     M  MMN   .MMM                   MMMM       MM.    \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR(" MM+                   MM MMM    .MM 7MMMMMMMMMMM      MMM.       MM      \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR(" MMM                  .M  MM      MMMMMM. .. MMMMMMM MMM.       MMM.     \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR(" MMM                  +M MMM      MM    .MM     .MMMMMM.      .MMM.     \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("?MM                  M  MM       .      MMM      ~MM.       MMMM       \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR(".MM                 MM  MM            ,MMMMMMMMMMM         MMMM       \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR(" MMM              MM     MM          MMMMMMMMMMMMMMM     MMMMM         \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR(" MMM            .M     N  MM                  ..MMMMM.     MMMM         \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR(".MM             MMMM MMMMMM                     .MMMMM        DMM      \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("   MMM              MMMMM.MM.             ,M,       .MMM.        MM     \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("     MMM               M.                  MMM         MMM.  .MMMM      \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("    MMMM                                              MMM.    MM        \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("     =MMM.                            MM.             MMM      MM      \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("       MMMM.                          MM              MMM       M      \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("         MMMM                                         MMMMM,. MMM     \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR(".          MMMMMMM.                     MMM            MMM MMMMMM.    \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR(" MMMM      MMN  .MMMMM                               .MMMD           \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR(" MM MMN  .MM    MM MMMMMMMM~ .              M.     .MMMM          \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR(" MM   MM$MM   MMN      MMMMMMMMMM.          M.   .MMMM           \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("  M.   MMM   MM              MMMMM  MMMMMMMMM~MMMMMM            \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("  MM      .MMN          .. . +MM,  8MM .MMMMMMMM.              \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("  M?    NMM           MMMMMMMMM   MM                            \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("  .M  .MM7            MMM MMMM   MM                           \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("    MMMM              OMM       .MM                           \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("     .                 MMM      MM                           \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("                      .MMM    MM                             \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("                       .MMD  MMM                             \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("                         MMMMM?                              \r\n"));
+	debug_logMessage(PGM_ON, L_NONE, PSTR("                         MMM.   \r\n"));
+}
 
 void kernel_initCLI()
 {
@@ -235,6 +296,7 @@ void kernel_initCLI()
 	kernel_registerCommand("clear", clear);
 	kernel_registerCommand("sysinfo", sysinfo);
 	kernel_registerCommand("help", help);
+	kernel_registerCommand("dickbutt", dickbutt);
 	delay(500);
 	debug_logMessage(PGM_ON, L_NONE, PSTR("\x0C"));
 	debug_logMessage(PGM_ON, L_NONE, PSTR("+-----------------------------------------------------------------+\r\n"));

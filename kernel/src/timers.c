@@ -67,7 +67,7 @@ uint8_t kernel_removeTimer(timerISR t_pointer)
 	return 0;
 }
 
-void kernel_timerService()
+inline void kernel_timerService()
 {
 	kernel_setFlag(KFLAG_TIMER_ISR, 1);
 	if(hal_statusReg & (1 << 7))

@@ -31,7 +31,9 @@ char levels[5][16] = {
 inline void debug_sendMessage(uint8_t level, const char * format, va_list args) 
 {
 	#if KERNEL_DEBUG_MODULE == 1
-		char buffer[128];
+		char *buffer = malloc(128);
+		if(buffer == NULL) return;
+		
 		if(level != 0 && !kernel_checkFlag(KFLAG_INIT)){
 			#if PROFILING == 0
 				sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
@@ -43,6 +45,7 @@ inline void debug_sendMessage(uint8_t level, const char * format, va_list args)
 		uart0_puts(levels[level]);
 		vsprintf(buffer, format, args);
 		uart0_puts(buffer);
+		free(buffer);
 	#else
 		#warning Trying to use disabled debug module, this may spawn dragons
 	#endif
@@ -51,7 +54,9 @@ inline void debug_sendMessage(uint8_t level, const char * format, va_list args)
 inline void debug_sendMessage_p(uint8_t level, const char * format, va_list args) 
 {
 	#if KERNEL_DEBUG_MODULE == 1
-		char buffer[128];
+		char *buffer = malloc(128);
+		if(buffer == NULL) return;
+		
 		if(level != 0 && !kernel_checkFlag(KFLAG_INIT)){
 			#if PROFILING == 0
 				sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
@@ -63,6 +68,7 @@ inline void debug_sendMessage_p(uint8_t level, const char * format, va_list args
 		uart0_puts(levels[level]);
 		vsprintf_P(buffer, format, args);
 		uart0_puts(buffer);
+		free(buffer);
 	#else
 		#warning Trying to use disabled debug module, this may spawn dragons
 	#endif
@@ -71,7 +77,9 @@ inline void debug_sendMessage_p(uint8_t level, const char * format, va_list args
 void debug_sendMessageSD(uint8_t level, const char * format, va_list args)
 {
 	#if KERNEL_DEBUG_MODULE == 1
-		char buffer[128];
+		char *buffer = malloc(128);
+		if(buffer == NULL) return;
+		
 		if(level != 0 && !kernel_checkFlag(KFLAG_INIT)){
 			sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
 			sd_puts(buffer);
@@ -79,6 +87,7 @@ void debug_sendMessageSD(uint8_t level, const char * format, va_list args)
 		sd_puts(levels[level]);
 		vsprintf(buffer, format, args);
 		sd_puts(buffer);
+		free(buffer);
 	#else
 		#warning Trying to use disabled debug module, this may spawn dragons
 	#endif
@@ -87,7 +96,9 @@ void debug_sendMessageSD(uint8_t level, const char * format, va_list args)
 void debug_sendMessageSD_p(uint8_t level, const char * format, va_list args)
 {
 	#if KERNEL_DEBUG_MODULE == 1
-		char buffer[128];
+		char *buffer = malloc(128);
+		if(buffer == NULL) return;
+		
 		if(level != 0 && !kernel_checkFlag(KFLAG_INIT)){
 			sprintf(buffer, "%02d.%02d.%02d %02d:%02d:%02d ", GPS.day, GPS.month, GPS.year, GPS.hour, GPS.minute, GPS.second);
 			sd_puts(buffer);
@@ -95,6 +106,7 @@ void debug_sendMessageSD_p(uint8_t level, const char * format, va_list args)
 		sd_puts(levels[level]);
 		vsprintf_P(buffer, format, args);
 		sd_puts(buffer);
+		free(buffer);
 	#else
 		#warning Trying to use disabled debug module, this may spawn dragons
 	#endif

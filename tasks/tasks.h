@@ -125,10 +125,6 @@ inline int idle(){
 	return 0;
 }
 
-void init();
-int systemInit();
-void initTaskManager();
-
 int adxl345_test();
 int bmp280_test();
 int ds18b20_test();

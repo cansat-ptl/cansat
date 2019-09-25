@@ -247,6 +247,9 @@
     <Compile Include="kernel\src\hal.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="kernel\src\init.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="kernel\src\kernel.c">
       <SubType>compile</SubType>
     </Compile>
@@ -272,9 +275,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="tasks\src\compfilter.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="tasks\src\init.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="tasks\src\nmea_process.c">

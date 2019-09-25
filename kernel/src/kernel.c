@@ -28,19 +28,23 @@ void init(); //System init task, MUST me declared in tasks.c
 void initTaskManager(); //Task manager init task, MUST me declared in tasks.c
 static void kernel_handleError(uint8_t error);
 
-void kernel_setFlag(uint8_t flag, uint8_t value)
+inline void kernel_setFlag(uint8_t flag, uint8_t value)
 {
+	uint8_t sreg = hal_statusReg;
 	hal_disableInterrupts();
 	uint8_t nvalue = !!value;
 	kflags ^= (-1 * nvalue ^ kflags) & (1 << flag);
 	hal_enableInterrupts();
+	hal_statusReg = sreg;
 } 
 
-uint8_t kernel_checkFlag(uint8_t flag)
+inline uint8_t kernel_checkFlag(uint8_t flag)
 {
+	uint8_t sreg = hal_statusReg;
 	hal_disableInterrupts();
 	uint8_t flag_tmp = hal_checkBit_m(kflags, flag);
 	hal_enableInterrupts();
+	hal_statusReg = sreg;
 	return flag_tmp;
 }
 
@@ -94,8 +98,9 @@ inline uint8_t kernel_addCall(task t_ptr, uint8_t t_priority)
 {	
 	if(kernel_checkFlag(KFLAG_DEBUG) && VERBOSE)
 		debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("kernel: Added call to queue\r\n"));
-	if(hal_statusReg & (1 << 7))
-		hal_disableInterrupts();
+		
+	uint8_t sreg = hal_statusReg;
+	hal_disableInterrupts();
 		
 	uint8_t maxsize = kernel_getMaxQueueSize(t_priority);
 
@@ -105,10 +110,10 @@ inline uint8_t kernel_addCall(task t_ptr, uint8_t t_priority)
 		(ptr)[callIndex[t_priority]] = t_ptr;
 		
 		hal_enableInterrupts();
+		hal_statusReg = sreg;
 		return 0;
 	}
 	else {
-		hal_enableInterrupts();
 		kernel_handleError(ERR_QUEUE_OVERFLOW);
 		kernel_clearCallQueue(0);
 		kernel_clearCallQueue(1);
@@ -117,6 +122,7 @@ inline uint8_t kernel_addCall(task t_ptr, uint8_t t_priority)
 		initTaskManager();
 		
 		hal_enableInterrupts();
+		hal_statusReg = sreg;
 		return ERR_QUEUE_OVERFLOW;
 	}
 }
@@ -125,8 +131,9 @@ uint8_t kernel_addTask(task t_ptr, uint16_t t_period, uint8_t t_priority, uint8_
 {
 	if(kernel_checkFlag(KFLAG_DEBUG) && VERBOSE)
 		debug_logMessage(PGM_ON, L_INFO, (char *)PSTR("kernel: Added timed task to queue\r\n"));
-	if(hal_statusReg & (1 << 7))
-		hal_disableInterrupts();
+		
+	uint8_t sreg = hal_statusReg;
+	hal_disableInterrupts();
 		
 	for(int i = 0; i <= taskIndex; i++){
 		if(taskQueue[i].pointer == t_ptr){
@@ -135,6 +142,7 @@ uint8_t kernel_addTask(task t_ptr, uint16_t t_period, uint8_t t_priority, uint8_
 			taskQueue[i].state = startupState;
 			
 			hal_enableInterrupts();
+			hal_statusReg = sreg;
 			return 0;
 		}
 	}
@@ -146,6 +154,7 @@ uint8_t kernel_addTask(task t_ptr, uint16_t t_period, uint8_t t_priority, uint8_
 		taskQueue[taskIndex].state = startupState;
 		
 		hal_enableInterrupts();
+		hal_statusReg = sreg;
 		return 0;
 	}
 	else {
@@ -157,14 +166,15 @@ uint8_t kernel_addTask(task t_ptr, uint16_t t_period, uint8_t t_priority, uint8_
 		initTaskManager();
 		
 		hal_enableInterrupts();
+		hal_statusReg = sreg;
 		return ERR_QUEUE_OVERFLOW;
 	}
 }
 
 inline uint8_t kernel_removeCall(uint8_t t_priority)
 {
-	if(hal_statusReg & (1 << 7))
-		hal_disableInterrupts();
+	uint8_t sreg = hal_statusReg;
+	hal_disableInterrupts();
 		
 	uint8_t maxsize = kernel_getMaxQueueSize(t_priority);
 	volatile task* ptr = kernel_getCallQueuePointer(t_priority);
@@ -181,13 +191,14 @@ inline uint8_t kernel_removeCall(uint8_t t_priority)
 	}
 	
 	hal_enableInterrupts();
+	hal_statusReg = sreg;
 	return 0;
 }
 
 inline uint8_t kernel_removeTask(uint8_t position)
 {
-	if(hal_statusReg & (1 << 7))
-		hal_disableInterrupts();
+	uint8_t sreg = hal_statusReg;
+	hal_disableInterrupts();
 		
 	taskIndex--;
 	kernel_resetTaskByPosition(position);
@@ -197,14 +208,15 @@ inline uint8_t kernel_removeTask(uint8_t position)
 	kernel_resetTaskByPosition(MAX_TASK_QUEUE_SIZE-1);
 	
 	hal_enableInterrupts();
+	hal_statusReg = sreg;
 	return 0;
 }
 
 uint8_t kernel_removeTaskByPtr(task t_pointer)
 {
 	uint8_t position;
-	if(hal_statusReg & (1 << 7))
-		hal_disableInterrupts();
+	uint8_t sreg = hal_statusReg;
+	hal_disableInterrupts();
 	
 	taskIndex--;
 	for(position = 0; position < MAX_TASK_QUEUE_SIZE-1; position++){
@@ -220,10 +232,12 @@ uint8_t kernel_removeTaskByPtr(task t_pointer)
 		kernel_resetTaskByPosition(MAX_TASK_QUEUE_SIZE-1);
 		
 		hal_enableInterrupts();
+		hal_statusReg = sreg;
 		return 0;
 	}
 	else {
 		 hal_enableInterrupts();
+		 hal_statusReg = sreg;
 		 return 1;
 	}
 }
@@ -232,8 +246,8 @@ void kernel_clearCallQueue(uint8_t t_priority)
 {
 	if(kernel_checkFlag(KFLAG_DEBUG) && VERBOSE)
 		debug_logMessage(PGM_ON, L_WARN, (char *)PSTR("kernel: Call queue cleared\r\n"));
-	if(hal_statusReg & (1 << 7))
-		hal_disableInterrupts();
+	uint8_t sreg = hal_statusReg;
+	hal_disableInterrupts();
 	
 	uint8_t maxsize = kernel_getMaxQueueSize(t_priority);	
 	volatile task* ptr = kernel_getCallQueuePointer(t_priority);
@@ -244,14 +258,16 @@ void kernel_clearCallQueue(uint8_t t_priority)
 	callIndex[t_priority] = 0;
 	
 	hal_enableInterrupts();
+	hal_statusReg = sreg;
 }
 
 void kernel_clearTaskQueue()
 {
 	if(kernel_checkFlag(KFLAG_DEBUG) && VERBOSE)
 		debug_logMessage(PGM_ON, L_WARN, (char *)PSTR("kernel: Task queue cleared\r\n"));
-	if(hal_statusReg & (1 << 7))
-		hal_disableInterrupts();
+		
+	uint8_t sreg = hal_statusReg;
+	hal_disableInterrupts();
 		
 	for(int i = 0; i < MAX_TASK_QUEUE_SIZE; i++){
 		kernel_resetTaskByPosition(i);
@@ -259,11 +275,13 @@ void kernel_clearTaskQueue()
 	taskIndex = 0;
 	
 	hal_enableInterrupts();
+	hal_statusReg = sreg;
 }
 
-uint8_t kernel_setTaskState(task t_pointer, uint8_t state){
-	if(hal_statusReg & (1 << 7))
-		hal_disableInterrupts();
+uint8_t kernel_setTaskState(task t_pointer, uint8_t state)
+{
+	uint8_t sreg = hal_statusReg;
+	hal_disableInterrupts();
 		
 	for(int i = 0; i < MAX_TASK_QUEUE_SIZE-1; i++){
 		if(taskQueue[i].pointer == t_pointer){
@@ -274,14 +292,16 @@ uint8_t kernel_setTaskState(task t_pointer, uint8_t state){
 	}
 	
 	hal_enableInterrupts();
+	hal_statusReg = sreg;
 	return 1;
 }
 
 inline static void kernel_taskService()
 {
 	kernel_setFlag(KFLAG_TIMER_ISR, 1);
-	if(hal_statusReg & (1 << 7))
-		hal_disableInterrupts();
+	uint8_t sreg = hal_statusReg;
+	hal_disableInterrupts();
+	
 	for(int i = 0; i < MAX_TASK_QUEUE_SIZE; i++){
 		if(taskQueue[i].pointer == idle) continue;
 		else {
@@ -297,26 +317,31 @@ inline static void kernel_taskService()
 	}
 	e_time += 1;
 	hal_enableInterrupts();
+	hal_statusReg = sreg;
 	kernel_setFlag(KFLAG_TIMER_ISR, 0);
 }
 
 void kernel_setupTimer()
 {
 	debug_logMessage(PGM_ON, L_NONE, (char *)PSTR("                         [DONE]\r\n"));
+	uint8_t sreg = hal_statusReg;
 	hal_disableInterrupts();
 	TCCR1B |= (1 << WGM12)|(KERNEL_TIMER_PRESCALER << CS10); // prescaler 64 cs11 & cs10 = 1
 	TCNT1 = 0; 
 	OCR1A = 125;
 	hal_enableInterrupts();
+	hal_statusReg = sreg;
 	kernel_setFlag(KFLAG_TIMER_SET, 1);
 }
 
 void kernel_startTimer()
 {
 	if(kernel_checkFlag(KFLAG_TIMER_SET)){
+		uint8_t sreg = hal_statusReg;
 		hal_disableInterrupts();
 		TIMSK |= (1 << OCIE1A);
 		hal_enableInterrupts();
+		hal_statusReg = sreg;
 		kernel_setFlag(KFLAG_TIMER_EN, 1);
 	}
 }
@@ -324,9 +349,11 @@ void kernel_startTimer()
 void kernel_stopTimer()
 {
 	if(kernel_checkFlag(KFLAG_TIMER_SET)){
+		uint8_t sreg = hal_statusReg;
 		hal_disableInterrupts();
 		TIMSK &= ~(1 << OCIE1A);
 		hal_enableInterrupts();
+		hal_statusReg = sreg;
 		kernel_setFlag(KFLAG_TIMER_EN, 0);
 	}
 }
