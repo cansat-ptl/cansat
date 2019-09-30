@@ -152,18 +152,6 @@
     <Compile Include="drivers\devices\sensors\ds18b20\src\ds18b20.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\devices\sensors\nmea\nmea_parser.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="drivers\devices\sensors\pololu\imuv3.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="drivers\devices\sensors\pololu\imuv3.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="drivers\devices\sensors\pololu\w2.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="drivers\devices\system\pff3a\diskio.c">
       <SubType>compile</SubType>
     </Compile>
@@ -206,6 +194,7 @@
     <Compile Include="drivers\interfaces\uart.h">
       <SubType>compile</SubType>
     </Compile>
+<<<<<<< Updated upstream
   </ItemGroup>
   <ItemGroup>
     <Folder Include="drivers\" />
@@ -222,6 +211,64 @@
     <Folder Include="drivers\devices\sensors\nmea\" />
     <Folder Include="drivers\devices\sensors\pololu\" />
     <Folder Include="drivers\devices\system\" />
+=======
+    <Compile Include="kernel\drivers.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="kernel\hal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="kernel\kernel.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="kernel\kernel_config.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="kernel\src\debug.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="kernel\src\hal.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="kernel\src\kernel.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="kernel\src\kernel_utils.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="kernel\src\sdcard.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="kernel\src\timers.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="kernel\src\utils.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="kernel\src\watchdog.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="kernel\types.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="drivers" />
+    <Folder Include="drivers\devices" />
+    <Folder Include="drivers\devices\radio\src" />
+    <Folder Include="drivers\devices\sensors\adxl345" />
+    <Folder Include="drivers\devices\sensors\adxl345\src" />
+    <Folder Include="drivers\devices\sensors\bmp280" />
+    <Folder Include="drivers\devices\sensors\bmp280\src" />
+    <Folder Include="drivers\devices\sensors\ds18b20" />
+    <Folder Include="drivers\devices\sensors\ds18b20\src" />
+    <Folder Include="drivers\devices\system" />
+    <Folder Include="drivers\devices\sensors" />
+    <Folder Include="drivers\devices\radio" />
+>>>>>>> Stashed changes
     <Folder Include="drivers\devices\system\pff3a\" />
     <Folder Include="drivers\interfaces\" />
     <Folder Include="drivers\interfaces\src\" />
